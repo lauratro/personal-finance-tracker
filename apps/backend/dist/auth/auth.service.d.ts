@@ -27,7 +27,25 @@ export declare class AuthService {
             updatedAt: Date;
         };
     }>;
-    login(_dto: LoginDto, _req: Request): Promise<void>;
+    login(dto: LoginDto, req: Request): Promise<{
+        requiresTwoFactor: boolean;
+        message: string;
+    } | {
+        accessToken: string;
+        refreshToken: string;
+        user: {
+            id: string;
+            email: string;
+            firstName: string | null;
+            lastName: string | null;
+            role: import(".prisma/client").$Enums.UserRole;
+            twoFactorEnabled: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+        };
+        requiresTwoFactor?: undefined;
+        message?: undefined;
+    }>;
     refreshTokens(userId: string, email: string, _refreshToken: string): Promise<TokenPair>;
     logout(_userId: string): Promise<{
         success: boolean;

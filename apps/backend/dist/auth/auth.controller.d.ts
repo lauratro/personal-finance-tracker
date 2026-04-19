@@ -22,7 +22,25 @@ export declare class AuthController {
             updatedAt: Date;
         };
     }>;
-    login(dto: LoginDto, req: Request): Promise<void>;
+    login(dto: LoginDto, req: Request): Promise<{
+        requiresTwoFactor: boolean;
+        message: string;
+    } | {
+        accessToken: string;
+        refreshToken: string;
+        user: {
+            id: string;
+            email: string;
+            firstName: string | null;
+            lastName: string | null;
+            role: import(".prisma/client").$Enums.UserRole;
+            twoFactorEnabled: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+        };
+        requiresTwoFactor?: undefined;
+        message?: undefined;
+    }>;
     refresh(user: AuthenticatedRequestUser, _dto: RefreshTokenDto): Promise<{
         accessToken: string;
         refreshToken: string;

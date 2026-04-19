@@ -65,8 +65,55 @@ export class AuthService {
     };
   }
 
-  async login(_dto: LoginDto, _req: Request) {
-    throw new NotImplementedException('login() not implemented yet');
+  async login(dto: LoginDto, req: Request) {
+    const email = dto.email.toLowerCase();
+  
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+  
+    if (!user) {
+      throw new UnauthorizedException('Invalid email or password');
+    }
+  
+    const passwordValid = await bcrypt.compare(dto.password, user.passwordHash);
+  
+    if (!passwordValid) {
+      throw new UnauthorizedException('Invalid email or password');
+    }
+  
+    if (user.twoFactorEnabled) {
+      return {
+        requiresTwoFactor: true,
+        message: 'Two-factor authentication is required.',
+      };
+    }
+  
+    const safeUser = await this.prisma.user.findUnique({
+      where: { id: user.id },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        role: true,
+        twoFactorEnabled: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+  
+    if (!safeUser) {
+      throw new UnauthorizedException('User not found');
+    }
+  
+    const tokens = await this.issueTokens(user.id, user.email);
+    await this.storeRefreshToken(user.id, tokens.refreshToken, req);
+  
+    return {
+      user: safeUser,
+      ...tokens,
+    };
   }
 
   async refreshTokens(userId: string, email: string, _refreshToken: string) {

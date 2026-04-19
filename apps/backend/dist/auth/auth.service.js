@@ -54,8 +54,46 @@ let AuthService = class AuthService {
             ...tokens,
         };
     }
-    async login(_dto, _req) {
-        throw new common_1.NotImplementedException('login() not implemented yet');
+    async login(dto, req) {
+        const email = dto.email.toLowerCase();
+        const user = await this.prisma.user.findUnique({
+            where: { email },
+        });
+        if (!user) {
+            throw new common_1.UnauthorizedException('Invalid email or password');
+        }
+        const passwordValid = await bcrypt.compare(dto.password, user.passwordHash);
+        if (!passwordValid) {
+            throw new common_1.UnauthorizedException('Invalid email or password');
+        }
+        if (user.twoFactorEnabled) {
+            return {
+                requiresTwoFactor: true,
+                message: 'Two-factor authentication is required.',
+            };
+        }
+        const safeUser = await this.prisma.user.findUnique({
+            where: { id: user.id },
+            select: {
+                id: true,
+                email: true,
+                firstName: true,
+                lastName: true,
+                role: true,
+                twoFactorEnabled: true,
+                createdAt: true,
+                updatedAt: true,
+            },
+        });
+        if (!safeUser) {
+            throw new common_1.UnauthorizedException('User not found');
+        }
+        const tokens = await this.issueTokens(user.id, user.email);
+        await this.storeRefreshToken(user.id, tokens.refreshToken, req);
+        return {
+            user: safeUser,
+            ...tokens,
+        };
     }
     async refreshTokens(userId, email, _refreshToken) {
         return this.issueTokens(userId, email);
