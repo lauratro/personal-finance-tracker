@@ -12,32 +12,17 @@ export declare class AuthController {
         accessToken: string;
         refreshToken: string;
         user: {
+            id: string;
             email: string;
             firstName: string | null;
             lastName: string | null;
-            id: string;
+            role: import(".prisma/client").$Enums.UserRole;
             twoFactorEnabled: boolean;
+            createdAt: Date;
+            updatedAt: Date;
         };
     }>;
-    login(dto: LoginDto, req: Request): Promise<{
-        requiresTwoFactor: boolean;
-        message: string;
-    } | {
-        accessToken: string;
-        refreshToken: string;
-        user: {
-            id: any;
-            email: any;
-            firstName: any;
-            lastName: any;
-            role: any;
-            twoFactorEnabled: any;
-            createdAt: any;
-            updatedAt: any;
-        };
-        requiresTwoFactor?: undefined;
-        message?: undefined;
-    }>;
+    login(dto: LoginDto, req: Request): Promise<void>;
     refresh(user: AuthenticatedRequestUser, _dto: RefreshTokenDto): Promise<{
         accessToken: string;
         refreshToken: string;
@@ -45,19 +30,8 @@ export declare class AuthController {
     logout(userId: string): Promise<{
         success: boolean;
     }>;
-    verifyTwoFactor(dto: VerifyTwoFactorDto): Promise<{
-        accessToken: string;
-        refreshToken: string;
-        verified: boolean;
-    }>;
+    verifyTwoFactor(dto: VerifyTwoFactorDto): Promise<void>;
     me(userId: string): Promise<{
-        email: string;
-        firstName: string | null;
-        lastName: string | null;
         id: string;
-        role: import(".prisma/client").$Enums.UserRole;
-        twoFactorEnabled: boolean;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
 }

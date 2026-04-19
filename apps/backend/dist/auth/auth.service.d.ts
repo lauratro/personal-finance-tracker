@@ -1,7 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { Request } from 'express';
 import { PrismaService } from '../prisma/prisma.service';
+import { Request } from 'express';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 type TokenPair = {
@@ -17,50 +17,24 @@ export declare class AuthService {
         accessToken: string;
         refreshToken: string;
         user: {
+            id: string;
             email: string;
             firstName: string | null;
             lastName: string | null;
-            id: string;
+            role: import(".prisma/client").$Enums.UserRole;
             twoFactorEnabled: boolean;
+            createdAt: Date;
+            updatedAt: Date;
         };
     }>;
-    login(dto: LoginDto, req?: Request): Promise<{
-        requiresTwoFactor: boolean;
-        message: string;
-    } | {
-        accessToken: string;
-        refreshToken: string;
-        user: {
-            id: any;
-            email: any;
-            firstName: any;
-            lastName: any;
-            role: any;
-            twoFactorEnabled: any;
-            createdAt: any;
-            updatedAt: any;
-        };
-        requiresTwoFactor?: undefined;
-        message?: undefined;
-    }>;
-    refreshTokens(userId: string, email: string, refreshToken: string): Promise<TokenPair>;
-    logout(userId: string): Promise<{
+    login(_dto: LoginDto, _req: Request): Promise<void>;
+    refreshTokens(userId: string, email: string, _refreshToken: string): Promise<TokenPair>;
+    logout(_userId: string): Promise<{
         success: boolean;
     }>;
-    verifyTwoFactor(email: string, code: string): Promise<{
-        accessToken: string;
-        refreshToken: string;
-        verified: boolean;
-    }>;
+    verifyTwoFactor(_email: string, _code: string): Promise<void>;
     getProfile(userId: string): Promise<{
-        email: string;
-        firstName: string | null;
-        lastName: string | null;
         id: string;
-        role: import(".prisma/client").$Enums.UserRole;
-        twoFactorEnabled: boolean;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
     private issueTokens;
     private storeRefreshToken;
@@ -68,6 +42,5 @@ export declare class AuthService {
     private getRefreshExpiryDate;
     private extractHeader;
     private extractIp;
-    private toSafeUser;
 }
 export {};

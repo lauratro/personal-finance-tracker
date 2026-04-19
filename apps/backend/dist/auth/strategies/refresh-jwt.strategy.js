@@ -26,7 +26,7 @@ let RefreshJwtStrategy = class RefreshJwtStrategy extends (0, passport_1.Passpor
             jwtFromRequest: passport_jwt_1.ExtractJwt.fromExtractors([refreshTokenExtractor]),
             passReqToCallback: true,
             ignoreExpiration: false,
-            secretOrKey: configService.get('JWT_REFRESH_SECRET'),
+            secretOrKey: configService.getOrThrow('JWT_REFRESH_SECRET'),
         });
     }
     validate(req, payload) {

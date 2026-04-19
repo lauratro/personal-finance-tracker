@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Post,
   Req,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
@@ -41,7 +42,13 @@ export class AuthController {
     @CurrentUser() user: AuthenticatedRequestUser,
     @Body() _dto: RefreshTokenDto,
   ) {
-    return this.authService.refreshTokens(user.sub, user.email, user.refreshToken);
+    const refreshToken = user.refreshToken;
+
+    if (!refreshToken) {
+      throw new UnauthorizedException('Refresh token missing');
+    }
+
+    return this.authService.refreshTokens(user.sub, user.email, refreshToken);
   }
 
   @HttpCode(HttpStatus.OK)

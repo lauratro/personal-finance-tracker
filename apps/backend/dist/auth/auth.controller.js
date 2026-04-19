@@ -33,7 +33,11 @@ let AuthController = class AuthController {
         return this.authService.login(dto, req);
     }
     async refresh(user, _dto) {
-        return this.authService.refreshTokens(user.sub, user.email, user.refreshToken);
+        const refreshToken = user.refreshToken;
+        if (!refreshToken) {
+            throw new common_1.UnauthorizedException('Refresh token missing');
+        }
+        return this.authService.refreshTokens(user.sub, user.email, refreshToken);
     }
     async logout(userId) {
         return this.authService.logout(userId);

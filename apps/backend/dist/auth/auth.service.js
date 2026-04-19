@@ -13,8 +13,8 @@ exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const jwt_1 = require("@nestjs/jwt");
-const bcrypt = require("bcrypt");
 const prisma_service_1 = require("../prisma/prisma.service");
+const bcrypt = require("bcrypt");
 let AuthService = class AuthService {
     constructor(prisma, jwtService, configService) {
         this.prisma = prisma;
@@ -26,120 +26,16 @@ let AuthService = class AuthService {
             where: { email: dto.email.toLowerCase() },
         });
         if (existingUser) {
-            throw new common_1.BadRequestException('Email is already in use');
+            throw new common_1.ConflictException('Email already in use');
         }
         const passwordHash = await this.hashData(dto.password);
         const user = await this.prisma.user.create({
             data: {
                 email: dto.email.toLowerCase(),
-                passwordHash,
                 firstName: dto.firstName,
                 lastName: dto.lastName,
+                passwordHash,
             },
-            select: {
-                id: true,
-                email: true,
-                firstName: true,
-                lastName: true,
-                twoFactorEnabled: true,
-            },
-        });
-        const tokens = await this.issueTokens(user.id, user.email);
-        await this.storeRefreshToken(user.id, tokens.refreshToken);
-        return {
-            user,
-            ...tokens,
-        };
-    }
-    async login(dto, req) {
-        const user = await this.prisma.user.findUnique({
-            where: { email: dto.email.toLowerCase() },
-        });
-        if (!user) {
-            throw new common_1.UnauthorizedException('Invalid credentials');
-        }
-        const passwordMatches = await bcrypt.compare(dto.password, user.passwordHash);
-        if (!passwordMatches) {
-            throw new common_1.UnauthorizedException('Invalid credentials');
-        }
-        if (user.twoFactorEnabled) {
-            return {
-                requiresTwoFactor: true,
-                message: '2FA is enabled. Verify the TOTP code before issuing final tokens.',
-            };
-        }
-        const tokens = await this.issueTokens(user.id, user.email);
-        await this.storeRefreshToken(user.id, tokens.refreshToken, req);
-        return {
-            user: this.toSafeUser(user),
-            ...tokens,
-        };
-    }
-    async refreshTokens(userId, email, refreshToken) {
-        const activeToken = await this.prisma.refreshToken.findFirst({
-            where: {
-                userId,
-                revokedAt: null,
-                expiresAt: { gt: new Date() },
-            },
-            orderBy: { createdAt: 'desc' },
-        });
-        if (!activeToken) {
-            throw new common_1.UnauthorizedException('Refresh token is not active');
-        }
-        const refreshTokenMatches = await bcrypt.compare(refreshToken, activeToken.tokenHash);
-        if (!refreshTokenMatches) {
-            throw new common_1.UnauthorizedException('Invalid refresh token');
-        }
-        const tokens = await this.issueTokens(userId, email);
-        await this.prisma.refreshToken.update({
-            where: { id: activeToken.id },
-            data: { revokedAt: new Date() },
-        });
-        await this.storeRefreshToken(userId, tokens.refreshToken);
-        return tokens;
-    }
-    async logout(userId) {
-        await this.prisma.refreshToken.updateMany({
-            where: {
-                userId,
-                revokedAt: null,
-            },
-            data: {
-                revokedAt: new Date(),
-            },
-        });
-        return { success: true };
-    }
-    async verifyTwoFactor(email, code) {
-        const user = await this.prisma.user.findUnique({
-            where: { email: email.toLowerCase() },
-            select: {
-                id: true,
-                email: true,
-                twoFactorEnabled: true,
-                twoFactorSecret: true,
-            },
-        });
-        if (!user) {
-            throw new common_1.UnauthorizedException('User not found');
-        }
-        if (!user.twoFactorEnabled || !user.twoFactorSecret) {
-            throw new common_1.BadRequestException('2FA is not enabled for this user');
-        }
-        if (!code || code.length < 6) {
-            throw new common_1.BadRequestException('Invalid 2FA code format');
-        }
-        const tokens = await this.issueTokens(user.id, user.email);
-        await this.storeRefreshToken(user.id, tokens.refreshToken);
-        return {
-            verified: true,
-            ...tokens,
-        };
-    }
-    async getProfile(userId) {
-        const user = await this.prisma.user.findUnique({
-            where: { id: userId },
             select: {
                 id: true,
                 email: true,
@@ -151,21 +47,42 @@ let AuthService = class AuthService {
                 updatedAt: true,
             },
         });
-        if (!user) {
-            throw new common_1.UnauthorizedException('User not found');
-        }
-        return user;
+        const tokens = await this.issueTokens(user.id, user.email);
+        await this.storeRefreshToken(user.id, tokens.refreshToken);
+        return {
+            user,
+            ...tokens,
+        };
+    }
+    async login(_dto, _req) {
+        throw new common_1.NotImplementedException('login() not implemented yet');
+    }
+    async refreshTokens(userId, email, _refreshToken) {
+        return this.issueTokens(userId, email);
+    }
+    async logout(_userId) {
+        return { success: true };
+    }
+    async verifyTwoFactor(_email, _code) {
+        throw new common_1.NotImplementedException('verifyTwoFactor() not implemented yet');
+    }
+    async getProfile(userId) {
+        return { id: userId };
     }
     async issueTokens(userId, email) {
         const payload = { sub: userId, email };
+        const accessSecret = this.configService.getOrThrow('JWT_ACCESS_SECRET');
+        const refreshSecret = this.configService.getOrThrow('JWT_REFRESH_SECRET');
+        const accessTtl = this.configService.getOrThrow('JWT_ACCESS_TTL');
+        const refreshTtl = this.configService.getOrThrow('JWT_REFRESH_TTL');
         const [accessToken, refreshToken] = await Promise.all([
             this.jwtService.signAsync(payload, {
-                secret: this.configService.get('JWT_ACCESS_SECRET'),
-                expiresIn: this.configService.get('JWT_ACCESS_TTL') ?? '15m',
+                secret: accessSecret,
+                expiresIn: accessTtl,
             }),
             this.jwtService.signAsync(payload, {
-                secret: this.configService.get('JWT_REFRESH_SECRET'),
-                expiresIn: this.configService.get('JWT_REFRESH_TTL') ?? '7d',
+                secret: refreshSecret,
+                expiresIn: refreshTtl,
             }),
         ]);
         return { accessToken, refreshToken };
@@ -193,30 +110,17 @@ let AuthService = class AuthService {
         if (!req || !req.headers) {
             return null;
         }
-        const headerValue = req.headers[key];
-        if (!headerValue) {
+        const value = req.headers[key];
+        if (!value) {
             return null;
         }
-        return Array.isArray(headerValue) ? headerValue.join(', ') : String(headerValue);
+        return Array.isArray(value) ? value[0] : value;
     }
     extractIp(req) {
         if (!req) {
             return null;
         }
-        const maybeIp = req.ip ?? req.socket?.remoteAddress ?? null;
-        return maybeIp ? String(maybeIp) : null;
-    }
-    toSafeUser(user) {
-        return {
-            id: user.id,
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            role: user.role,
-            twoFactorEnabled: user.twoFactorEnabled,
-            createdAt: user.createdAt,
-            updatedAt: user.updatedAt,
-        };
+        return req.ip ?? null;
     }
 };
 exports.AuthService = AuthService;
