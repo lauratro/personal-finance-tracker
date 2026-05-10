@@ -1,14 +1,14 @@
-import { Link } from 'react-router-dom';
 import { ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 
-type AuthLayoutProps = {
+interface AuthLayoutProps {
   title: string;
   subtitle: string;
   footerText: string;
   footerLinkText: string;
   footerHref: string;
   children: ReactNode;
-};
+}
 
 export function AuthLayout({
   title,
@@ -20,19 +20,22 @@ export function AuthLayout({
 }: AuthLayoutProps) {
   return (
     <div className="auth-shell">
-      <section className="auth-card">
-        <div className="auth-header">
+      <div className="auth-card">
+        <header className="auth-header">
           <p className="eyebrow">Personal Finance Tracker</p>
           <h1>{title}</h1>
           <p>{subtitle}</p>
-        </div>
+        </header>
 
         {children}
 
-        <p className="auth-footer">
-          {footerText} <Link to={footerHref}>{footerLinkText}</Link>
-        </p>
-      </section>
+        <div className="auth-footer">
+          <p>
+            {footerText}{' '}
+            <Link to={footerHref}>{footerLinkText}</Link>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

@@ -31,3 +31,7 @@ export type LoginPayload = {
   email: string;
   password: string;
 };
+export interface PageContainerProps {
+    children: any;
+    title: string;
+}

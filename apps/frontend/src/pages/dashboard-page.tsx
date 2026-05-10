@@ -1,39 +1,32 @@
-import { useAuth } from '../auth/auth-context';
+import { useEffect, useState } from 'react';
+import { PageContainer } from '../containers/page-container/page-container';
+import { getCurrentUser } from '../auth/auth-api';
+import type { SafeUser } from '../auth/auth-types';
 
-export function DashboardPage() {
-  const { user, logout } = useAuth();
+export const DashboardPage = () => {
+  const [user, setUser] = useState<SafeUser | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getCurrentUser()
+      .then(setUser)
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <PageContainer title="Dashboard" description="Welcome to your personal finance dashboard!">
+        <p>Loading...</p>
+      </PageContainer>
+    );
+  }
 
   return (
-    <main className="dashboard-shell">
-      <section className="dashboard-card">
-        <div>
-          <p className="eyebrow">Authenticated area</p>
-          <h1>Welcome{user?.firstName ? `, ${user.firstName}` : ''}</h1>
-          <p>
-            Your login and registration flow is working. This page is the next hand-off point for the
-            real dashboard modules.
-          </p>
-        </div>
-
-        <dl className="profile-list">
-          <div>
-            <dt>Email</dt>
-            <dd>{user?.email}</dd>
-          </div>
-          <div>
-            <dt>Role</dt>
-            <dd>{user?.role ?? 'USER'}</dd>
-          </div>
-          <div>
-            <dt>2FA</dt>
-            <dd>{user?.twoFactorEnabled ? 'Enabled' : 'Disabled'}</dd>
-          </div>
-        </dl>
-
-        <button className="button-secondary" onClick={logout}>
-          Log out locally
-        </button>
-      </section>
-    </main>
+    <PageContainer title="Dashboard" description="Welcome to your personal finance dashboard!">
+      <h1 className="text-3xl font-bold tracking-tight">
+        Ciao {user?.firstName || 'User'}!
+      </h1>
+    </PageContainer>
   );
 }

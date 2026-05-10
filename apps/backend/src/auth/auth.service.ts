@@ -12,6 +12,8 @@ import * as bcrypt from 'bcrypt';
 import type { StringValue } from 'ms';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
+import { randomUUID } from 'crypto';
+
 
 type TokenPair = {
   accessToken: string;
@@ -39,6 +41,7 @@ export class AuthService {
   
     const user = await this.prisma.user.create({
       data: {
+        id: `User:${randomUUID()}`,
         email: dto.email.toLowerCase(),
         firstName: dto.firstName,
         lastName: dto.lastName,
@@ -129,7 +132,19 @@ export class AuthService {
   }
 
   async getProfile(userId: string) {
-    return { id: userId };
+    return this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        role: true,
+        twoFactorEnabled: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
   }
 
   private async issueTokens(userId: string, email: string): Promise<TokenPair> {
