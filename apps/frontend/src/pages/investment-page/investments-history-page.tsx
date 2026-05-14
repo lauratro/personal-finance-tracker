@@ -1,19 +1,18 @@
 import { useEffect, useState } from 'react';
-import { PageContainer } from '../containers/page-container/page-container';
+import { PageContainer } from '../../containers/page-container/page-container';
 import {
   getInvestmentHistories,
   createInvestmentHistory,
   updateInvestmentHistory,
   deleteInvestmentHistory,
-  type InvestmentHistory,
   AssetType,
-  type CreateInvestmentHistoryPayload,
-} from '../investment-history';
+} from '../../investment-history';
+import { Button, Card, TextInput } from '@mantine/core';
+import { InvestmentCreateForm } from './parts/investment-create-form';
 
 export const InvestmentsHistoryPage = () => {
   const [investments, setInvestments] = useState<InvestmentHistory[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false);
 
   const fetchInvestments = async () => {
     try {
@@ -31,7 +30,7 @@ export const InvestmentsHistoryPage = () => {
     fetchInvestments();
   }, []);
 
-  const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
+/*   const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
@@ -54,12 +53,13 @@ export const InvestmentsHistoryPage = () => {
     } catch (error) {
       console.error('Error creating investment:', error);
     }
-  };
+  }; */
 
-  const handleMarkAsSold = async (id: string, salePrice: string) => {
+  const handleMarkAsSold = async (id: string, salePrice: string, saleDate: string = new Date().toISOString().split('T')[0]
+  ) => {
     try {
       await updateInvestmentHistory(id, {
-        saleDate: new Date().toISOString().split('T')[0],
+        saleDate: saleDate,
         salePrice: parseFloat(salePrice),
       });
       fetchInvestments();
@@ -95,86 +95,16 @@ export const InvestmentsHistoryPage = () => {
       title="Investments History"
       description="Track your investment performance over time."
     >
-      <div className="mb-6">
-        <button
+ {/*      <div className="mb-6">
+        <Button
           onClick={() => setShowForm(!showForm)}
           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
         >
           {showForm ? 'Cancel' : 'Add Investment'}
-        </button>
-      </div>
-
-      {showForm && (
-        <div className="mb-6 p-4 border rounded bg-gray-50">
-          <h2 className="text-xl font-bold mb-4">Add New Investment</h2>
-          <form onSubmit={handleCreate}>
-            <div className="grid grid-cols-2 gap-4">
-              <input
-                type="text"
-                name="name"
-                placeholder="Investment Name"
-                required
-                className="border p-2 rounded"
-              />
-              <select
-                name="assetType"
-                required
-                className="border p-2 rounded"
-              >
-                <option value="">Select Type</option>
-                {Object.values(AssetType).map((type) => (
-                  <option key={type} value={type}>
-                    {type}
-                  </option>
-                ))}
-              </select>
-              <input
-                type="date"
-                name="boughtDate"
-                required
-                className="border p-2 rounded"
-              />
-              <input
-                type="number"
-                step="0.01"
-                name="totalAmountInvested"
-                placeholder="Total Amount Invested"
-                required
-                className="border p-2 rounded"
-              />
-              <input
-                type="number"
-                step="0.0001"
-                name="costSingleStock"
-                placeholder="Cost per Unit"
-                required
-                className="border p-2 rounded"
-              />
-              <input
-                type="number"
-                step="0.00000001"
-                name="quantity"
-                placeholder="Quantity"
-                required
-                className="border p-2 rounded"
-              />
-              <input
-                type="number"
-                step="0.0001"
-                name="plannedPriceToSell"
-                placeholder="Planned Price to Sell (Optional)"
-                className="border p-2 rounded"
-              />
-            </div>
-            <button
-              type="submit"
-              className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-            >
-              Create Investment
-            </button>
-          </form>
-        </div>
-      )}
+        </Button>
+      </div> */}
+     <InvestmentCreateForm/>
+              
 
       <div className="overflow-x-auto">
         <table className="w-full border-collapse border border-gray-300">
@@ -215,10 +145,10 @@ export const InvestmentsHistoryPage = () => {
                   {inv.salePrice ? `€${inv.salePrice}` : '-'}
                 </td>
                 <td className="border p-2 text-right">
-                  {inv.income ? `€${inv.income.toFixed(2)}` : '-'}
+                  {inv.income ? `€${Number(inv.income).toFixed(2)}` : '-'}
                 </td>
                 <td className="border p-2 text-right">
-                  {inv.percentageIncome ? `${inv.percentageIncome.toFixed(2)}%` : '-'}
+                  {inv.percentageIncome ? `${Number(inv.percentageIncome).toFixed(2)}%` : '-'}
                 </td>
                 <td className="border p-2 text-center space-x-2">
                   {!inv.saleDate && (

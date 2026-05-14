@@ -20,7 +20,7 @@ export type InvestmentHistory = {
   plannedPriceToSell?: number;
   saleDate?: string | null;
   salePrice?: number | null;
-  income?: number | null;
+  income?: number | null | string;
   percentageIncome?: number | null;
   createdAt: string;
   updatedAt: string;
