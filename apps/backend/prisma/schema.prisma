@@ -59,6 +59,8 @@ enum MarketDataProvider {
   OTHER
 }
 
+
+
 model User {
   id               String         @id @default(uuid())
   email            String         @unique
@@ -76,6 +78,7 @@ model User {
   budgetMonths     BudgetMonth[]
   portfolios       Portfolio[]
   refreshTokens    RefreshToken[]
+  investiments     Investiment[]
 }
 
 model RefreshToken {
@@ -91,6 +94,27 @@ model RefreshToken {
 
   @@index([userId, revokedAt])
   @@index([expiresAt])
+}
+
+model Investiment {
+  id                 String     @id @default(uuid())
+  userId             String
+  name               String
+  assetType          AssetType
+  boughtDate         DateTime
+  totalAmountInvested Decimal   @db.Decimal(18, 2)
+  costSingleStock    Decimal   @db.Decimal(18, 4)
+  quantity           Decimal   @db.Decimal(24, 8)
+  plannedPriceToSell Decimal?  @db.Decimal(18, 4)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  saleDate           DateTime?
+  salePrice          Decimal?  @db.Decimal(18, 4)
+  income             Decimal?  @db.Decimal(18, 2)
+  percentageIncome   Decimal?  @db.Decimal(5, 2)
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Account {

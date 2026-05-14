@@ -1,3 +1,11 @@
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+
+type RequestOptions = {
+  method?: 'GET' | 'POST' | 'PATCH' | 'DELETE';
+  body?: unknown;
+  token?: string | null;
+};
 export class ApiError extends Error {
   status: number;
 
@@ -8,14 +16,7 @@ export class ApiError extends Error {
   }
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
-type RequestOptions = {
-  method?: 'GET' | 'POST';
-  body?: unknown;
-  token?: string | null;
-};
-console.log('API_BASE_URL', API_BASE_URL);
 export async function http<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method: options.method ?? 'GET',
@@ -25,7 +26,6 @@ export async function http<T>(path: string, options: RequestOptions = {}): Promi
     },
     body: options.body ? JSON.stringify(options.body) : undefined,
   });
-  console.log('Request URL', `${API_BASE_URL}${path}`);
   const data = response.headers.get('content-type')?.includes('application/json')
     ? await response.json()
     : null;
@@ -36,3 +36,4 @@ export async function http<T>(path: string, options: RequestOptions = {}): Promi
 
   return data as T;
 }
+
