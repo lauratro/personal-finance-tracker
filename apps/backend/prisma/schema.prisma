@@ -60,7 +60,6 @@ enum MarketDataProvider {
 }
 
 
-
 model User {
   id               String         @id @default(uuid())
   email            String         @unique
@@ -78,7 +77,7 @@ model User {
   budgetMonths     BudgetMonth[]
   portfolios       Portfolio[]
   refreshTokens    RefreshToken[]
-  investiments     Investiment[]
+  investments     Investment[]
 }
 
 model RefreshToken {
@@ -96,7 +95,7 @@ model RefreshToken {
   @@index([expiresAt])
 }
 
-model Investiment {
+model Investment {
   id                 String     @id @default(uuid())
   userId             String
   name               String

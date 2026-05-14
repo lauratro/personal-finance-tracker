@@ -1,6 +1,11 @@
 -- CreateEnum
-CREATE TYPE "AssetType" AS ENUM ('STOCK', 'ETF', 'CRYPTO', 'BOND', 'FUND', 'CASH', 'OTHER');
-
+DO $$
+BEGIN
+  CREATE TYPE "AssetType" AS ENUM ('STOCK', 'ETF', 'CRYPTO', 'BOND', 'FUND', 'CASH', 'OTHER');
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END
+$$;
 -- CreateTable
 CREATE TABLE "InvestmentHistory" (
     "id" TEXT NOT NULL,

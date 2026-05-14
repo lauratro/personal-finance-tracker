@@ -9,7 +9,7 @@ export class InvestmentHistoryService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(userId: string, dto: CreateInvestmentHistoryDto) {
-    return this.prisma.investiment.create({
+    return this.prisma.investment.create({
       data: {
         userId,
         name: dto.name,
@@ -26,20 +26,20 @@ export class InvestmentHistoryService {
   }
 
   async findAllByUserId(userId: string) {
-    return this.prisma.investiment.findMany({
+    return this.prisma.investment.findMany({
       where: { userId },
       orderBy: { boughtDate: 'desc' },
     });
   }
 
   async findOne(id: string, userId: string) {
-    return this.prisma.investiment.findFirst({
+    return this.prisma.investment.findFirst({
       where: { id, userId },
     });
   }
 
   async update(id: string, userId: string, dto: UpdateInvestmentHistoryDto) {
-    const investment = await this.prisma.investiment.findFirst({
+    const investment = await this.prisma.investment.findFirst({
       where: { id, userId },
     });
 
@@ -81,14 +81,14 @@ export class InvestmentHistoryService {
         .mul(100);
     }
 
-    return this.prisma.investiment.update({
+    return this.prisma.investment.update({
       where: { id },
       data,
     });
   }
 
   async delete(id: string, userId: string) {
-    const investment = await this.prisma.investiment.findFirst({
+    const investment = await this.prisma.investment.findFirst({
       where: { id, userId },
     });
 
@@ -96,7 +96,7 @@ export class InvestmentHistoryService {
       throw new NotFoundException('Investment not found');
     }
 
-    return this.prisma.investiment.delete({
+    return this.prisma.investment.delete({
       where: { id },
     });
   }

@@ -1,11 +1,14 @@
+import { getAccessToken } from '../auth/auth-storage';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
 type RequestOptions = {
   method?: 'GET' | 'POST' | 'PATCH' | 'DELETE';
   body?: unknown;
   token?: string | null;
 };
+
 export class ApiError extends Error {
   status: number;
 
@@ -16,16 +19,20 @@ export class ApiError extends Error {
   }
 }
 
-
-export async function http<T>(path: string, options: RequestOptions = {}): Promise<T> {
+export async function http<T>(
+  path: string,
+  options: RequestOptions = {},
+): Promise<T> {
+  const token = options.token ?? getAccessToken();
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method: options.method ?? 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(options.token ? { Authorization: `Bearer ${options.token}` } : {}),
-    },
+headers: {
+  'Content-Type': 'application/json',
+  ...(token ? { Authorization: `Bearer ${token}` } : {}),
+},
     body: options.body ? JSON.stringify(options.body) : undefined,
   });
+
   const data = response.headers.get('content-type')?.includes('application/json')
     ? await response.json()
     : null;
@@ -36,4 +43,3 @@ export async function http<T>(path: string, options: RequestOptions = {}): Promi
 
   return data as T;
 }
-
