@@ -1,38 +1,43 @@
-import { Button , Input, Select} from '@mantine/core';
+import { Button, Select, TextInput } from '@mantine/core';
 import { useState } from 'react';
 import {
   createInvestmentHistory,
   AssetType,
 } from '../../../../investment-history';
+import { useFormik} from 'formik';
 
-
+interface FormState {
+  name: string;
+  assetType: AssetType;
+  boughtDate: string;
+  totalAmountInvested: number;
+  costSingleStock: number;
+  quantity: number;
+  plannedPriceToSell?: number;
+}
 export const InvestmentCreateForm = () => {
   const [showForm, setShowForm] = useState(false);
 
-const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
+  const formik = useFormik<FormState>({
+    initialValues: {
+      name: '',
+      assetType: '' as AssetType,
+      boughtDate: '',
+      totalAmountInvested: 0,
+      costSingleStock: 0,
+      quantity: 0,
+      plannedPriceToSell: undefined,
+    },
+    onSubmit: async (values) => {
+      try {
+        await createInvestmentHistory(values);
+        setShowForm(false);
+      } catch (error) {
+        console.error('Error creating investment:', error);
+      }
+    },
+  });
 
-    const payload: CreateInvestmentHistoryPayload = {
-      name: formData.get('name') as string,
-      assetType: formData.get('assetType') as AssetType,
-      boughtDate: formData.get('boughtDate') as string,
-      totalAmountInvested: parseFloat(formData.get('totalAmountInvested') as string),
-      costSingleStock: parseFloat(formData.get('costSingleStock') as string),
-      quantity: parseFloat(formData.get('quantity') as string),
-      plannedPriceToSell: formData.get('plannedPriceToSell')
-        ? parseFloat(formData.get('plannedPriceToSell') as string)
-        : undefined,
-    };
-
-    try {
-      await createInvestmentHistory(payload);
-      setShowForm(false);
-      fetchInvestments();
-    } catch (error) {
-      console.error('Error creating investment:', error);
-    }
-  };
   return    (
   <div className="mb-6">
         <Button
@@ -46,72 +51,77 @@ const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
          {showForm && (
                 <div className="mb-6 p-4 border rounded bg-gray-50">
                   <h2 className="text-xl font-bold mb-4">Add New Investment</h2>
-                  <form onSubmit={handleCreate}>
-                    <div className="grid grid-cols-2 gap-4">
-                      <Input
-                        type="text"
-                        name="name"
-                        placeholder="Investment Name"
-                        required
-                        className="border p-2 rounded"
-                      />
-                      <select
-                        name="assetType"
-                        required
-                        className="border p-2 rounded"
-                      >
-                        <option value="">Select Type</option>
-                        {Object.values(AssetType).map((type) => (
-                          <option key={type} value={type}>
-                            {type}
-                          </option>
-                        ))}
-                      </select>
-                      <Input
-                        type="date"
-                        name="boughtDate"
-                        required
-                        className="border p-2 rounded"
-                      />
-                      <Input
-                        type="number"
-                        step="0.01"
-                        name="totalAmountInvested"
-                        placeholder="Total Amount Invested"
-                        required
-                        className="border p-2 rounded"
-                      />
-                      <Input
-                        type="number"
-                        step="0.0001"
-                        name="costSingleStock"
-                        placeholder="Cost per Unit"
-                        required
-                        className="border p-2 rounded"
-                      />
-                      <Input
-                        type="number"
-                        step="0.00000001"
-                        name="quantity"
-                        placeholder="Quantity"
-                        required
-                        className="border p-2 rounded"
-                      />
-                      <Input
-                        type="number"
-                        step="0.0001"
-                        name="plannedPriceToSell"
-                        placeholder="Planned Price to Sell (Optional)"
-                        className="border p-2 rounded"
-                      />
-                    </div>
-                    <Button
-                      type="submit"
-                      className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                    >
-                      Create Investment
-                    </Button>
-                  </form>
+                  <form onSubmit={formik.handleSubmit}>
+  <TextInput
+    name="name"
+    label='Investment Name'
+    placeholder="Investment Name"
+    value={formik.values.name}
+    onChange={formik.handleChange}
+    required
+  />
+
+  <Select
+    name="assetType"
+    label='Asset Type'
+    placeholder="Select Type"
+    data={Object.values(AssetType)}
+    value={formik.values.assetType}
+    onChange={(value) =>
+      formik.setFieldValue('assetType', value)
+    }
+    required
+  />
+
+  <TextInput
+    type="date"
+    label='Bought Date'
+    placeholder="Bought Date"
+    name="boughtDate"
+    value={formik.values.boughtDate}
+    onChange={formik.handleChange}
+    required
+  />
+
+  <TextInput
+    type="number"
+    label='Total Amount Invested'
+    name="totalAmountInvested"
+    value={formik.values.totalAmountInvested}
+    onChange={formik.handleChange}
+    required
+  />
+
+  <TextInput
+    type="number"
+    label='Cost per Unit'
+    name="costSingleStock"
+    value={formik.values.costSingleStock}
+    onChange={formik.handleChange}
+    required
+  />
+
+  <TextInput
+    type="number"
+    label='Quantity'
+    name="quantity"
+    value={formik.values.quantity}
+    onChange={formik.handleChange}
+    required
+  />
+
+  <TextInput
+    type="number"
+    label='Planned Price to Sell'
+    name="plannedPriceToSell"
+    value={formik.values.plannedPriceToSell ?? ''}
+    onChange={formik.handleChange}
+  />
+
+  <Button type="submit" mt="md">
+    Create Investment
+  </Button>
+</form>
                 </div>
               )}
  </div>)

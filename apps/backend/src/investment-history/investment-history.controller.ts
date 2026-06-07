@@ -10,16 +10,26 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { InvestmentHistoryService } from './investment-history.service';
 import { CreateInvestmentHistoryDto } from './dto/create-investment-history.dto';
 import { UpdateInvestmentHistoryDto } from './dto/update-investment-history.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { CreateInvestmentService } from './application/create-investment.service';
+import { DeleteInvestmentService } from './application/delete-investment.service';
+import { GetInvestmentService } from './application/get-investment.service';
+import { ListInvestmentsService } from './application/list-investments.service';
+import { UpdateInvestmentService } from './application/update-investment.service';
 
 @Controller('investment-history')
 @UseGuards(JwtAuthGuard)
 export class InvestmentHistoryController {
-  constructor(private readonly investmentHistoryService: InvestmentHistoryService) {}
+  constructor(
+    private readonly createInvestment: CreateInvestmentService,
+    private readonly listInvestments: ListInvestmentsService,
+    private readonly getInvestment: GetInvestmentService,
+    private readonly updateInvestment: UpdateInvestmentService,
+    private readonly deleteInvestment: DeleteInvestmentService,
+  ) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -27,17 +37,17 @@ export class InvestmentHistoryController {
     @CurrentUser('sub') userId: string,
     @Body() createInvestmentHistoryDto: CreateInvestmentHistoryDto,
   ) {
-    return this.investmentHistoryService.create(userId, createInvestmentHistoryDto);
+    return this.createInvestment.execute(userId, createInvestmentHistoryDto);
   }
 
   @Get()
   async findAll(@CurrentUser('sub') userId: string) {
-    return this.investmentHistoryService.findAllByUserId(userId);
+    return this.listInvestments.execute(userId);
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string, @CurrentUser('sub') userId: string) {
-    return this.investmentHistoryService.findOne(id, userId);
+    return this.getInvestment.execute(id, userId);
   }
 
   @Patch(':id')
@@ -46,16 +56,12 @@ export class InvestmentHistoryController {
     @CurrentUser('sub') userId: string,
     @Body() updateInvestmentHistoryDto: UpdateInvestmentHistoryDto,
   ) {
-    return this.investmentHistoryService.update(
-      id,
-      userId,
-      updateInvestmentHistoryDto,
-    );
+    return this.updateInvestment.execute(id, userId, updateInvestmentHistoryDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string, @CurrentUser('sub') userId: string) {
-    return this.investmentHistoryService.delete(id, userId);
+    return this.deleteInvestment.execute(id, userId);
   }
 }

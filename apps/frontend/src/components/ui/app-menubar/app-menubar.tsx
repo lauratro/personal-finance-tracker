@@ -16,7 +16,6 @@ export function AppMenubar() {
             Investments History
           </Link>
         </nav>
-
         <div className="app-menubar-user">
           <span className="app-menubar-user-text">{user?.firstName || user?.email}</span>
           <button type="button" onClick={logout} className="button-secondary nav-button">

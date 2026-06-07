@@ -1,26 +1,17 @@
 import { useEffect, useState } from 'react';
 import {
+  InvestmentHistory,
   getInvestmentHistories,
-  updateInvestmentHistory,
   deleteInvestmentHistory,
 } from '../../../../investment-history';
-import { Button, Card, TextInput } from '@mantine/core';
-export const InvestmentTable = () => {
+import { Button } from '@mantine/core';
+import { InvestmentEditor } from '../investment-editor';
 
-const [investments, setInvestments] = useState<InvestmentHistory[]>([]);
+export const InvestmentTable = () => {
+  const [investments, setInvestments] = useState<InvestmentHistory[]>([]);
   const [isLoading, setLoading] = useState(true);
-  const handleMarkAsSold = async (id: string, salePrice: string, saleDate: string = new Date().toISOString().split('T')[0]
-  ) => {
-    try {
-      await updateInvestmentHistory(id, {
-        saleDate: saleDate,
-        salePrice: parseFloat(salePrice),
-      });
-      fetchInvestments();
-    } catch (error) {
-      console.error('Error updating investment:', error);
-    }
-  };
+  const [isEditorVisible, setEditorVisible] = useState(false);
+  const [selectedInvestmentId, setSelectedInvestmentId] = useState<string | null>(null);
 
   const handleDelete = async (id: string) => {
     if (confirm('Are you sure you want to delete this investment?')) {
@@ -31,6 +22,11 @@ const [investments, setInvestments] = useState<InvestmentHistory[]>([]);
         console.error('Error deleting investment:', error);
       }
     }
+  };
+
+  const handleEdit = (id: string) => {
+    setSelectedInvestmentId(id);
+    setEditorVisible(true);
   };
 
 
@@ -55,7 +51,8 @@ const [investments, setInvestments] = useState<InvestmentHistory[]>([]);
 
             <div className="p-4">
      <div className="overflow-x-auto">
-        {loading ?    <p>Loading...</p> : investments.length > 0 ? (
+        {
+  isLoading ?    <p>Loading...</p> : investments.length > 0 ? (
         <table className="w-full border-collapse border border-gray-300">
           <thead className="bg-gray-100">
             <tr>
@@ -94,23 +91,23 @@ const [investments, setInvestments] = useState<InvestmentHistory[]>([]);
                   {inv.salePrice ? `€${inv.salePrice}` : '-'}
                 </td>
                 <td className="border p-2 text-right">
-                  {inv.income ? `€${Number(inv.income).toFixed(2)}` : '-'}
+                  {inv.income !== null && inv.income !== undefined
+                    ? `€${Number(inv.income).toFixed(2)}`
+                    : '-'}
                 </td>
                 <td className="border p-2 text-right">
-                  {inv.percentageIncome ? `${Number(inv.percentageIncome).toFixed(2)}%` : '-'}
+                  {inv.percentageIncome !== null &&
+                  inv.percentageIncome !== undefined
+                    ? `${Number(inv.percentageIncome).toFixed(2)}%`
+                    : '-'}
                 </td>
                 <td className="border p-2 text-center space-x-2">
-                  {!inv.saleDate && (
-                    <Button
-                      onClick={() => {
-                        const price = prompt('Sale price:');
-                        if (price) handleMarkAsSold(inv.id, price);
-                      }}
-                      className="text-sm px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
-                    >
-                      Sell
-                    </Button>
-                  )}
+                  <Button
+                    onClick={() => handleEdit(inv.id)}
+                    className="text-sm px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                  >
+                   Edit
+                  </Button>
                   <Button
                     onClick={() => handleDelete(inv.id)}
                     className="text-sm px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
@@ -124,9 +121,14 @@ const [investments, setInvestments] = useState<InvestmentHistory[]>([]);
         </table> ) : 
         <p className="text-center text-gray-500 mt-4">
             No investments yet. Add one to get started !</p>
-            
-            
             }
+            <div>
+              {
+                isEditorVisible && <InvestmentEditor id={selectedInvestmentId}
+                 setShowEditor={setEditorVisible} showEditor={isEditorVisible}
+                 editorMode="edit" onSaved={fetchInvestments}/>
+              }
+            </div>
       </div>
  </div>
     )

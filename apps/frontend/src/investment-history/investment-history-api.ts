@@ -24,10 +24,7 @@ export function getInvestmentHistory(id: string) {
   });
 }
 
-export function updateInvestmentHistory(
-  id: string,
-  payload: UpdateInvestmentHistoryPayload,
-) {
+export function updateInvestmentHistory(id: string, payload: UpdateInvestmentHistoryPayload) {
   return http<InvestmentHistory>(`/investment-history/${id}`, {
     method: 'PATCH',
     body: payload,

@@ -37,8 +37,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     setAccessToken(session.accessToken);
-    setRefreshToken(session.refreshToken);
-    setUser(session.user);
+    setRefreshToken(session.refreshToken ?? null);
 
     getCurrentUser(session.accessToken)
       .then((currentUser) => setUser(currentUser))
