@@ -247,7 +247,7 @@ code {
 }
 
 .app-menubar .app-menubar-inner {
-  max-width: 1200px;
+  max-width: 90%;
   margin: 0 auto;
   padding: 1rem 1.25rem;
   display: flex;
@@ -282,7 +282,7 @@ code {
 }
 
 .page-container-content {
-  max-width: 1200px;
+  max-width: 90%;
   margin: 0 auto;
   padding: 2rem 1.25rem;
 }
