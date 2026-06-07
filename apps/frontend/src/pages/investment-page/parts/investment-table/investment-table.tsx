@@ -6,7 +6,7 @@ import {
 } from '../../../../investment-history';
 import { Button } from '@mantine/core';
 import { InvestmentEditor } from '../investment-editor';
-import { TableTd } from './investment-table.style';
+import { TableTd , ButtonsContainer} from './investment-table.style';
 
 export const InvestmentTable = () => {
   const [investments, setInvestments] = useState<InvestmentHistory[]>([]);
@@ -102,19 +102,21 @@ export const InvestmentTable = () => {
                     ? `${Number(inv.percentageIncome).toFixed(2)}%`
                     : '-'}
                 </TableTd>
-                <TableTd className="border p-2 text-center space-x-2">
-                  <Button
+                <TableTd className="border p-2 text-center">
+                  <ButtonsContainer>
+                    <Button
                     onClick={() => handleEdit(inv.id)}
-                    className="text-sm px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                    className="text-sm px-2 py-1 bg-red-500 text-white mr-5 rounded "
                   >
+      
                    Edit
                   </Button>
                   <Button
                     onClick={() => handleDelete(inv.id)}
-                    className="text-sm px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                    className="text-sm px-2 py-1 bg-red-500 text-white ml-3 rounded"
                   >
                     Delete
-                  </Button>
+                  </Button></ButtonsContainer>
                 </TableTd>
               </tr>
             ))}
