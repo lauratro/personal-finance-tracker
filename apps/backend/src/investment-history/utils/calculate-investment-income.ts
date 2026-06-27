@@ -9,8 +9,10 @@ export function calculateInvestmentIncome(
   quantity: Prisma.Decimal,
   salePrice: Prisma.Decimal,
   totalAmountInvested: Prisma.Decimal,
+  taxes?: Prisma.Decimal | null,
 ): InvestmentIncome {
-  const income = quantity.mul(salePrice).sub(totalAmountInvested);
+  const grossIncome = quantity.mul(salePrice).sub(totalAmountInvested);
+  const income = grossIncome.sub(taxes ?? new Prisma.Decimal(0));
   const percentageIncome = totalAmountInvested.isZero()
     ? null
     : income.div(totalAmountInvested).mul(100);

@@ -66,6 +66,7 @@ export const InvestmentTable = () => {
               <th className="border p-2 text-center">Planned Price</th>
               <th className="border p-2 text-center">Sale Date</th>
               <th className="border p-2 text-center">Sale Price</th>
+              <th className="border p-2 text-center">Taxes</th>
               <th className="border p-2 text-center">Income</th>
               <th className="border p-2 text-center">Income %</th>
               <th className="border p-2 text-center">Actions</th>
@@ -92,8 +93,8 @@ export const InvestmentTable = () => {
                   {inv.salePrice ? `€${inv.salePrice}` : '-'}
                 </TableTd>
                 <TableTd className="border p-2 text-right">
-                  {inv.income !== null && inv.income !== undefined
-                    ? `€${Number(inv.income).toFixed(2)}`
+                  {inv.taxes !== null && inv.taxes !== undefined
+                    ? `€${Number(inv.taxes).toFixed(2)}`
                     : '-'}
                 </TableTd>
                 <TableTd className="border p-2 text-right">

@@ -20,6 +20,7 @@ export type InvestmentHistory = {
   plannedPriceToSell?: number;
   saleDate?: string | null;
   salePrice?: number | null;
+  taxes?: number;
   income?: number | null | string;
   percentageIncome?: number | null;
   createdAt: string;
@@ -39,4 +40,5 @@ export type CreateInvestmentHistoryPayload = {
 export type UpdateInvestmentHistoryPayload = Partial<CreateInvestmentHistoryPayload> & {
   saleDate?: string | null;
   salePrice?: number | null;
+  taxes?: number;
 };

@@ -19,6 +19,7 @@ type FormState = {
   plannedPriceToSell?: number | string;
   saleDate: string;
   salePrice?: number | string;
+  taxes?: number | string;
 };
 
 const emptyValues: FormState = {
@@ -31,6 +32,7 @@ const emptyValues: FormState = {
   plannedPriceToSell: undefined,
   saleDate: '',
   salePrice: undefined,
+  taxes: undefined,
 };
 
 const optionalNumber = (value: number | string | undefined) =>
@@ -71,6 +73,7 @@ export const InvestmentEditor = ({
         costSingleStock: Number(values.costSingleStock),
         quantity: Number(values.quantity),
         plannedPriceToSell: optionalNumber(values.plannedPriceToSell),
+        taxes: optionalNumber(values.taxes) ?? null,
       };
 
       try {
@@ -115,6 +118,7 @@ export const InvestmentEditor = ({
           plannedPriceToSell: investment.plannedPriceToSell ?? undefined,
           saleDate: investment.saleDate?.slice(0, 10) ?? '',
           salePrice: investment.salePrice ?? undefined,
+          taxes: investment.taxes ?? undefined,
         });
       } catch (error) {
         console.error('Error loading investment:', error);
@@ -210,6 +214,15 @@ export const InvestmentEditor = ({
               value={formik.values.salePrice ?? ''}
               onChange={formik.handleChange}
               error={formik.touched.salePrice && formik.errors.salePrice}
+            />
+
+                 <TextInput
+              type="number"
+              label="Taxes"
+              name="taxes"
+              value={formik.values.taxes ?? ''}
+              onChange={formik.handleChange}
+              error={formik.touched.taxes && formik.errors.taxes}
             />
           </>
         )}

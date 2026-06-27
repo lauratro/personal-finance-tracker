@@ -37,4 +37,8 @@ export class UpdateInvestmentHistoryDto {
   @IsOptional()
   @IsNumber()
   salePrice?: number | null;
+
+  @IsOptional()
+  @IsNumber()
+  taxes?: number | null;
 }
