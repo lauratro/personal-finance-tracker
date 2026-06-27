@@ -73,7 +73,6 @@ export const InvestmentEditor = ({
         costSingleStock: Number(values.costSingleStock),
         quantity: Number(values.quantity),
         plannedPriceToSell: optionalNumber(values.plannedPriceToSell),
-        taxes: optionalNumber(values.taxes) ?? null,
       };
 
       try {
@@ -85,6 +84,7 @@ export const InvestmentEditor = ({
               ? new Date(values.saleDate).toISOString()
               : null,
             salePrice: optionalNumber(values.salePrice) ?? null,
+            taxes: optionalNumber(values.taxes) ?? undefined,
           });
         } else {
           await createInvestmentHistory(commonPayload);

@@ -98,6 +98,11 @@ export const InvestmentTable = () => {
                     : '-'}
                 </TableTd>
                 <TableTd className="border p-2 text-right">
+                  {inv.income !== null && inv.income !== undefined
+                    ? `€${Number(inv.income).toFixed(2)}`
+                    : '-'}
+                </TableTd>
+                <TableTd className="border p-2 text-right">
                   {inv.percentageIncome !== null &&
                   inv.percentageIncome !== undefined
                     ? `${Number(inv.percentageIncome).toFixed(2)}%`
