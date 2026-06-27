@@ -4,13 +4,14 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Patch,
   Post,
   Req,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { AuthService } from './auth.service';
+import { AuthService } from './logic/auth.service';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
@@ -19,10 +20,15 @@ import { VerifyTwoFactorDto } from './dto/verify-2fa.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RefreshJwtAuthGuard } from './guards/refresh-jwt-auth.guard';
 import { AuthenticatedRequestUser } from './types/authenticated-request-user.type';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserService } from './logic/update-user.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly updateUserService: UpdateUserService,
+  ) {}
 
   @Post('register')
   async register(@Body() dto: RegisterDto) {
@@ -68,5 +74,14 @@ export class AuthController {
   @Get('me')
   async me(@CurrentUser('sub') userId: string) {
     return this.authService.getProfile(userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('me')
+  async updateMe(
+    @CurrentUser('sub') userId: string,
+    @Body() dto: UpdateUserDto,
+  ) {
+    return this.updateUserService.execute(userId, dto);
   }
 }

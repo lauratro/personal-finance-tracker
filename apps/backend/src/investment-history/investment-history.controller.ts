@@ -14,11 +14,11 @@ import { CreateInvestmentHistoryDto } from './dto/create-investment-history.dto'
 import { UpdateInvestmentHistoryDto } from './dto/update-investment-history.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { CreateInvestmentService } from './application/create-investment.service';
-import { DeleteInvestmentService } from './application/delete-investment.service';
-import { GetInvestmentService } from './application/get-investment.service';
-import { ListInvestmentsService } from './application/list-investments.service';
-import { UpdateInvestmentService } from './application/update-investment.service';
+import { CreateInvestmentService } from './logic/create-investment.service';
+import { DeleteInvestmentService } from './logic/delete-investment.service';
+import { GetInvestmentService } from './logic/get-investment.service';
+import { ListInvestmentsService } from './logic/list-investments.service';
+import { UpdateInvestmentService } from './logic/update-investment.service';
 
 @Controller('investment-history')
 @UseGuards(JwtAuthGuard)

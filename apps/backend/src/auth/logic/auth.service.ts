@@ -6,13 +6,14 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
 import { Request } from 'express';
 import * as bcrypt from 'bcrypt';
 import type { StringValue } from 'ms';
-import { LoginDto } from './dto/login.dto';
-import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from '../dto/login.dto';
+import { RegisterDto } from '../dto/register.dto';
 import { randomUUID } from 'crypto';
+import { hashData } from '../utils/hashData';
 
 
 type TokenPair = {
@@ -37,7 +38,7 @@ export class AuthService {
       throw new ConflictException('Email already in use');
     }
   
-    const passwordHash = await this.hashData(dto.password);
+    const passwordHash = await hashData(dto.password);
   
     const user = await this.prisma.user.create({
       data: {
@@ -179,7 +180,7 @@ export class AuthService {
     refreshToken: string,
     req?: Request,
   ) {
-    const tokenHash = await this.hashData(refreshToken);
+    const tokenHash = await hashData(refreshToken);
   
     await this.prisma.refreshToken.create({
       data: {
@@ -190,13 +191,6 @@ export class AuthService {
         ipAddress: this.extractIp(req),
       },
     });
-  }
-  
-  private async hashData(data: string) {
-    const saltRounds = Number(
-      this.configService.get<string>('BCRYPT_ROUNDS') ?? 10,
-    );
-    return bcrypt.hash(data, saltRounds);
   }
   
   private getRefreshExpiryDate() {

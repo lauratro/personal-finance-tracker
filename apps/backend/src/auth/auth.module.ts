@@ -5,9 +5,10 @@ import { PassportModule } from '@nestjs/passport';
 import type { StringValue } from 'ms';
 import { PrismaModule } from '../prisma/prisma.module';
 import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
+import { AuthService } from './logic/auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { RefreshJwtStrategy } from './strategies/refresh-jwt.strategy';
+import { UpdateUserService } from './logic/update-user.service';
 
 @Module({
   imports: [
@@ -19,13 +20,15 @@ import { RefreshJwtStrategy } from './strategies/refresh-jwt.strategy';
       useFactory: (configService: ConfigService) => ({
         secret: configService.getOrThrow<string>('JWT_ACCESS_SECRET'),
         signOptions: {
-          expiresIn: configService.getOrThrow<string>('JWT_ACCESS_TTL') as StringValue,
+          expiresIn: configService.getOrThrow<string>(
+            'JWT_ACCESS_TTL',
+          ) as StringValue,
         },
       }),
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, RefreshJwtStrategy],
+  providers: [AuthService, UpdateUserService, JwtStrategy, RefreshJwtStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}
