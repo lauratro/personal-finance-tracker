@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { PageContainer } from '../containers/page-container/page-container';
-import { getCurrentUser } from '../auth/auth-api';
-import type { SafeUser } from '../auth/auth-types';
+import { getCurrentUser } from '../pages-apis/auth/auth-api';
+import type { SafeUser } from '../pages-apis/auth/auth-types';
 
 export const DashboardPage = () => {
   const [user, setUser] = useState<SafeUser | null>(null);

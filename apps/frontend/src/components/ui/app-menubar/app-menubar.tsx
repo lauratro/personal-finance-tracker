@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../../auth/auth-context';
+import { useAuth } from '../../../pages-apis/auth/auth-context';
 import { routePaths } from '../../../navigation/main-navigation';
 
 export function AppMenubar() {

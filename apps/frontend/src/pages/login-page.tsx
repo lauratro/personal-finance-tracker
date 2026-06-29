@@ -2,7 +2,7 @@ import { FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthLayout } from '../components/auth-layout';
 import { TextInput } from '../components/text-input';
-import { useAuth } from '../auth/auth-context';
+import { useAuth } from '../pages-apis/auth/auth-context';
 
 export function LoginPage() {
   const navigate = useNavigate();

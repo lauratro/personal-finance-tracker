@@ -3,7 +3,7 @@ import {
   InvestmentHistory,
   getInvestmentHistories,
   deleteInvestmentHistory,
-} from '../../../../investment-history';
+} from '../../../../pages-apis/investment-history';
 import { Button } from '@mantine/core';
 import { InvestmentEditor } from '../investment-editor';
 import { TableTd , ButtonsContainer} from './investment-table.style';

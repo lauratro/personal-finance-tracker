@@ -3,7 +3,7 @@ import { useState } from 'react';
 import {
   createInvestmentHistory,
   AssetType,
-} from '../../../../investment-history';
+} from '../../../../pages-apis/investment-history';
 import { useFormik} from 'formik';
 
 interface FormState {

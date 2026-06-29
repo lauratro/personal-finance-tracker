@@ -1,6 +1,6 @@
 import { FormEvent, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../auth/auth-context';
+import { useAuth } from '../pages-apis/auth/auth-context';
 import { AuthLayout } from '../components/auth-layout';
 import { TextInput } from '../components/text-input';
 

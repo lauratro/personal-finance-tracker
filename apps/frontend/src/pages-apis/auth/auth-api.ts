@@ -1,4 +1,4 @@
-import { http } from '../api/http';
+import { http } from '../../api/http';
 import { AuthResponse, LoginPayload, RegisterPayload, SafeUser } from './auth-types';
 import { getAuthSession } from './auth-storage';
 
