@@ -77,7 +77,8 @@ model User {
   budgetMonths     BudgetMonth[]
   portfolios       Portfolio[]
   refreshTokens    RefreshToken[]
-  investments     Investment[]
+  investments      Investment[]
+  netWorthSnapshots NetWorthSnapshot[]
 }
 
 model RefreshToken {
@@ -111,7 +112,7 @@ model Investment {
   salePrice          Decimal?  @db.Decimal(18, 4)
   taxes              Decimal?  @db.Decimal(18, 4)
   income             Decimal?  @db.Decimal(18, 2)
-  percentageIncome   Decimal?  @db.Decimal(5, 2)
+  percentageIncome   Decimal?  @db.Decimal(18, 2)
   user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
@@ -164,9 +165,23 @@ model BudgetMonth {
   updatedAt      DateTime              @updatedAt
   user           User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   limits         BudgetCategoryLimit[]
+  items          BudgetItem[]
 
   @@unique([userId, monthStart])
   @@index([userId, monthStart])
+}
+
+model BudgetItem {
+  id            String      @id @default(uuid())
+  budgetMonthId String
+  name          String
+  category      AccountType
+  value         Decimal     @db.Decimal(18, 2)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  budgetMonth   BudgetMonth @relation(fields: [budgetMonthId], references: [id], onDelete: Cascade )
+
+  @@index([budgetMonthId, category])
 }
 
 model BudgetCategoryLimit {
@@ -180,6 +195,43 @@ model BudgetCategoryLimit {
   category      Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@unique([budgetMonthId, categoryId])
+}
+
+
+enum NetWorthCategory {
+  CHECKING_ACCOUNT
+  SAVINGS_ACCOUNT
+  INVESTMENTS
+  CASH
+  CRYPTO
+  REAL_ESTATE
+  OTHER
+}
+
+model NetWorthSnapshot {
+  id            String         @id @default(uuid())
+  userId        String
+  monthStart    DateTime
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items         NetWorthItem[]
+
+  @@unique([userId, monthStart])
+  @@index([userId, monthStart])
+}
+
+model NetWorthItem {
+  id          String           @id @default(uuid())
+  snapshotId  String
+  name        String
+  category    NetWorthCategory
+  value       Decimal          @db.Decimal(18, 2)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  snapshot    NetWorthSnapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+
+  @@index([snapshotId, category])
 }
 
 model Portfolio {
