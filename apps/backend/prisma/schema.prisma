@@ -109,6 +109,7 @@ model Investment {
   updatedAt          DateTime  @updatedAt
   saleDate           DateTime?
   salePrice          Decimal?  @db.Decimal(18, 4)
+  taxes              Decimal?  @db.Decimal(18, 4)
   income             Decimal?  @db.Decimal(18, 2)
   percentageIncome   Decimal?  @db.Decimal(5, 2)
   user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)

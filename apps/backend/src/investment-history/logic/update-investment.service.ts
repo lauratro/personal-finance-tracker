@@ -47,9 +47,16 @@ export class UpdateInvestmentService {
           ? new Prisma.Decimal(dto.salePrice)
           : null
         : investment.salePrice;
+    const taxes =
+      dto.taxes !== undefined
+        ? dto.taxes !== null
+          ? new Prisma.Decimal(dto.taxes)
+          : null
+        : investment.taxes;
 
     if (dto.saleDate !== undefined) data.saleDate = saleDate;
     if (dto.salePrice !== undefined) data.salePrice = salePrice;
+    if (dto.taxes !== undefined) data.taxes = taxes;
 
     if (saleDate && salePrice) {
       const quantity =

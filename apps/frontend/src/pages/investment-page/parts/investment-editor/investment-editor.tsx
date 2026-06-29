@@ -39,11 +39,12 @@ const optionalNumber = (value: number | string | undefined) =>
   value === undefined || value === '' ? undefined : Number(value);
 
 export const InvestmentEditor = ({
-  id,
+   id,
   setShowEditor,
   showEditor,
   editorMode,
   onSaved,
+
 }: InvestmentEditorProps) => {
   const formik = useFormik<FormState>({
     initialValues: emptyValues,
@@ -84,7 +85,7 @@ export const InvestmentEditor = ({
               ? new Date(values.saleDate).toISOString()
               : null,
             salePrice: optionalNumber(values.salePrice) ?? null,
-            taxes: optionalNumber(values.taxes) ?? undefined,
+            taxes: optionalNumber(values.taxes) ?? null,
           });
         } else {
           await createInvestmentHistory(commonPayload);
@@ -139,7 +140,7 @@ export const InvestmentEditor = ({
           name="name"
           label="Investment Name"
           value={formik.values.name}
-          onChange={formik.handleChange}
+          onChange={(event) => formik.setFieldValue('name', event.currentTarget.value)}
           required
         />
 
@@ -157,7 +158,7 @@ export const InvestmentEditor = ({
           label="Bought Date"
           name="boughtDate"
           value={formik.values.boughtDate}
-          onChange={formik.handleChange}
+          onChange={(event) => formik.setFieldValue('boughtDate', event.currentTarget.value)}
           required
         />
 
@@ -166,7 +167,7 @@ export const InvestmentEditor = ({
           label="Total Amount Invested"
           name="totalAmountInvested"
           value={formik.values.totalAmountInvested}
-          onChange={formik.handleChange}
+          onChange={(event) => formik.setFieldValue('totalAmountInvested', event.currentTarget.value)}
           required
         />
 
@@ -175,7 +176,7 @@ export const InvestmentEditor = ({
           label="Cost per Unit"
           name="costSingleStock"
           value={formik.values.costSingleStock}
-          onChange={formik.handleChange}
+          onChange={(event) => formik.setFieldValue('costSingleStock', event.currentTarget.value)}
           required
         />
 
@@ -184,7 +185,7 @@ export const InvestmentEditor = ({
           label="Quantity"
           name="quantity"
           value={formik.values.quantity}
-          onChange={formik.handleChange}
+          onChange={(event) => formik.setFieldValue('quantity', event.currentTarget.value)}
           required
         />
 
@@ -193,7 +194,7 @@ export const InvestmentEditor = ({
           label="Planned Price to Sell"
           name="plannedPriceToSell"
           value={formik.values.plannedPriceToSell ?? ''}
-          onChange={formik.handleChange}
+          onChange={(event) => formik.setFieldValue('plannedPriceToSell', event.currentTarget.value)}
         />
 
         {editorMode === 'edit' && (
@@ -203,7 +204,7 @@ export const InvestmentEditor = ({
               label="Sale Date"
               name="saleDate"
               value={formik.values.saleDate}
-              onChange={formik.handleChange}
+              onChange={(event) => formik.setFieldValue('saleDate', event.currentTarget.value)}
               error={formik.touched.saleDate && formik.errors.saleDate}
             />
 
@@ -212,18 +213,20 @@ export const InvestmentEditor = ({
               label="Sale Price"
               name="salePrice"
               value={formik.values.salePrice ?? ''}
-              onChange={formik.handleChange}
+              onChange={(event) => formik.setFieldValue('salePrice', event.currentTarget.value)}
               error={formik.touched.salePrice && formik.errors.salePrice}
             />
 
-                 <TextInput
-              type="number"
-              label="Taxes"
-              name="taxes"
-              value={formik.values.taxes ?? ''}
-              onChange={formik.handleChange}
-              error={formik.touched.taxes && formik.errors.taxes}
-            />
+            {formik.values.salePrice !== undefined && formik.values.salePrice !== '' && (
+              <TextInput
+                type="number"
+                label="Taxes"
+                name="taxes"
+                value={formik.values.taxes ?? ''}
+                onChange={(event) => formik.setFieldValue('taxes', event.currentTarget.value)}
+                error={formik.touched.taxes && formik.errors.taxes}
+              />
+            )}
           </>
         )}
 
