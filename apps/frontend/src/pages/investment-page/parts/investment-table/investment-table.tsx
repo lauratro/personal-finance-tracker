@@ -133,6 +133,7 @@ export const InvestmentTable = () => {
             }
             <div>
               {
+
                 isEditorVisible && <InvestmentEditor id={selectedInvestmentId}
                  setShowEditor={setEditorVisible} showEditor={isEditorVisible}
                  editorMode="edit" onSaved={fetchInvestments}/>
