@@ -5,6 +5,7 @@ import { InvestmentsHistoryPage } from './pages/investment-page/investments-hist
 import { LoginPage } from './pages/login-page';
 import { RegisterPage } from './pages/register-page';
 import { routePaths } from './navigation/main-navigation';
+import { NetWorthPage } from './pages/net-worth-page/net-worth-page';
 
 export default function App() {
   return (
@@ -25,6 +26,14 @@ export default function App() {
         element={
           <ProtectedRoute>
             <InvestmentsHistoryPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={routePaths.netWorth}
+        element={
+          <ProtectedRoute>
+            <NetWorthPage />
           </ProtectedRoute>
         }
       />

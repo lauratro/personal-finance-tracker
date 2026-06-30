@@ -1,5 +1,5 @@
-import { NetWorthTable } from "./parts/net-worth-table"
-
+import { NetWorthTable } from "./parts/net-worth-table";
+import { PageContainer } from "../../containers/page-container/page-container";
 export const NetWorthPage = () => {
 
           return (

@@ -1,1 +1,1 @@
-export * from './net-worth-editor';
+export * from './net-worth-api';

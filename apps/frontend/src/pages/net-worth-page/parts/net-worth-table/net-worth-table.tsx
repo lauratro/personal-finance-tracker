@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { NetWorthSnapshot, getNetWorthSnapshots } from '../../../../pages-apis/net-worth';
+import { getNetWorthSnapshots } from '../../../../pages-apis/net-worth';
+import { NetWorthSnapshot } from '@/pages-apis/net-worth/net-worth.types';
 
 const formatMonth = (date: string) =>
   new Date(date).toLocaleDateString('it-IT', {
