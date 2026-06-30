@@ -7,13 +7,14 @@ import { CreateNetWorthItemDto } from '../dto/create-net-worth.dto';
 export class CreateNetWorthItemService {
     constructor(private readonly prisma: PrismaService) {}
 
-async execute(userId: string, netWorthSnapshotId: string, dto: CreateNetWorthItemDto) {
+async execute(netWorthSnapshotId: string, dto: CreateNetWorthItemDto) {
     return this.prisma.netWorthItem.create({
             data: {
                 snapshotId: netWorthSnapshotId,
                 name: dto.name,
                 value: new Prisma.Decimal(dto.value),
                 category: dto.category,
+                createdAt: new Date(),
                 }
             },
         )
