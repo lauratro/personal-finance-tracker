@@ -35,7 +35,7 @@
     "@types/bcrypt": "^5.0.2",
     "@types/express": "^5.0.1",
     "@types/ms": "^0.7.34",
-    "@types/node": "^20.0.0",
+    "@types/node": "^20.19.43",
     "@types/passport-jwt": "^4.0.1",
     "prisma": "6.19.3",
     "ts-node": "^10.9.2",

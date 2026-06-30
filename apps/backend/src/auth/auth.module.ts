@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import type { StringValue } from 'ms';
+
 import { PrismaModule } from '../prisma/prisma.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './logic/auth.service';
@@ -22,7 +22,7 @@ import { UpdateUserService } from './logic/update-user.service';
         signOptions: {
           expiresIn: configService.getOrThrow<string>(
             'JWT_ACCESS_TTL',
-          ) as StringValue,
+          ) as any,
         },
       }),
     }),

@@ -9,7 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../../prisma/prisma.service';
 import { Request } from 'express';
 import * as bcrypt from 'bcrypt';
-import type { StringValue } from 'ms';
+
 import { LoginDto } from '../dto/login.dto';
 import { RegisterDto } from '../dto/register.dto';
 import { randomUUID } from 'crypto';
@@ -157,9 +157,9 @@ export class AuthService {
       this.configService.getOrThrow<string>('JWT_REFRESH_SECRET');
   
     const accessTtl =
-      this.configService.getOrThrow<string>('JWT_ACCESS_TTL') as StringValue;
+      this.configService.getOrThrow<string>('JWT_ACCESS_TTL') as any;
     const refreshTtl =
-      this.configService.getOrThrow<string>('JWT_REFRESH_TTL') as StringValue;
+      this.configService.getOrThrow<string>('JWT_REFRESH_TTL') as any;
   
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
