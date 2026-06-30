@@ -1,7 +1,7 @@
 export type EditorMode = 'create' | 'edit';
 
 export interface NetWorthSnapshotProps {
-  id: string;
+  id?: string;
     setShowEditor: (show: boolean) => void;
     showEditor: boolean;
     editorMode: EditorMode;

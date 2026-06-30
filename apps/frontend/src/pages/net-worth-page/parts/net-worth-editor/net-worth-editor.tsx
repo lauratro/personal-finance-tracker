@@ -1,7 +1,7 @@
 import { Button, Modal, Select, TextInput } from '@mantine/core';
 import { useFormik } from 'formik';
 import { useEffect } from 'react';
-import {getNetWorthSnapshot, updateNetWorthSnapshot} from '../../../../pages-apis/net-worth';
+import {getNetWorthSnapshot, updateNetWorthSnapshot, createNetWorthSnapshot} from '../../../../pages-apis/net-worth';
 import { NetWorthEditorFormValues, NetWorthSnapshotProps,  } from './net-worth-editor.types';
 export const NetWorthEditor = ({ id, setShowEditor, showEditor, editorMode, onSaved }: NetWorthSnapshotProps) => {
 
@@ -10,27 +10,35 @@ export const NetWorthEditor = ({ id, setShowEditor, showEditor, editorMode, onSa
           monthStart: ''
         }, 
         onSubmit: (values) => {
-            values.monthStart && updateNetWorthSnapshot(id, { monthStart: values.monthStart });
+            if (editorMode === 'create') {
+                console.log('Creating new net worth snapshot with values:', values);
+                createNetWorthSnapshot({ monthStart: values.monthStart, items: [] });
+            } else {
+                values.monthStart && id && updateNetWorthSnapshot(id, { monthStart: values.monthStart });
+            }
+            onSaved && onSaved();
         }
     });
 
     useEffect(() => {
+        if(id && editorMode === 'edit' && showEditor) {
         const fetchSnapshot = async () => {
-            const snapshot = await getNetWorthSnapshot(id);
+            const snapshot =  await getNetWorthSnapshot(id);
             formik.setValues({ monthStart: snapshot.monthStart });
         };
-        fetchSnapshot();
+        fetchSnapshot();}
     }, [id, showEditor]);
 
     return (<div>
   <Modal
       opened={showEditor}
       onClose={() => setShowEditor(false)}
-      title={editorMode === 'edit' ? 'Edit Investment' : 'Create Investment'}
+      title={editorMode === 'edit' ? 'Edit Net Worth Snapshot' : 'Create Net Worth Snapshot'}
     >
       <form onSubmit={formik.handleSubmit}>
         <TextInput
           name="monthStart"
+          type="date"
           label="Month Start"
           value={formik.values.monthStart}
           onChange={formik.handleChange}

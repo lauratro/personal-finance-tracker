@@ -22,7 +22,7 @@ export const NetWorthTable = () => {
     try {
       setLoading(true);
       const data = await getNetWorthSnapshots();
-
+       console.log('Fetched net worth snapshots:', data);
       const sortedSnapshots = [...data].sort(
         (a, b) =>
           new Date(a.monthStart).getTime() - new Date(b.monthStart).getTime(),

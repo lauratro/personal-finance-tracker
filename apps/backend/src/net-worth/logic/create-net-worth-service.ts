@@ -8,6 +8,7 @@ export class CreateNetWorthService {
     constructor(private readonly prisma: PrismaService) {}
 
     async execute(userId: string, dto: CreateNetWorthDto) {
+        console.log('CreateNetWorthService.execute called with userId:', userId, 'and dto:', dto);
      return this.prisma.netWorthSnapshot.create({
             data: {
                  userId
