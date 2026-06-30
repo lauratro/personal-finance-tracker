@@ -15,6 +15,9 @@ export function AppMenubar() {
           <Link to={routePaths.investmentsHistory} className="nav-link">
             Investments History
           </Link>
+             <Link to={routePaths.netWorth} className="nav-link">
+            Net Worth
+          </Link>
         </nav>
         <div className="app-menubar-user">
           <span className="app-menubar-user-text">{user?.firstName || user?.email}</span>
