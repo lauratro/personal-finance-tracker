@@ -1,1 +1,1 @@
-export * from "./net-worth-table"
+export * from "./net-worth-table";

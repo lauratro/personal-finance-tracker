@@ -12,6 +12,7 @@ export function createNetWorthSnapshot(payload: CreateNetWorthSnapshotPayload) {
   });
 }
 
+///
 export function getNetWorthSnapshots() {
   return http<NetWorthSnapshot[]>('/net-worth', {
     method: 'GET',
