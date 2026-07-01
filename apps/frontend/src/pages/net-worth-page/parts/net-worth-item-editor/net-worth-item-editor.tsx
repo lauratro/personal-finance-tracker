@@ -1,5 +1,5 @@
 import { ActionIcon, Alert, Button, Modal, NumberInput, Select, TextInput } from '@mantine/core';
-import { IconEdit, IconTrash, IconPlus } from '@tabler/icons-react';
+import { IconEdit, IconPlus } from '@tabler/icons-react';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import {
@@ -153,7 +153,6 @@ export const NetWorthItemEditor = ({
 
   return (
     <>
-
 <ActionIcon onClick={()=>setIsOpen(true)} variant="light" color="light blue" size="sm">
   {editorMode === 'edit' ?  <IconEdit color="blue" size={18} /> : <IconPlus color="blue" size={18} />}
 </ActionIcon>

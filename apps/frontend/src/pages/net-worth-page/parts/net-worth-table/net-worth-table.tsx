@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { getNetWorthSnapshots } from '../../../../pages-apis/net-worth';
 import { NetWorthSnapshot } from '@/pages-apis/net-worth/net-worth.types';
 import { NetWorthItemEditor } from '../net-worth-item-editor';
+import { NetWorthItemDeleteButton } from '../net-worth-item-delete-button/net-worth-item-delete-button';
 
 const formatMonth = (date: string) =>
   new Date(date).toLocaleDateString('it-IT', {
@@ -103,11 +104,19 @@ export const NetWorthTable = ({ refreshKey = 0 }: NetWorthTableProps) => {
                   );
 
                   return (
-                    <td key={snapshot.id} className="border text-right ">
+                    <td key={snapshot.id} className="border text-right">
+                        <div className="flex items-center justify-end gap-2">
                       <span>{item ? formatCurrency(Number(item.value)) : '-'}</span>
-                      <span className="mx-3">
-                      <NetWorthItemEditor snapshotId={snapshot.id} itemId={item?.id} editorMode="edit" />
+                      <span className="mx-3 flex items-center justify-end gap-2">
+                      {item?.id ? (
+                        <span className="flex items-center justify-end gap-2">
+                          <NetWorthItemEditor snapshotId={snapshot.id} itemId={item.id} editorMode="edit" />
+                          <NetWorthItemDeleteButton snapshotId={snapshot.id} itemId={item.id} />
+                        </span>
+                      ):    
+                      <NetWorthItemEditor snapshotId={snapshot.id} editorMode="create" />}
                       </span>
+                         </div>
                     </td>
                   );
                 })}
