@@ -71,11 +71,14 @@ export const NetWorthTable = ({ refreshKey = 0 }: NetWorthTableProps) => {
 
   return (
     <div className="p-4">
+        <div className="p-10 m-10 bg-red-500 text-white">
+  TEST TAILWIND
+</div>
       <div className="overflow-x-auto">
         <table className="w-full border-collapse border border-gray-300">
           <thead className="bg-gray-100">
             <tr>
-              <th className="border p-2 text-left">Item</th>
+              <th className="border p-6 text-left">Item</th>
 
               {snapshots.map((snapshot) => (
                 <th key={snapshot.id} className="border p-2 text-right">
