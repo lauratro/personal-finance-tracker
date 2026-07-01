@@ -71,9 +71,6 @@ export const NetWorthTable = ({ refreshKey = 0 }: NetWorthTableProps) => {
 
   return (
     <div className="p-4">
-        <div className="p-10 m-10 bg-red-500 text-white">
-  TEST TAILWIND
-</div>
       <div className="overflow-x-auto">
         <table className="w-full border-collapse border border-gray-300">
           <thead className="bg-gray-100">
@@ -91,7 +88,7 @@ export const NetWorthTable = ({ refreshKey = 0 }: NetWorthTableProps) => {
           <tbody>
             {itemNames.map((itemName) => (
               <tr key={itemName} className="hover:bg-gray-50">
-                <td className="border font-medium">{itemName}</td>
+                <td className="border p-2 font-medium">{itemName}</td>
 
                 {snapshots.map((snapshot) => {
                   const item = snapshot.items.find(
