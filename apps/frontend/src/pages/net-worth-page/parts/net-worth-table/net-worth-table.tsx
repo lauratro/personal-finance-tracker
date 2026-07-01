@@ -69,6 +69,13 @@ export const NetWorthTable = ({ refreshKey = 0 }: NetWorthTableProps) => {
     );
   }
 
+  const totals = snapshots.map((snapshot) =>
+  snapshot.items.reduce(
+    (sum, item) => sum + Number(item.value),
+    0
+  )
+);
+
   return (
     <div className="p-4">
       <div className="overflow-x-auto">
@@ -119,20 +126,44 @@ export const NetWorthTable = ({ refreshKey = 0 }: NetWorthTableProps) => {
               ))}
             </tr>
 
-            <tr className="bg-gray-100 font-semibold">
-              <td className="border p-2">Total</td>
+     <tr className="bg-gray-100 font-semibold">
+         <td className="border p-2">Total</td>
 
-              {snapshots.map((snapshot) => {
-                const total = snapshot.items.reduce(
-                  (sum, item) => sum + Number(item.value),
-                  0,
-                );
+          {totals.map((total, index) => (
+             <td key={snapshots[index].id} className="border p-2 text-right">
+      {formatCurrency(total)}
+               </td>
+           ))}
+     </tr>
+     <tr className="bg-gray-50">
+          <td className="border p-2 font-medium">Variation</td>
 
+             {totals.map((total, index) => {
+                   if (index === 0) {
                 return (
-                  <td key={snapshot.id} className="border p-2 text-right">
-                    {formatCurrency(total)}
-                  </td>
-                );
+                     <td key={snapshots[index].id} className="border p-2 text-right">
+                      -
+                    </td>
+                    );
+                 }
+
+            const variation = total - totals[index - 1];
+
+           return (
+                     <td
+                     key={snapshots[index].id}
+                     className={`border p-2 text-right ${
+                     variation > 0
+                      ? 'text-green-600'
+                          : variation < 0
+                          ? 'text-red-600'
+                          : ''
+                            }`}
+                           >
+        {variation > 0 ? '+' : ''}
+        {formatCurrency(variation)}
+                   </td>
+                   );
               })}
             </tr>
           </tbody>
