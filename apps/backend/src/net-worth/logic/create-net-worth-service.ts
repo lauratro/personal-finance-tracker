@@ -11,10 +11,17 @@ export class CreateNetWorthService {
         console.log('CreateNetWorthService.execute called with userId:', userId, 'and dto:', dto);
      return this.prisma.netWorthSnapshot.create({
             data: {
-                 userId
-                , monthStart: new Date(dto.monthStart)
-                }
+                userId,
+                monthStart: new Date(dto.monthStart),
+                items: {
+                    create: dto.items.map((item) => ({
+                        name: item.name,
+                        category: item.category,
+                        value: new Prisma.Decimal(item.value),
+                    })),
+                },
             },
-        )
+            include: { items: true },
+        });
     }
 }

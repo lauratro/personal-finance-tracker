@@ -5,7 +5,7 @@ import {
   Min,
   IsString,
 } from 'class-validator';
-import { Type } from 'class-transformer/types/decorators/type.decorator';
+import { Type } from 'class-transformer';
 import { NetWorthCategory } from '@prisma/client';
 
 

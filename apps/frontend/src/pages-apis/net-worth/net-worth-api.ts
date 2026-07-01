@@ -1,5 +1,6 @@
 import { http } from "@/api/http";  
-import { NetWorthSnapshot, 
+import { NetWorthItem,
+    NetWorthSnapshot,
     CreateNetWorthSnapshotPayload, 
     UpdateNetWorthSnapshotPayload,
 UpdateNetWorthItemPayload,
@@ -12,7 +13,7 @@ export function createNetWorthSnapshot(payload: CreateNetWorthSnapshotPayload) {
   });
 }
 
-///
+
 export function getNetWorthSnapshots() {
   return http<NetWorthSnapshot[]>('/net-worth', {
     method: 'GET',
@@ -39,16 +40,22 @@ export function deleteNetWorthSnapshot(id: string) {
 }           
 
 export function createNetWorthItem(snapshotId: string, payload: CreateNetWorthItemPayload) {
-  return http(`/net-worth/${snapshotId}/items`, {
+  return http<NetWorthItem>(`/net-worth/${snapshotId}/items`, {
     method: 'POST',
     body: payload,
   });
 }
 
 export function updateNetWorthItem(snapshotId: string, itemId: string, payload: UpdateNetWorthItemPayload) {
-  return http(`/net-worth/${snapshotId}/items/${itemId}`, {
+  return http<NetWorthItem>(`/net-worth/${snapshotId}/items/${itemId}`, {
     method: 'PATCH',
     body: payload,
+  });
+}
+
+export function getNetWorthItem(snapshotId: string, itemId: string) {
+  return http<NetWorthItem>(`/net-worth/${snapshotId}/items/${itemId}`, {
+    method: 'GET',
   });
 }
 

@@ -1,3 +1,5 @@
+import { CreateNetWorthItemPayload } from '../../../../pages-apis/net-worth/net-worth.types';
+
 export type EditorMode = 'create' | 'edit';
 
 export interface NetWorthSnapshotProps {
@@ -10,4 +12,5 @@ export interface NetWorthSnapshotProps {
 
 export type NetWorthEditorFormValues = {
   monthStart: string;
-}
+  items: CreateNetWorthItemPayload[];
+};

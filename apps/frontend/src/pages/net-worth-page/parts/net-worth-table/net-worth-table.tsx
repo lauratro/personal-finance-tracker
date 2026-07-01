@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { getNetWorthSnapshots } from '../../../../pages-apis/net-worth';
 import { NetWorthSnapshot } from '@/pages-apis/net-worth/net-worth.types';
+import { NetWorthItemEditor } from '../net-worth-item-editor';
 
 const formatMonth = (date: string) =>
   new Date(date).toLocaleDateString('it-IT', {
@@ -14,7 +15,11 @@ const formatCurrency = (value: number) =>
     currency: 'EUR',
   }).format(value);
 
-export const NetWorthTable = () => {
+type NetWorthTableProps = {
+  refreshKey?: number;
+};
+
+export const NetWorthTable = ({ refreshKey = 0 }: NetWorthTableProps) => {
   const [snapshots, setSnapshots] = useState<NetWorthSnapshot[]>([]);
   const [isLoading, setLoading] = useState(true);
 
@@ -37,8 +42,8 @@ export const NetWorthTable = () => {
   };
 
   useEffect(() => {
-    fetchSnapshots();
-  }, []);
+    void fetchSnapshots();
+  }, [refreshKey]);
 
   const itemNames = useMemo(() => {
     const names = new Set<string>();
@@ -83,7 +88,7 @@ export const NetWorthTable = () => {
           <tbody>
             {itemNames.map((itemName) => (
               <tr key={itemName} className="hover:bg-gray-50">
-                <td className="border p-2 font-medium">{itemName}</td>
+                <td className="border font-medium">{itemName}</td>
 
                 {snapshots.map((snapshot) => {
                   const item = snapshot.items.find(
@@ -91,13 +96,28 @@ export const NetWorthTable = () => {
                   );
 
                   return (
-                    <td key={snapshot.id} className="border p-2 text-right">
-                      {item ? formatCurrency(Number(item.value)) : '-'}
+                    <td key={snapshot.id} className="border text-right ">
+                      <span>{item ? formatCurrency(Number(item.value)) : '-'}</span>
+                      <span className="mx-3">
+                      <NetWorthItemEditor snapshotId={snapshot.id} itemId={item?.id} editorMode="edit" />
+                      </span>
                     </td>
                   );
                 })}
               </tr>
             ))}
+
+            <tr>
+              <td className="border p-2 font-medium">Add item</td>
+              {snapshots.map((snapshot) => (
+                <td key={snapshot.id} className="border p-2 text-center">
+                  <NetWorthItemEditor
+                    snapshotId={snapshot.id}
+                    onSaved={() => void fetchSnapshots()}
+                  />
+                </td>
+              ))}
+            </tr>
 
             <tr className="bg-gray-100 font-semibold">
               <td className="border p-2">Total</td>

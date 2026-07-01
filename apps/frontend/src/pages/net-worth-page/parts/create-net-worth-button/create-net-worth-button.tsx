@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { Button } from "@mantine/core";
 import { NetWorthEditor } from "../net-worth-editor/net-worth-editor";
-export const CreateNetWorthButton = () => {
+
+type CreateNetWorthButtonProps = {
+  onCreated?: () => void;
+};
+
+export const CreateNetWorthButton = ({ onCreated }: CreateNetWorthButtonProps) => {
     const [showForm, setShowForm] = useState(false);
     return (
          <div className="mb-6">
@@ -12,7 +17,10 @@ export const CreateNetWorthButton = () => {
                   {showForm ? 'Cancel' : 'Add Net Worth Snapshot'}
                 </Button>
                 <NetWorthEditor setShowEditor={setShowForm} showEditor={showForm}
-                  editorMode="create" onSaved={() => {setShowForm(false);}}/>
+                  editorMode="create" onSaved={() => {
+                    setShowForm(false);
+                    onCreated?.();
+                  }}/>
                 </div>
   );
 }
