@@ -120,11 +120,63 @@ export class AuthService {
     };
   }
 
-  async refreshTokens(userId: string, email: string, _refreshToken: string) {
-    return this.issueTokens(userId, email);
+  async refreshTokens(userId: string, email: string, refreshToken: string) {
+    const activeTokens = await this.prisma.refreshToken.findMany({
+      where: {
+        userId,
+        revokedAt: null,
+        expiresAt: { gt: new Date() },
+      },
+    });
+
+    const tokenMatches = await Promise.all(
+      activeTokens.map((storedToken) =>
+        bcrypt.compare(refreshToken, storedToken.tokenHash),
+      ),
+    );
+    const matchedToken = activeTokens[tokenMatches.findIndex(Boolean)];
+
+    if (!matchedToken) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+
+    const tokens = await this.issueTokens(userId, email);
+    const tokenHash = await hashData(tokens.refreshToken);
+
+    await this.prisma.$transaction(async (transaction) => {
+      const revoked = await transaction.refreshToken.updateMany({
+        where: {
+          id: matchedToken.id,
+          revokedAt: null,
+        },
+        data: { revokedAt: new Date() },
+      });
+
+      if (revoked.count !== 1) {
+        throw new UnauthorizedException('Refresh token already used');
+      }
+
+      await transaction.refreshToken.create({
+        data: {
+          userId,
+          tokenHash,
+          expiresAt: this.getRefreshExpiryDate(),
+        },
+      });
+    });
+
+    return tokens;
   }
 
-  async logout(_userId: string) {
+  async logout(userId: string) {
+    await this.prisma.refreshToken.updateMany({
+      where: {
+        userId,
+        revokedAt: null,
+      },
+      data: { revokedAt: new Date() },
+    });
+
     return { success: true };
   }
 

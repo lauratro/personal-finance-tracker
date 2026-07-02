@@ -7,7 +7,12 @@ import {
   type ReactNode,
 } from 'react';
 import { getCurrentUser, loginUser, registerUser } from './auth-api';
-import { clearAuthSession, getAuthSession, saveAuthSession } from './auth-storage';
+import {
+  clearAuthSession,
+  getAuthSession,
+  saveAuthSession,
+  subscribeToAuthSession,
+} from './auth-storage';
 import { AuthResponse, LoginPayload, RegisterPayload, SafeUser } from './auth-types';
 
 type AuthContextValue = {
@@ -29,32 +34,52 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const session = getAuthSession();
+    let cancelled = false;
 
-    if (!session?.accessToken) {
-      setLoading(false);
-      return;
-    }
+    const unsubscribe = subscribeToAuthSession((session) => {
+      setAccessToken(session?.accessToken ?? null);
+      setRefreshToken(session?.refreshToken ?? null);
 
-    setAccessToken(session.accessToken);
-    setRefreshToken(session.refreshToken ?? null);
+      if (!session) setUser(null);
+    });
 
-    getCurrentUser(session.accessToken)
-      .then((currentUser) => setUser(currentUser))
-      .catch(() => {
-        clearAuthSession();
-        setUser(null);
-        setAccessToken(null);
-        setRefreshToken(null);
-      })
-      .finally(() => setLoading(false));
+    const restoreSession = async () => {
+      const session = getAuthSession();
+
+      if (!session?.accessToken) {
+        setLoading(false);
+        return;
+      }
+
+      setAccessToken(session.accessToken);
+      setRefreshToken(session.refreshToken ?? null);
+
+      try {
+        // http() refreshes an expired access token and retries this request.
+        const currentUser = await getCurrentUser(session.accessToken);
+        if (!cancelled) setUser(currentUser);
+      } catch {
+        if (!cancelled && !getAuthSession()) {
+          setUser(null);
+          setAccessToken(null);
+          setRefreshToken(null);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    void restoreSession();
+
+    return () => {
+      cancelled = true;
+      unsubscribe();
+    };
   }, []);
 
   const persistSession = (session: AuthResponse) => {
     saveAuthSession(session);
     setUser(session.user);
-    setAccessToken(session.accessToken);
-    setRefreshToken(session.refreshToken);
   };
 
   const login = async (payload: LoginPayload) => {
@@ -76,9 +101,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     clearAuthSession();
-    setUser(null);
-    setAccessToken(null);
-    setRefreshToken(null);
   };
 
   const value = useMemo(
