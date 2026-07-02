@@ -101,12 +101,21 @@ async login(
     };
   }
 
-  @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard)
-  @Post('logout')
-  async logout(@CurrentUser('sub') userId: string) {
-    return this.authService.logout(userId);
-  }
+@HttpCode(HttpStatus.OK)
+@UseGuards(JwtAuthGuard)
+@Post('logout')
+async logout(
+  @CurrentUser('sub') userId: string,
+  @Res({ passthrough: true }) res: Response,
+) {
+  await this.authService.logout(userId);
+
+  res.clearCookie(REFRESH_COOKIE_NAME, {
+    path: REFRESH_COOKIE_OPTIONS.path,
+  });
+
+  return { success: true };
+}
 
   @HttpCode(HttpStatus.OK)
   @Post('2fa/verify')

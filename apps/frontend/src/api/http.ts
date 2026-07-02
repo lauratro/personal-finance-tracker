@@ -1,7 +1,6 @@
 import {
   clearAuthSession,
   getAccessToken,
-  getAuthSession,
   saveAuthSession,
 } from '../pages-apis/auth/auth-storage';
 import { AuthTokens } from '../pages-apis/auth/auth-types';
@@ -41,38 +40,24 @@ const errorMessage = (data: unknown) => {
 
   return 'Request failed';
 };
-
 const performTokenRefresh = async (): Promise<AuthTokens> => {
-  const refreshToken = getAuthSession()?.refreshToken;
-
-  if (!refreshToken) {
-    clearAuthSession();
-    throw new ApiError('Session expired', 401);
-  }
-
   const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ refreshToken }),
   });
 
   const data = response.headers.get('content-type')?.includes('application/json')
     ? await response.json()
     : null;
 
-  if (
-    !response.ok ||
-    typeof data?.accessToken !== 'string' ||
-    typeof data?.refreshToken !== 'string'
-  ) {
+  if (!response.ok || typeof data?.accessToken !== 'string') {
     clearAuthSession();
     throw new ApiError(errorMessage(data), response.status);
   }
 
   const tokens: AuthTokens = {
     accessToken: data.accessToken,
-    refreshToken: data.refreshToken,
   };
 
   saveAuthSession(tokens);
