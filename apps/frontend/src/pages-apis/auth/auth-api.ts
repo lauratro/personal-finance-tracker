@@ -25,19 +25,21 @@ export function loginUser(payload: LoginPayload) {
 }
 
 export function getCurrentUser(token?: string) {
-  const session = getAuthSession();
-  const authToken = token ?? session?.accessToken;
-  
   return http<SafeUser>('/auth/me', {
     method: 'GET',
-    token: authToken || undefined,
+    token,
   });
 }
 
-export function refreshAccessToken(refreshToken: string) {
+export function refreshAccessToken() {
   return http<AuthTokens>('/auth/refresh', {
     method: 'POST',
-    body: { refreshToken },
     skipAuthRefresh: true,
+  });
+}
+
+export function logoutUser() {
+  return http<{ success: boolean }>('/auth/logout', {
+    method: 'POST',
   });
 }

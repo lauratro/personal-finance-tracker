@@ -6,7 +6,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { getCurrentUser, loginUser, registerUser } from './auth-api';
+import { getCurrentUser, loginUser, logoutUser, registerUser } from './auth-api';
 import {
   clearAuthSession,
   getAuthSession,
@@ -18,7 +18,6 @@ import { AuthResponse, LoginPayload, RegisterPayload, SafeUser } from './auth-ty
 type AuthContextValue = {
   user: SafeUser | null;
   accessToken: string | null;
-  refreshToken: string | null;
   loading: boolean;
   login: (payload: LoginPayload) => Promise<AuthResponse>;
   register: (payload: RegisterPayload) => Promise<AuthResponse>;
@@ -30,7 +29,6 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<SafeUser | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [refreshToken, setRefreshToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -38,7 +36,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const unsubscribe = subscribeToAuthSession((session) => {
       setAccessToken(session?.accessToken ?? null);
-      setRefreshToken(session?.refreshToken ?? null);
 
       if (!session) setUser(null);
     });
@@ -52,7 +49,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       setAccessToken(session.accessToken);
-      setRefreshToken(session.refreshToken ?? null);
 
       try {
         // http() refreshes an expired access token and retries this request.
@@ -62,7 +58,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!cancelled && !getAuthSession()) {
           setUser(null);
           setAccessToken(null);
-          setRefreshToken(null);
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -99,21 +94,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return session;
   };
 
-  const logout = () => {
+ const logout = async () => {
+  try {
+    await logoutUser();
+  } finally {
     clearAuthSession();
-  };
+    setUser(null);
+    setAccessToken(null);
+  }
+};
 
   const value = useMemo(
     () => ({
       user,
       accessToken,
-      refreshToken,
       loading,
       login,
       register,
       logout,
     }),
-    [user, accessToken, refreshToken, loading],
+    [user, accessToken, loading],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

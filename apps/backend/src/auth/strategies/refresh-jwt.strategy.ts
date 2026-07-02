@@ -5,12 +5,16 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
 import { JwtPayload } from '../types/jwt-payload.type';
 
+const REFRESH_COOKIE_NAME = 'refresh_token';
+
 const refreshTokenExtractor = (req: Request): string | null => {
-  if (!req?.body?.refreshToken) {
+  const refreshToken = req?.cookies?.[REFRESH_COOKIE_NAME];
+
+  if (!refreshToken) {
     return null;
   }
 
-  return req.body.refreshToken;
+  return refreshToken;
 };
 
 @Injectable()
@@ -28,7 +32,7 @@ export class RefreshJwtStrategy extends PassportStrategy(
   }
 
   validate(req: Request, payload: JwtPayload) {
-    const refreshToken = req?.body?.refreshToken;
+    const refreshToken = req?.cookies?.[REFRESH_COOKIE_NAME];
 
     if (!refreshToken) {
       throw new UnauthorizedException('Refresh token missing');

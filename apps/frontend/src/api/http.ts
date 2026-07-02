@@ -52,6 +52,7 @@ const performTokenRefresh = async (): Promise<AuthTokens> => {
 
   const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
     method: 'POST',
+    credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ refreshToken }),
   });
@@ -97,6 +98,7 @@ export async function http<T>(
 
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method: options.method ?? 'GET',
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),

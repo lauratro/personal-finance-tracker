@@ -7,14 +7,13 @@ import {
   Patch,
   Post,
   Req,
+  Res,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { Request } from 'express';
 import { AuthService } from './logic/auth.service';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { LoginDto } from './dto/login.dto';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { RegisterDto } from './dto/register.dto';
 import { VerifyTwoFactorDto } from './dto/verify-2fa.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -22,6 +21,8 @@ import { RefreshJwtAuthGuard } from './guards/refresh-jwt-auth.guard';
 import { AuthenticatedRequestUser } from './types/authenticated-request-user.type';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateUserService } from './logic/update-user.service';
+import { Request, Response } from 'express';
+import {REFRESH_COOKIE_OPTIONS, REFRESH_COOKIE_NAME} from "./utils/auth.constants";
 
 @Controller('auth')
 export class AuthController {
@@ -30,23 +31,56 @@ export class AuthController {
     private readonly updateUserService: UpdateUserService,
   ) {}
 
-  @Post('register')
-  async register(@Body() dto: RegisterDto) {
-    return this.authService.register(dto);
+@Post('register')
+async register(
+  @Body() dto: RegisterDto,
+  @Res({ passthrough: true }) res: Response,
+) {
+  const result = await this.authService.register(dto);
+
+  res.cookie(
+    REFRESH_COOKIE_NAME,
+    result.refreshToken,
+    REFRESH_COOKIE_OPTIONS,
+  );
+
+  return {
+    user: result.user,
+    accessToken: result.accessToken,
+  };
+}
+
+@HttpCode(HttpStatus.OK)
+@Post('login')
+async login(
+  @Body() dto: LoginDto,
+  @Req() req: Request,
+  @Res({ passthrough: true }) res: Response,
+) {
+  const result = await this.authService.login(dto, req);
+
+  if ('requiresTwoFactor' in result) {
+    return result;
   }
 
-  @HttpCode(HttpStatus.OK)
-  @Post('login')
-  async login(@Body() dto: LoginDto, @Req() req: Request) {
-    return this.authService.login(dto, req);
-  }
+  res.cookie(
+    REFRESH_COOKIE_NAME,
+    result.refreshToken,
+    REFRESH_COOKIE_OPTIONS,
+  );
+
+  return {
+    user: result.user,
+    accessToken: result.accessToken,
+  };
+}
 
   @HttpCode(HttpStatus.OK)
   @UseGuards(RefreshJwtAuthGuard)
   @Post('refresh')
   async refresh(
     @CurrentUser() user: AuthenticatedRequestUser,
-    @Body() _dto: RefreshTokenDto,
+    @Res({ passthrough: true }) res: Response,
   ) {
     const refreshToken = user.refreshToken;
 
@@ -54,7 +88,17 @@ export class AuthController {
       throw new UnauthorizedException('Refresh token missing');
     }
 
-    return this.authService.refreshTokens(user.sub, user.email, refreshToken);
+    const tokens = await this.authService.refreshTokens(user.sub, user.email, refreshToken);
+
+    res.cookie(
+      REFRESH_COOKIE_NAME,
+      tokens.refreshToken,
+      REFRESH_COOKIE_OPTIONS,
+    );
+
+    return {
+      accessToken: tokens.accessToken,
+    };
   }
 
   @HttpCode(HttpStatus.OK)

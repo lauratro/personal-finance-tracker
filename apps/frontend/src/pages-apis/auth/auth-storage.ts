@@ -1,10 +1,7 @@
-import { AuthTokens } from './auth-types';
-
 const STORAGE_KEY = 'personal-finance-auth';
 
 export type StoredAuthSession = {
   accessToken: string;
-  refreshToken?: string;
 };
 
 type AuthSessionListener = (session: StoredAuthSession | null) => void;
@@ -15,10 +12,9 @@ const notifyListeners = (session: StoredAuthSession | null) => {
   listeners.forEach((listener) => listener(session));
 };
 
-export function saveAuthSession(session: AuthTokens) {
+export function saveAuthSession(session: StoredAuthSession) {
   const storedSession: StoredAuthSession = {
     accessToken: session.accessToken,
-    refreshToken: session.refreshToken,
   };
 
   localStorage.setItem(STORAGE_KEY, JSON.stringify(storedSession));
