@@ -58,10 +58,23 @@ export const NetWorthTable = ({ refreshKey = 0 }: NetWorthTableProps) => {
     return Array.from(names).sort();
   }, [snapshots]);
 
+
+const totals = useMemo(
+  () =>
+    snapshots.map((snapshot) => ({
+      snapshot,
+      total: snapshot.items.reduce(
+        (sum, item) => sum + Number(item.value),
+        0,
+      ),
+    })),
+  [snapshots],
+);
+
   if (isLoading) {
     return <p>Loading...</p>;
   }
-
+ 
   if (snapshots.length === 0) {
     return (
       <p className="text-center text-gray-500 mt-4">
@@ -69,13 +82,6 @@ export const NetWorthTable = ({ refreshKey = 0 }: NetWorthTableProps) => {
       </p>
     );
   }
-
-  const totals = snapshots.map((snapshot) =>
-  snapshot.items.reduce(
-    (sum, item) => sum + Number(item.value),
-    0
-  )
-);
 
   return (
     <div className="p-4">
@@ -87,7 +93,13 @@ export const NetWorthTable = ({ refreshKey = 0 }: NetWorthTableProps) => {
 
               {snapshots.map((snapshot) => (
                 <th key={snapshot.id} className="border p-2 text-right">
+               <div className="flex items-center justify-end gap-2">
+                 <NetWorthItemEditor
+                    snapshotId={snapshot.id}
+                    onSaved={() => void fetchSnapshots()}
+                  />
                   {formatMonth(snapshot.monthStart)}
+                  </div>
                 </th>
               ))}
             </tr>
@@ -123,57 +135,32 @@ export const NetWorthTable = ({ refreshKey = 0 }: NetWorthTableProps) => {
               </tr>
             ))}
 
-            <tr>
-              <td className="border p-2 font-medium">Add item</td>
-              {snapshots.map((snapshot) => (
-                <td key={snapshot.id} className="border p-2 text-center">
-                  <NetWorthItemEditor
-                    snapshotId={snapshot.id}
-                    onSaved={() => void fetchSnapshots()}
-                  />
-                </td>
-              ))}
-            </tr>
-
      <tr className="bg-gray-100 font-semibold">
          <td className="border p-2">Total</td>
 
-          {totals.map((total, index) => (
-             <td key={snapshots[index].id} className="border p-2 text-right">
-      {formatCurrency(total)}
-               </td>
-           ))}
+         {totals.map(({ snapshot, total }) => (
+  <td key={snapshot.id} className="border p-2 text-right">
+    {formatCurrency(total)}
+  </td>
+))}
      </tr>
      <tr className="bg-gray-50">
           <td className="border p-2 font-medium">Variation</td>
 
-             {totals.map((total, index) => {
-                   if (index === 0) {
-                return (
-                     <td key={snapshots[index].id} className="border p-2 text-right">
-                      -
-                    </td>
-                    );
-                 }
+          {totals.map(({ snapshot, total }, index) => {
+  if (index === 0) {
+    return <td key={snapshot.id} className="border p-2 text-right">-</td>;
+  }
 
-            const variation = total - totals[index - 1];
+  const variation = total - totals[index - 1].total;
 
-           return (
-                     <td
-                     key={snapshots[index].id}
-                     className={`border p-2 text-right ${
-                     variation > 0
-                      ? 'text-green-600'
-                          : variation < 0
-                          ? 'text-red-600'
-                          : ''
-                            }`}
-                           >
-        {variation > 0 ? '+' : ''}
-        {formatCurrency(variation)}
-                   </td>
-                   );
-              })}
+  return (
+    <td key={snapshot.id} className="border p-2 text-right">
+      {variation > 0 ? '+' : ''}
+      {formatCurrency(variation)}
+    </td>
+  );
+})}
             </tr>
           </tbody>
         </table>
