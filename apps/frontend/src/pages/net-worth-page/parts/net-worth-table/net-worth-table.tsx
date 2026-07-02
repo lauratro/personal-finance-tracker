@@ -3,6 +3,7 @@ import { getNetWorthSnapshots } from '../../../../pages-apis/net-worth';
 import { NetWorthSnapshot } from '@/pages-apis/net-worth/net-worth.types';
 import { NetWorthItemEditor } from '../net-worth-item-editor';
 import { NetWorthItemDeleteButton } from '../net-worth-item-delete-button/net-worth-item-delete-button';
+import { NetWorthDeleteButton } from '../net-worth-delete-button/net-worth-delete-button';
 
 const formatMonth = (date: string) =>
   new Date(date).toLocaleDateString('it-IT', {
@@ -93,12 +94,16 @@ const totals = useMemo(
 
               {snapshots.map((snapshot) => (
                 <th key={snapshot.id} className="border p-2 text-right">
-               <div className="flex items-center justify-end gap-2">
-                 <NetWorthItemEditor
+               <div className="flex flex-col items-center justify-end gap-2">
+               
+              
+                 <div> {formatMonth(snapshot.monthStart)}</div>
+         <div className="flex justify-between center gap-2 w-full">
+        <NetWorthDeleteButton snapshotId={snapshot.id} onDeleted={() => void fetchSnapshots()} />
+                    <NetWorthItemEditor
                     snapshotId={snapshot.id}
                     onSaved={() => void fetchSnapshots()}
-                  />
-                  {formatMonth(snapshot.monthStart)}
+                  /></div>
                   </div>
                 </th>
               ))}

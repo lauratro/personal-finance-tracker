@@ -1,15 +1,39 @@
-import {NetWorthItemDeleteButtonProps} from "./net-worth-item-delete-button.types";
-import { deleteNetWorthItem } from "@/pages-apis/net-worth";
+import { useState } from 'react';
 import { IconTrash } from '@tabler/icons-react';
-export const NetWorthItemDeleteButton = ({ itemId, snapshotId }: NetWorthItemDeleteButtonProps ) => {
+import { deleteNetWorthItem } from '@/pages-apis/net-worth';
+import { NetWorthItemDeleteButtonProps } from './net-worth-item-delete-button.types';
+import { DefaultModal } from '@/components/ui/default-modal';
 
-  const deleteItem = async (itemId: string, snapshotId: string) => {
+export const NetWorthItemDeleteButton = ({
+  itemId,
+  snapshotId,
+  onDeleted,
+}: NetWorthItemDeleteButtonProps) => {
+  const [isOpen, setIsOpen] = useState(false);  
+  const handleDelete = async () => {
+    try {
       await deleteNetWorthItem(snapshotId, itemId);
-       }
 
-    return (
-     <div>
-   <IconTrash onClick={() => deleteItem(itemId, snapshotId)} className="cursor-pointer text-red-500 hover:text-red-700" / >
+      onDeleted?.();
+    } catch (error) {
+      console.error('Error deleting net worth item', error);
+    }
+  };
+
+  return (
+    <div>
+    <IconTrash
+      onClick={() => setIsOpen(true)}
+      className="cursor-pointer text-red-500 hover:text-red-700"
+    />
+    <DefaultModal
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                title="Confirm Delete"
+                question="Are you sure you want to delete this net worth item?"
+                onAccept={handleDelete}
+                onCancel={() => setIsOpen(false)}
+            />
     </div>
-      )
-    }         
+  );
+};
