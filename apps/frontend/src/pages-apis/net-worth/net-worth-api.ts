@@ -64,3 +64,15 @@ export function deleteNetWorthItem(snapshotId: string, itemId: string) {
     method: 'DELETE',
   });
 }
+
+export function getNetWorthYearsList() {
+  return http<number[]>(`/net-worth/years-list`, {
+    method: 'GET',
+  });
+}
+
+export function getNetWorthSnapshotsBasedOnYear(year: number) {
+  return http<NetWorthSnapshot[]>(`/net-worth/by-year/${year}`, {
+    method: 'GET',
+  });
+}

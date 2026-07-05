@@ -8,8 +8,10 @@ import { DeleteNetWorthService } from '../logic/delete-net-worth-service';
 import { DeleteNetWorthItemService } from './../logic/delete-net-worth-item-service';
 import { GetNetWorthItemService } from './../logic/get-net-worth-item.service';
 import { GetNetWorthService } from '../logic/get-net-worth.service';
-import { NetWorthItemController } from './../controller/net-worth--item.controller';
+import { NetWorthItemController } from '../controller/net-worth-item.controller';
 import { NetWorthController } from '../controller/net-worth-controller';
+import { GetNetWorthBasedOnYearService } from '../logic/get-net-worth-based-on-year-service';
+import { GetNetWorthYearsListService } from '../logic/get-net-worth-years-list-service';
 
 @Module({
   imports: [PrismaModule],
@@ -19,10 +21,12 @@ import { NetWorthController } from '../controller/net-worth-controller';
     UpdateNetWorthService,
     DeleteNetWorthService,
     GetNetWorthService,
+    GetNetWorthBasedOnYearService,
     CreateNetWorthItemService,
     UpdateNetWorthItemService,
     DeleteNetWorthItemService,
     GetNetWorthItemService,
+    GetNetWorthYearsListService,
   ],
 })
 export class NetWorthModule {}

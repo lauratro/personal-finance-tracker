@@ -10,7 +10,7 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { CreateNetWorthItemDto } from './../dto/create-net-worth.dto';
+import { CreateNetWorthItemDto } from '../dto/create-net-worth.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { CreateNetWorthItemService } from '../logic/create-net-worth-item-service';
 import { UpdateNetWorthItemService } from '../logic/update-net-worth-item-service';
