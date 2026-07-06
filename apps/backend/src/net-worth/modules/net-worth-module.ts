@@ -12,6 +12,7 @@ import { NetWorthItemController } from '../controller/net-worth-item.controller'
 import { NetWorthController } from '../controller/net-worth-controller';
 import { GetNetWorthBasedOnYearService } from '../logic/get-net-worth-based-on-year-service';
 import { GetNetWorthYearsListService } from '../logic/get-net-worth-years-list-service';
+import { GetLastNetWorthIndicatorsService } from '../logic/get-last-net-wort-indicators-service';
 
 @Module({
   imports: [PrismaModule],
@@ -27,6 +28,7 @@ import { GetNetWorthYearsListService } from '../logic/get-net-worth-years-list-s
     DeleteNetWorthItemService,
     GetNetWorthItemService,
     GetNetWorthYearsListService,
+    GetLastNetWorthIndicatorsService,
   ],
 })
 export class NetWorthModule {}

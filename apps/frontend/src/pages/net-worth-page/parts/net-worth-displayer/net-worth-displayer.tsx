@@ -5,18 +5,8 @@ import { NetWorthItemEditor } from '../net-worth-item-editor';
 import { NetWorthItemDeleteButton } from '../net-worth-item-delete-button/net-worth-item-delete-button';
 import { NetWorthDeleteButton } from '../net-worth-delete-button/net-worth-delete-button';
 import { NetWorthDisplayerProps } from './net-worth-displayer.types';
-
-const formatMonth = (date: string) =>
-  new Date(date).toLocaleDateString('de-DE', {
-    month: 'short',
-    year: 'numeric',
-  });
-
-const formatCurrency = (value: number) =>
-  new Intl.NumberFormat('de-DE', {
-    style: 'currency',
-    currency: 'EUR',
-  }).format(value);
+import { formatCurrency } from './../../../../utils/formatCurrency';
+import { formatMonth } from './../../../../utils/formatMonts';
 
 export const NetWorthDisplayer = ({ refreshKey = 0, year }: NetWorthDisplayerProps) => {
   const [snapshots, setSnapshots] = useState<NetWorthSnapshot[]>([]);

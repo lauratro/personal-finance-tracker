@@ -5,7 +5,8 @@ import { NetWorthItem,
     CreateNetWorthSnapshotPayload, 
     UpdateNetWorthSnapshotPayload,
 UpdateNetWorthItemPayload,
-CreateNetWorthItemPayload } from "./net-worth.types";
+CreateNetWorthItemPayload, 
+NetWorthIndicators} from "./net-worth.types";
 
 export function createNetWorthSnapshot(payload: CreateNetWorthSnapshotPayload) {
   return http<NetWorthSnapshot>('/net-worth', {
@@ -77,3 +78,10 @@ export function getNetWorthSnapshotsBasedOnYear(year: number, includePreviousYea
     method: 'GET',
   });
 }
+
+export function getLastNetWorthIndicators() {
+  return http<NetWorthIndicators>(`/net-worth/latest`, {
+    method: 'GET',
+  });
+}
+

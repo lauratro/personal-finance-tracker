@@ -35,9 +35,19 @@ export type NetWorthSnapshot = {
   updatedAt: string;
 };
 
+
 export type NetWorthSnapshotWithPrevious = {
   previousSnapshot: NetWorthSnapshot | null;
   snapshots: NetWorthSnapshot[];
+};
+
+export type NetWorthSnapshotWithTotal = NetWorthSnapshot & {
+  total: number;
+};
+
+export type NetWorthIndicators = {
+  lastSnapshot:NetWorthSnapshotWithTotal  | null;
+  previousSnapshot: NetWorthSnapshotWithTotal | null;
 };
 
 export type CreateNetWorthSnapshotPayload = {

@@ -21,6 +21,7 @@ import { UpdateNetWorthService } from '../logic/update-net-worth.service';
 import { DeleteNetWorthService } from '../logic/delete-net-worth-service';
 import { GetNetWorthBasedOnYearService } from '../logic/get-net-worth-based-on-year-service';
 import { GetNetWorthYearsListService } from '../logic/get-net-worth-years-list-service';
+import { GetLastNetWorthIndicatorsService } from '../logic/get-last-net-wort-indicators-service';
 
 @Controller('net-worth')
 @UseGuards(JwtAuthGuard)
@@ -32,6 +33,7 @@ export class NetWorthController {
         private readonly deleteNetWorth: DeleteNetWorthService,
         private readonly getNetWorthBasedOnYear: GetNetWorthBasedOnYearService,
         private readonly getNetWorthYearsList: GetNetWorthYearsListService,
+        private readonly getLastNetWorthIndicators: GetLastNetWorthIndicatorsService,
     ) {}
 
     @Post()
@@ -64,6 +66,13 @@ export class NetWorthController {
         return this.getNetWorthBasedOnYear.execute(userId, year, includePreviousYear);
     }
     
+
+    @Get("latest")
+    async findLastIndicators(
+        @CurrentUser('sub') userId: string,
+    ) {
+        return this.getLastNetWorthIndicators.get(userId);
+    }
 
     @Patch(':id')
     async update(
