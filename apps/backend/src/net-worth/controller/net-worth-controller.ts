@@ -55,12 +55,13 @@ export class NetWorthController {
         return this.getNetWorthYearsList.getListOfYears(userId);
     }
 
-    @Get('by-year/:year')
+    @Get('by-year/:year/:includePreviousYear?')
     async findAllBasedOnYear(
         @CurrentUser('sub') userId: string,
         @Param('year', ParseIntPipe) year: number,
+        @Param('includePreviousYear') includePreviousYear: boolean,
     ) {
-        return this.getNetWorthBasedOnYear.execute(userId, year);
+        return this.getNetWorthBasedOnYear.execute(userId, year, includePreviousYear);
     }
     
 

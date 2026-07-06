@@ -1,6 +1,7 @@
 import { http } from "@/api/http";  
 import { NetWorthItem,
     NetWorthSnapshot,
+    NetWorthSnapshotWithPrevious,
     CreateNetWorthSnapshotPayload, 
     UpdateNetWorthSnapshotPayload,
 UpdateNetWorthItemPayload,
@@ -71,8 +72,8 @@ export function getNetWorthYearsList() {
   });
 }
 
-export function getNetWorthSnapshotsBasedOnYear(year: number) {
-  return http<NetWorthSnapshot[]>(`/net-worth/by-year/${year}`, {
+export function getNetWorthSnapshotsBasedOnYear(year: number, includePreviousYear: boolean = false) {
+  return http<NetWorthSnapshotWithPrevious>(`/net-worth/by-year/${year}/${includePreviousYear}`, {
     method: 'GET',
   });
 }

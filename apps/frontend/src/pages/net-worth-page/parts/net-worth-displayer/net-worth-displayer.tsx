@@ -21,18 +21,20 @@ const formatCurrency = (value: number) =>
 export const NetWorthDisplayer = ({ refreshKey = 0, year }: NetWorthDisplayerProps) => {
   const [snapshots, setSnapshots] = useState<NetWorthSnapshot[]>([]);
   const [isLoading, setLoading] = useState(true);
+  const [previousSnapshot, setPreviousSnapshot] = useState<NetWorthSnapshot | null>(null);  
 
   const fetchSnapshots = async () => {
     try {
       setLoading(true);
-      const data = await getNetWorthSnapshotsBasedOnYear(year);
-       console.log('Fetched net worth snapshots:', data);
-      const sortedSnapshots = [...data].sort(
+      const data = await getNetWorthSnapshotsBasedOnYear(year, true);
+      const previousSnapshot = data.previousSnapshot;
+      const sortedSnapshots = [...data.snapshots].sort(
         (a, b) =>
           new Date(a.monthStart).getTime() - new Date(b.monthStart).getTime(),
       );
 
       setSnapshots(sortedSnapshots);
+      setPreviousSnapshot(previousSnapshot);
     } catch (error) {
       console.error('Error fetching net worth snapshots:', error);
     } finally {
@@ -69,6 +71,8 @@ const totals = useMemo(
     );
   }
 
+  const previousYearLastMonthTotal = previousSnapshot ? previousSnapshot.items.reduce((sum, item) => sum + Number(item.value), 0) : null;
+
   return (
   <div className="p-4">
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -76,7 +80,7 @@ const totals = useMemo(
         const previousTotal = index > 0 ? totals[index - 1].total : null;
         const variation =
           previousTotal !== null ? total - previousTotal : null;
-
+        const variationFromPreviousYear = previousYearLastMonthTotal !== null ? total - previousYearLastMonthTotal : null;
         return (
           <div
             key={snapshot.id}
@@ -104,7 +108,9 @@ const totals = useMemo(
                   }`}
                 >
                   {variation === null
-                    ? 'First snapshot'
+                    ? variationFromPreviousYear !== null && index === 0
+                      ? `${variationFromPreviousYear > 0 ? '+' : ''}${formatCurrency(variationFromPreviousYear)} vs previous year`
+                      : 'First snapshot'
                     : `${variation > 0 ? '+' : ''}${formatCurrency(variation)} vs previous month`}
                 </p>
               </div>
