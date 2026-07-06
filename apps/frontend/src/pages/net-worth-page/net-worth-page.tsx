@@ -3,6 +3,7 @@ import { NetWorthDisplayer } from "./parts/net-worth-displayer";
 import { PageContainer } from "../../containers/page-container/page-container";
 import { CreateNetWorthButton } from "./parts/create-net-worth-button";
 import {getNetWorthYearsList} from "@/pages-apis/net-worth";
+import { AccordionNetWorth } from './parts/accordion-net-worth';
 
 export const NetWorthPage = () => {
   const [refreshKey, setRefreshKey] = useState(0);
@@ -35,14 +36,12 @@ if (loadingYears) {
 } else {
   content = years.map((year) => (
     <div key={year}>
-      <h2 className="text-lg font-semibold mt-4 mb-2">
-        {year}
-      </h2>
-
-      <NetWorthDisplayer
-        refreshKey={refreshKey}
-        year={year}
-      />
+     <AccordionNetWorth year={year} refreshKey={refreshKey}>
+        <NetWorthDisplayer
+          refreshKey={refreshKey}
+          year={year}
+        />
+      </AccordionNetWorth>
     </div>
   ));
 }
