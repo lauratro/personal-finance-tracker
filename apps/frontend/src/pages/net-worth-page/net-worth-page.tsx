@@ -55,7 +55,7 @@ if (loadingYears) {
       <MainIndicators />
       <CreateNetWorthButton onCreated={refreshSnapshots} />
       </div>
-            <NetWorthCharts />
+    <div className='px-4'><NetWorthCharts /></div> 
     {content}
     </PageContainer>
   );
