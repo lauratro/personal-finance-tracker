@@ -6,7 +6,8 @@ import { NetWorthItem,
     UpdateNetWorthSnapshotPayload,
 UpdateNetWorthItemPayload,
 CreateNetWorthItemPayload, 
-NetWorthIndicators} from "./net-worth.types";
+NetWorthIndicators,
+SortDirection} from "./net-worth.types";
 
 export function createNetWorthSnapshot(payload: CreateNetWorthSnapshotPayload) {
   return http<NetWorthSnapshot>('/net-worth', {
@@ -16,8 +17,8 @@ export function createNetWorthSnapshot(payload: CreateNetWorthSnapshotPayload) {
 }
 
 
-export function getNetWorthSnapshots() {
-  return http<NetWorthSnapshot[]>('/net-worth', {
+export function getNetWorthSnapshots(sortDirection: SortDirection = SortDirection.DESC) {
+  return http<NetWorthSnapshot[]>(`/net-worth/?sortDirection=${sortDirection}`, {
     method: 'GET',
   });
 }

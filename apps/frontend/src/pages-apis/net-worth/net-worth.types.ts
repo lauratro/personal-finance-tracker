@@ -8,6 +8,11 @@ export enum NetWorthCategory {
   OTHER = 'OTHER'
 }
 
+export enum SortDirection {
+  DESC = "desc",
+  ASC = "asc"
+}
+
 export type NetWorthItem = {
   id: string;
   snapshotId: string;

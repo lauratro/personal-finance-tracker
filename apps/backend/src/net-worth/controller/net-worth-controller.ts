@@ -10,25 +10,27 @@ import {
   HttpCode,
   HttpStatus,
   ParseIntPipe,
+  Query
 } from '@nestjs/common';
 import { CreateNetWorthDto } from './../dto/create-net-worth.dto'; 
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { CreateNetWorthService } from '../logic/create-net-worth-service';
-import { GetNetWorthService } from '../logic/get-net-worth.service';
+import { GetNetWorthsService } from '../logic/get-net-worths.service';
 import { UpdateNetWorthDto } from '../dto/update-net-worth.dto';
 import { UpdateNetWorthService } from '../logic/update-net-worth.service';  
 import { DeleteNetWorthService } from '../logic/delete-net-worth-service';
 import { GetNetWorthBasedOnYearService } from '../logic/get-net-worth-based-on-year-service';
 import { GetNetWorthYearsListService } from '../logic/get-net-worth-years-list-service';
 import { GetLastNetWorthIndicatorsService } from '../logic/get-last-net-wort-indicators-service';
+import { SortDirectionType } from '../schema/types/sortDirectionTypes';
 
 @Controller('net-worth')
 @UseGuards(JwtAuthGuard)
 export class NetWorthController {
     constructor(
         private readonly createNetWorth: CreateNetWorthService,
-        private readonly getNetWorth: GetNetWorthService,
+        private readonly getNetWorths: GetNetWorthsService,
         private readonly updateNetWorth: UpdateNetWorthService,
         private readonly deleteNetWorth: DeleteNetWorthService,
         private readonly getNetWorthBasedOnYear: GetNetWorthBasedOnYearService,
@@ -45,10 +47,18 @@ export class NetWorthController {
         return this.createNetWorth.execute(userId, createNetWorthDto);
     }
 
-         @Get()
-    async findAll(@CurrentUser('sub') userId: string) {
-        return this.getNetWorth.execute(userId);
-    }
+@Get()
+async findAll(
+  @CurrentUser('sub') userId: string,
+  @Query('sortDirection') sortDirection?: string,
+) {
+  const safeSortDirection : SortDirectionType =
+    sortDirection === "asc"|| sortDirection === "desc"
+      ? sortDirection
+      : "desc";
+
+  return this.getNetWorths.execute(userId, safeSortDirection);
+}
 
     @Get('years-list')
     async findYearsList(

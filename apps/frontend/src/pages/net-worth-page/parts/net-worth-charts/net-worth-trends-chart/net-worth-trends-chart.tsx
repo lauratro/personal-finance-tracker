@@ -10,7 +10,7 @@ import {
 import { useEffect, useState } from 'react';
 import { formatMonth } from '@/utils/formatMonts';
 import { formatCurrency } from '@/utils/formatCurrency';
-import { NetWorthSnapshot } from '@/pages-apis/net-worth/net-worth.types';
+import { NetWorthSnapshot, SortDirection } from '@/pages-apis/net-worth/net-worth.types';
 import { getNetWorthSnapshots } from '@/pages-apis/net-worth';
 
 export const NetWorthTrendChart = () => {
@@ -18,7 +18,7 @@ export const NetWorthTrendChart = () => {
     const [snapshots, setSnapshots] = useState<NetWorthSnapshot[]>([])
     useEffect( () => {
     const fetchSnaphots = async () => {
-        const data = await getNetWorthSnapshots()
+        const data = await getNetWorthSnapshots(SortDirection.ASC)
          setSnapshots(data)
     }
     fetchSnaphots()
@@ -33,8 +33,6 @@ export const NetWorthTrendChart = () => {
     total: getSnapshotTotal(snapshot),
   }));
 
-  console.log("data", data)
-  console.log("snapshots", snapshots)
   return (
     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
       <div className="mb-4">

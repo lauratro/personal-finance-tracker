@@ -7,7 +7,7 @@ import { UpdateNetWorthService } from '../logic/update-net-worth.service';
 import { DeleteNetWorthService } from '../logic/delete-net-worth-service';
 import { DeleteNetWorthItemService } from './../logic/delete-net-worth-item-service';
 import { GetNetWorthItemService } from './../logic/get-net-worth-item.service';
-import { GetNetWorthService } from '../logic/get-net-worth.service';
+import { GetNetWorthsService } from '../logic/get-net-worths.service';
 import { NetWorthItemController } from '../controller/net-worth-item.controller';
 import { NetWorthController } from '../controller/net-worth-controller';
 import { GetNetWorthBasedOnYearService } from '../logic/get-net-worth-based-on-year-service';
@@ -21,7 +21,7 @@ import { GetLastNetWorthIndicatorsService } from '../logic/get-last-net-wort-ind
     CreateNetWorthService,
     UpdateNetWorthService,
     DeleteNetWorthService,
-    GetNetWorthService,
+    GetNetWorthsService,
     GetNetWorthBasedOnYearService,
     CreateNetWorthItemService,
     UpdateNetWorthItemService,
