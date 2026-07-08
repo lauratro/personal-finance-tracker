@@ -5,6 +5,7 @@ import { CreateNetWorthButton } from "./parts/create-net-worth-button";
 import {getNetWorthYearsList} from "@/pages-apis/net-worth";
 import { AccordionNetWorth } from './parts/accordion-net-worth';
 import { MainIndicators } from './parts/main-indicators';
+import { NetWorthCharts } from './parts/net-worth-charts/net-worth-charts';
 
 export const NetWorthPage = () => {
   const [refreshKey, setRefreshKey] = useState(0);
@@ -50,9 +51,11 @@ if (loadingYears) {
       title="Net Worth"
       description="Track your investment performance over time."
     >
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-4 px-4">
       <MainIndicators />
-      <CreateNetWorthButton onCreated={refreshSnapshots} /></div>
+      <CreateNetWorthButton onCreated={refreshSnapshots} />
+      </div>
+            <NetWorthCharts />
     {content}
     </PageContainer>
   );

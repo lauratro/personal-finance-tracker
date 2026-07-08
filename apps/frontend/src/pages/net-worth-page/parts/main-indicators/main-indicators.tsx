@@ -24,7 +24,7 @@ export const MainIndicators = () => {
         const formattedVariationPercentage = `${variation > 0 ? '+' : ''}${variationPercentage.toFixed(2)}%`;
 
     return (
-            <div className="min-h-[100px] min-w-[100px] p-8">
+            <div>
                 { indicators?.lastSnapshot ? (
                  <div className="bg-white shadow-md rounded-lg p-4 flex flex-col items-left justify-left min-w-[300px]">
                     <h3 className="mb-4text-lg font-semibold mb-2">{formatMonth(indicators?.lastSnapshot?.monthStart)}</h3>
