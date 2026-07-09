@@ -1,7 +1,7 @@
 import { FormEvent, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../pages-apis/auth/auth-context';
-import { AuthLayout } from '../components/auth-layout';
+import { AuthLayout } from '../components/auth-layout/auth-layout';
 import { TextInput } from '../components/text-input';
 
 export function RegisterPage() {

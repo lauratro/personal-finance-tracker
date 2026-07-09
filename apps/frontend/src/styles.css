@@ -2,8 +2,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-/* @import "tw-animate-css"; */
-/* @import "shadcn/tailwind.css"; */
 
 @custom-variant dark (&:is(.dark *));
 
@@ -19,7 +17,7 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  --primary: #5F9EA0;
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -69,59 +67,15 @@ a:hover {
   text-decoration: underline;
 }
 
-code {
-  background: #e2e8f0;
-  padding: 0.15rem 0.4rem;
-  border-radius: 0.35rem;
-}
-
-.auth-shell,
-.page-center,
-.dashboard-shell {
+.page-center{
   min-height: 100vh;
   display: grid;
   place-items: center;
   padding: 2rem;
 }
 
-.auth-card,
-.dashboard-card {
-  width: min(100%, 440px);
-  background: rgba(255, 255, 255, 0.94);
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  border-radius: 24px;
-  box-shadow: 0 22px 60px rgba(15, 23, 42, 0.08);
-  padding: 2rem;
-}
-
-.dashboard-card {
-  width: min(100%, 680px);
-}
-
-.auth-header {
-  margin-bottom: 1.5rem;
-}
-
-.auth-header h1,
-.dashboard-card h1 {
-  margin: 0.2rem 0 0.4rem;
-  font-size: 2rem;
-}
-
-.auth-header p,
-.dashboard-card p,
-.helper-text,
-.auth-footer {
+.helper-text{
   color: #475569;
-}
-
-.eyebrow {
-  margin: 0;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #2563eb;
 }
 
 .auth-form {
@@ -172,15 +126,20 @@ code {
 .button-secondary {
   border: 0;
   border-radius: 14px;
-  padding: 0.95rem 1.1rem;
+  padding: 0.5rem 1.1rem;
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
 }
 
+
 .button-primary {
-  background: #2563eb;
+  background: var(--primary);
   color: white;
+}
+
+.button-primary:hover {
+background: #4d787b ;
 }
 
 .button-primary:disabled {
@@ -193,7 +152,10 @@ code {
   color: #0f172a;
 }
 
-.auth-footer,
+.border-primary {
+  border: 1px solid var(--primary)
+}
+
 .helper-text {
   margin-top: 1rem;
 }
@@ -238,92 +200,15 @@ code {
   }
 }
 
-.app-menubar {
-  width: 100%;
-  background: white;
-  border-bottom: 1px solid #e2e8f0;
-  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
-}
 
-.app-menubar .app-menubar-inner {
-  max-width: 90%;
-  margin: 0 auto;
-  padding: 1rem 1.25rem;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-}
-
-.app-menubar .nav-link {
-  color: #1e293b;
-  font-weight: 700;
-  padding: 0.75rem 1rem;
-  border-radius: 14px;
-  transition: background 0.2s ease;
-  margin: 0 0.25rem;
-}
-
-.app-menubar .nav-link:hover,
-.app-menubar .nav-link:focus {
+.nav-link:hover, .nav-link:focus {
   background: #f8fafc;
 }
 
-.app-menubar .app-menubar-user {
+.app-menubar-user {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-}
-
-
-.page-content {
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 24px;
-  padding: 1.75rem;
-}
-
-@media (max-width: 640px) {
-  .app-menubar .app-menubar-inner{
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-}
-
-.investments-table-container {
-  margin-top: 2rem;
-  overflow-x: auto;
-}
-
-.investments-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.investments-table th,
-.investments-table td {
-  padding: 0.75rem;
-  text-align: left;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.investments-table th {
-  background: #f8fafc;
-  font-weight: 700;
-  color: #1e293b;
-}
-
-.investments-table td {
-  color: #475569;
-}
-
-.investments-table tr:hover {
-  background: #f8fafc;
 }
 
 .dashboard-layout {
@@ -342,39 +227,6 @@ code {
   align-items: center;
 }
 
-.nav-link,
-.nav-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.85rem 1rem;
-  border-radius: 14px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: background 0.2s ease;
-}
-
-.nav-link {
-  background: #eff6ff;
-  color: #2563eb;
-  border: 1px solid #dbeafe;
-}
-
-.nav-link:hover {
-  background: #dbeafe;
-}
-
-.nav-button {
-  border: 0;
-  background: #e2e8f0;
-  color: #0f172a;
-  cursor: pointer;
-}
-
-.page-content {
-  display: grid;
-  gap: 1.5rem;
-}
 
 @media (max-width: 640px) {
   .page-nav {

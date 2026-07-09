@@ -1,6 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AuthLayout } from '../components/auth-layout';
+import { AuthLayout } from '../components/auth-layout/auth-layout';
 import { TextInput } from '../components/text-input';
 import { useAuth } from '../pages-apis/auth/auth-context';
 
@@ -68,11 +68,6 @@ export function LoginPage() {
           {submitting ? 'Signing in...' : 'Sign in'}
         </button>
       </form>
-
-      <p className="helper-text">
-        For the MVP we are using JWT tokens returned by the API. After login, the app will fetch{' '}
-        <code>/auth/me</code> to confirm the session.
-      </p>
 
       <p className="helper-text compact">
         First time here? You can also go straight to the <Link to="/register">registration form</Link>.

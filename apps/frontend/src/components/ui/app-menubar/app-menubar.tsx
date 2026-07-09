@@ -1,32 +1,33 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../../pages-apis/auth/auth-context';
 import { routePaths } from '../../../navigation/main-navigation';
+import { AppMenuWrapper , InnerContainer, LogoutButton, NavLink} from './app-menubar.style';
 
 export function AppMenubar() {
   const { user, logout } = useAuth();
 
   return (
-    <header className="app-menubar">
-      <div className="app-menubar-inner">
+    <AppMenuWrapper>
+      <InnerContainer>
         <nav className="app-menubar-links">
-          <Link to={routePaths.dashboard} className="nav-link">
+          < NavLink to={routePaths.dashboard}>
             Dashboard
-          </Link>
-          <Link to={routePaths.investmentsHistory} className="nav-link">
+          </ NavLink>
+          < NavLink to={routePaths.investmentsHistory}>
             Investments History
-          </Link>
-             <Link to={routePaths.netWorth} className="nav-link">
+          </ NavLink>
+             < NavLink to={routePaths.netWorth}>
             Net Worth
-          </Link>
+          </ NavLink>
         </nav>
         <div className="app-menubar-user">
-          <span className="app-menubar-user-text">{user?.firstName || user?.email}</span>
-          <button type="button" onClick={logout} className="button-secondary nav-button">
+          <span className="mr-3">{user?.firstName || user?.email}</span>
+          <LogoutButton type="button" onClick={logout}>
             Logout
-          </button>
+          </LogoutButton>
         </div>
-      </div>
-    </header>
+      </InnerContainer>
+    </AppMenuWrapper>
   );
 }
 
