@@ -9,8 +9,7 @@ export const AppMenuWrapper = styled.header`
 `
 
 export const InnerContainer = styled.div`
-  max-width: 90%;
-  margin: 0 auto;
+  margin: 0 10px;
   padding: 1rem 1.25rem;
   display: flex;
   flex-wrap: wrap;
@@ -38,8 +37,14 @@ export const LogoutButton = styled.button`
   border: 1px solid rgba(95, 158, 160, 0.4);
   background: rgba(95, 158, 160, 0.4);
   font-weight: 700;
-  color: #0f172a;
+  color: "var(--primary)";
   cursor: pointer;
    padding: 0.75rem 1rem;
   border-radius: 14px;
+`
+
+export const AppMenuUser = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 `
