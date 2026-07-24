@@ -24,13 +24,14 @@ export const InvestmentsHistoryPage = () => {
   useEffect(() => {
     fetchInvestments();
   }, []);
+
   return (
     <PageContainer
       title="Investments History"
       description="Track your investment performance over time."
     >
       <InvestmentCreateButton onCreated={fetchInvestments}/>
-      <InvestmentTable investments={investments} onDeleted={fetchInvestments} isLoading={loading}/>
+      <InvestmentTable investments={investments} onRefetch={fetchInvestments} isLoading={loading}/>
     </PageContainer>
   );
 };
