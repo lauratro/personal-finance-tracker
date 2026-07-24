@@ -7,7 +7,7 @@ export const AppMenuWrapper = styled.header`
   border-bottom: 1px solid #e2e8f0;
   box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
   position:fixed;
-  z-index: 1000;
+  z-index: 100;
 `
 
 export const InnerContainer = styled.div`

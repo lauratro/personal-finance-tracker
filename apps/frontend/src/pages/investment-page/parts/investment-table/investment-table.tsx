@@ -1,51 +1,31 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
-  InvestmentHistory,
-  getInvestmentHistories,
   deleteInvestmentHistory,
 } from '../../../../pages-apis/investment-history';
-import { Button } from '@mantine/core';
 import { InvestmentEditor } from '../investment-editor';
 import { TableTd , ButtonsContainer} from './investment-table.style';
+import { DeleteButton } from '@/components/delete-button';
+import { IconEdit } from '@tabler/icons-react';
+import { InvestmentTableProps } from './investment-table.types';
 
-export const InvestmentTable = () => {
-  const [investments, setInvestments] = useState<InvestmentHistory[]>([]);
-  const [isLoading, setLoading] = useState(true);
+export const InvestmentTable = ({investments, isLoading, onRefetch}: InvestmentTableProps) => {
   const [isEditorVisible, setEditorVisible] = useState(false);
   const [selectedInvestmentId, setSelectedInvestmentId] = useState<string | null>(null);
 
   const handleDelete = async (id: string) => {
-    if (confirm('Are you sure you want to delete this investment?')) {
       try {
         await deleteInvestmentHistory(id);
-        fetchInvestments();
+        onRefetch();
       } catch (error) {
         console.error('Error deleting investment:', error);
       }
-    }
+  
   };
 
   const handleEdit = (id: string) => {
     setSelectedInvestmentId(id);
     setEditorVisible(true);
   };
-
-
-  const fetchInvestments = async () => {
-    try {
-      setLoading(true);
-      const data = await getInvestmentHistories();
-      setInvestments(data);
-    } catch (error) {
-      console.error('Error fetching investments:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchInvestments();
-  }, []);
 
 
     return (
@@ -110,19 +90,16 @@ export const InvestmentTable = () => {
                 </TableTd>
                 <TableTd className="border p-2 text-center">
                   <ButtonsContainer>
-                    <Button
+                    <IconEdit
                     onClick={() => handleEdit(inv.id)}
-                    className="text-sm px-2 py-1 bg-red-500 text-white mr-5 rounded "
-                  >
-      
-                   Edit
-                  </Button>
-                  <Button
-                    onClick={() => handleDelete(inv.id)}
-                    className="text-sm px-2 py-1 bg-red-500 text-white ml-3 rounded"
-                  >
-                    Delete
-                  </Button></ButtonsContainer>
+                    color='var(--primary)'
+                  />
+  
+                <DeleteButton 
+                title={"Confirm Delete"} 
+                question= {"Are you sure you want to delete this investment?"} 
+                onAccept={()=> handleDelete(inv.id)}/>
+                </ButtonsContainer>
                 </TableTd>
               </tr>
             ))}
@@ -136,7 +113,7 @@ export const InvestmentTable = () => {
 
                 isEditorVisible && <InvestmentEditor id={selectedInvestmentId}
                  setShowEditor={setEditorVisible} showEditor={isEditorVisible}
-                 editorMode="edit" onSaved={fetchInvestments}/>
+                 editorMode="edit" onSaved={onRefetch}/>
               }
             </div>
       </div>

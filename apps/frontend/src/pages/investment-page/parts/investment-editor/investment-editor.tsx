@@ -228,7 +228,7 @@ export const InvestmentEditor = ({
           </>
         )}
 
-        <Button type="submit" mt="md">
+        <Button className='button-primary' type="submit" mt="md">
           Save
         </Button>
       </form>
