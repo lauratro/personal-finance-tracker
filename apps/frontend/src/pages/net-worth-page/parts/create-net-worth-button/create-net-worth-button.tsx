@@ -9,7 +9,7 @@ type CreateNetWorthButtonProps = {
 export const CreateNetWorthButton = ({ onCreated }: CreateNetWorthButtonProps) => {
     const [showForm, setShowForm] = useState(false);
     return (
-         <div className="mb-6">
+         <div className="mb-0 mt-6 md:mt-0 md:mb-6">
                 <Button
                   onClick={() => setShowForm(!showForm)}
                   className="px-4 py-2 button-primary text-white rounded"

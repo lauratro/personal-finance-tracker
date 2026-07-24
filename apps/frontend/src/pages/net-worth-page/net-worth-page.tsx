@@ -51,7 +51,7 @@ if (loadingYears) {
       title="Net Worth"
       description="Track your investment performance over time."
     >
-      <div className="flex justify-between items-center mb-4 px-4">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-0 md:mb-4 px-4">
       <MainIndicators />
       <CreateNetWorthButton onCreated={refreshSnapshots} />
       </div>
