@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { AppMenubar } from '../../components/ui/app-menubar/app-menubar';
-import { Wrapper, PageContent } from './page-container.style';
+import { Wrapper, PageContent  } from './page-container.style';
 
 interface PageContainerProps {
   title: string;
@@ -17,12 +17,12 @@ export const PageContainer = ({
     <Wrapper>
       <AppMenubar />
   
-      <main className="mx-auto w-full max-w-7xl px-4 py-4 md:px-6 md:py-8">
-        <div className="mb-4 mx-4">
+      <main className="mx-auto w-full px-2 pt-6 pb-4 md:px-6 md:py-8">
+        <div className="mb-4 mx-4 pt-4 mt-[50px] md:mt-[70px]">
           <h1>{title}</h1>
         
           {description ? <p>{description}</p> : null}
-        </div>
+        </div >
 
         <PageContent>{children}</PageContent>
       </main>

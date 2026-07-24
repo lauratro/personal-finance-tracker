@@ -64,7 +64,7 @@ const totals = useMemo(
   const previousYearLastMonthTotal = previousSnapshot ? previousSnapshot.items.reduce((sum, item) => sum + Number(item.value), 0) : null;
 
   return (
-  <div className="p-4">
+  <div className="p-0 md:p-4">
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
       {totals.map(({ snapshot, total }, index) => {
         const previousTotal = index > 0 ? totals[index - 1].total : null;
@@ -74,7 +74,7 @@ const totals = useMemo(
         return (
           <div
             key={snapshot.id}
-            className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
+            className="rounded-2xl border border-gray-200 bg-white p-2 md:p-5 shadow-sm"
           >
             <div className="mb-5 flex items-start justify-between gap-4">
               <div>
@@ -128,14 +128,14 @@ const totals = useMemo(
                     className="group flex items-center justify-between rounded-xl border border-gray-100 px-3 py-2 hover:bg-gray-50"
                   >
                     <div>
-                      <p className="font-medium">{item.name}</p>
+                      <p className="text-sm md:text-base">{item.name}</p>
                       <p className="text-xs text-gray-500">
                         {item.category}
                       </p>
                     </div>
 
-                    <div className="flex items-center gap-3">
-                      <span className="font-semibold">
+                    <div className="flex items-center md:gap-3">
+                      <span className="font-semibold text-sm md:text-base">
                         {formatCurrency(Number(item.value))}
                       </span>
 

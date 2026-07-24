@@ -8,6 +8,4 @@ export const Wrapper = styled.div`
 export const PageContent = styled.div`
   display: grid;
   gap: 1.5rem;
-
-
 `
