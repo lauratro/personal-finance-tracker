@@ -11,3 +11,7 @@ export const ButtonsContainer= styled.div`
   justify-content: space-around;
   width: 100%
 `;
+
+export const  HeaderCell = styled.thead`
+background: var(--primary-background)
+`

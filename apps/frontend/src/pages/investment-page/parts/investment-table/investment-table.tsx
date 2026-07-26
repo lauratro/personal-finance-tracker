@@ -3,7 +3,7 @@ import {
   deleteInvestmentHistory,
 } from '../../../../pages-apis/investment-history';
 import { InvestmentEditor } from '../investment-editor';
-import { TableTd , ButtonsContainer} from './investment-table.style';
+import { TableTd , ButtonsContainer, HeaderCell} from './investment-table.style';
 import { DeleteButton } from '@/components/delete-button';
 import { IconEdit } from '@tabler/icons-react';
 import { InvestmentTableProps } from './investment-table.types';
@@ -35,7 +35,7 @@ export const InvestmentTable = ({investments, isLoading, onRefetch}: InvestmentT
         {
   isLoading ?    <p>Loading...</p> : investments.length > 0 ? (
         <table className="w-full border-collapse border border-gray-300">
-          <thead className="bg-gray-100">
+          <HeaderCell className="bg-green">
             <tr>
               <th className="border p-2 text-center">Name</th>
               <th className="border p-2 text-center">Type</th>
@@ -51,7 +51,7 @@ export const InvestmentTable = ({investments, isLoading, onRefetch}: InvestmentT
               <th className="border p-2 text-center">Income %</th>
               <th className="border p-2 text-center">Actions</th>
             </tr>
-          </thead>
+          </HeaderCell>
           <tbody>
             {investments.map((inv) => (
               <tr key={inv.id} className="hover:bg-gray-50">
