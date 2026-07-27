@@ -28,8 +28,8 @@ export const InvestmentTable = ({investments, isLoading, onRefetch}: InvestmentT
   };
 
     return (
-            <div className="p-4">
-     <div className="overflow-x-auto">
+            <div className="p-4 overflow-x-scroll">
+     <div>
         {
           isLoading ? 
           <p>Loading...</p> 
