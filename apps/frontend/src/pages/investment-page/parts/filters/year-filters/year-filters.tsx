@@ -1,5 +1,4 @@
 import { DateTimePicker } from '@mantine/dates';
-
 import { useInvestmentHistoryFilter } from '@/pages/investment-page/investments-context/investment-history-filter-context';
 
 export const YearFilters = () => {

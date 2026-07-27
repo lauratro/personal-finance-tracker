@@ -5,6 +5,7 @@ import App from './App';
 import { AuthProvider } from './pages-apis/auth/auth-context';
 import { MantineProvider } from '@mantine/core';
 import '@mantine/core/styles.css';
+import '@mantine/dates/styles.css';
 import './styles.css';
 import { InvestmentHistoryFilterProvider } from './pages/investment-page/investments-context/investment-history-filter-context';
 

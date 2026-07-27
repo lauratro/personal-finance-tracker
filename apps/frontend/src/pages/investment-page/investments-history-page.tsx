@@ -8,7 +8,7 @@ import {
 import { useState, useEffect } from 'react';
 import { useInvestmentHistoryFilter } from './investments-context/investment-history-filter-context';
 import { YearFilters } from './parts/filters/year-filters';
-
+import { TotalIncomeDisplayer } from './parts/total-income-displayer';
 
 export const InvestmentsHistoryPage = () => {
   const [investments, setInvestments] = useState<InvestmentHistory[]>([]);
@@ -37,6 +37,7 @@ export const InvestmentsHistoryPage = () => {
     >
       <InvestmentCreateButton onCreated={fetchInvestments}/>
       <YearFilters/>
+      <TotalIncomeDisplayer investments ={investments}/>
       <InvestmentTable investments={investments} onRefetch={fetchInvestments} isLoading={loading}/>
     </PageContainer>
   );
