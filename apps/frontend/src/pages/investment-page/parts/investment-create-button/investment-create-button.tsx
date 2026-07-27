@@ -8,7 +8,7 @@ type InvestmentCreateButtonProps = {
 export const InvestmentCreateButton = ({ onCreated }: InvestmentCreateButtonProps) => {
     const [showForm, setShowForm] = useState(false);
     return (
-         <div className="mb-6 p-4">
+         <div className="p-4">
                 <Button
                   onClick={() => setShowForm(!showForm)}
                   className="button-primary"

@@ -5,10 +5,11 @@ export const YearFilters = () => {
   const { filters, setFilters } = useInvestmentHistoryFilter();
 
   return (
-    <div>
+    <div className='px-4 flex content-center'>
+     <p className='self-center font-medium'>Bought Date</p>
       <DateTimePicker
-        label="From"
-        placeholder="Select start date"
+      className='mx-4'
+        placeholder="From Date ..."
         value={filters.fromDate ?? undefined}
         onChange={(value) =>
           setFilters((previousFilters) => ({
@@ -21,8 +22,7 @@ export const YearFilters = () => {
       />
 
       <DateTimePicker
-        label="Until"
-        placeholder="Select end date"
+        placeholder="Until Date ..."
         value={filters.untilDate ?? undefined}
         onChange={(value) =>
           setFilters((previousFilters) => ({

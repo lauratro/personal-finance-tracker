@@ -7,9 +7,9 @@ export const TotalIncomeDisplayer = ({investments}: TotalIncomeDisplayerProps) =
     0
   );
     return (
-        <div className="flex w-full justify-end">
+        <div className="flex w-full justify-start">
         <Card className="mx-4 border-primary p-4">
-            Total Income: {total} €
+            <div><span className="font-bold">Total Income:</span> <span>{total} €</span></div>
         </Card></div>
     )
 
