@@ -3,18 +3,22 @@ import { InvestmentCreateButton } from './parts/investment-create-button/investm
 import { InvestmentTable } from './parts/investment-table/investment-table';
 import {
   InvestmentHistory,
-  getInvestmentHistories,
+  searchInvestmentHistories,
 } from '../../pages-apis/investment-history';
 import { useState, useEffect } from 'react';
+import { useInvestmentHistoryFilter } from './investments-context/investment-history-filter-context';
+import { YearFilters } from './parts/filters/year-filters';
+
 
 export const InvestmentsHistoryPage = () => {
   const [investments, setInvestments] = useState<InvestmentHistory[]>([]);
   const [loading, setLoading] = useState(false);
+  const {filters} = useInvestmentHistoryFilter()
 
   const fetchInvestments = async () => {
     try {
       setLoading(true);
-      const data = await getInvestmentHistories();
+      const data = await searchInvestmentHistories(filters.fromDate, filters.untilDate);
       setInvestments(data);
     } finally {
       setLoading(false);
@@ -22,8 +26,9 @@ export const InvestmentsHistoryPage = () => {
   };
 
   useEffect(() => {
-    fetchInvestments();
-  }, []);
+    fetchInvestments()
+    ;
+  }, [filters]);
 
   return (
     <PageContainer
@@ -31,6 +36,7 @@ export const InvestmentsHistoryPage = () => {
       description="Track your investment performance over time."
     >
       <InvestmentCreateButton onCreated={fetchInvestments}/>
+      <YearFilters/>
       <InvestmentTable investments={investments} onRefetch={fetchInvestments} isLoading={loading}/>
     </PageContainer>
   );

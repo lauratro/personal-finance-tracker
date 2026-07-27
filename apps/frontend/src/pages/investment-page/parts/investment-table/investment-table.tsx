@@ -27,13 +27,13 @@ export const InvestmentTable = ({investments, isLoading, onRefetch}: InvestmentT
     setEditorVisible(true);
   };
 
-
     return (
-
             <div className="p-4">
      <div className="overflow-x-auto">
         {
-  isLoading ?    <p>Loading...</p> : investments.length > 0 ? (
+          isLoading ? 
+          <p>Loading...</p> 
+          : investments.length > 0 ? (
         <table className="w-full border-collapse border border-gray-300">
           <HeaderCell className="bg-green">
             <tr>

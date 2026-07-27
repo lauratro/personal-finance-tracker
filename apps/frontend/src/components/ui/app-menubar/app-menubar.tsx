@@ -10,7 +10,6 @@ import { IconMenu2 } from '@tabler/icons-react';
 export function AppMenubar() {
   const { user, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  console.log("mobile", isMobileMenuOpen);
   return (
     <AppMenuWrapper>
       <IconMenu2 color={"var(--primary)"} onClick={() => setIsMobileMenuOpen((prev) => !prev)}

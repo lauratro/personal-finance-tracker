@@ -31,6 +31,13 @@ export function updateInvestmentHistory(id: string, payload: UpdateInvestmentHis
   });
 }
 
+export function searchInvestmentHistories(fromDate?: string, untilDate?: string) {
+return http<InvestmentHistory[]>(`/investment-history/by-period?fromDate=${fromDate}&untilDate=${untilDate}`, {
+  method: "GET",
+}
+)
+}
+
 export function deleteInvestmentHistory(id: string) {
   return http<void>(`/investment-history/${id}`, {
     method: 'DELETE',
