@@ -6,6 +6,7 @@ import { DeleteInvestmentService } from './logic/delete-investment.service';
 import { GetInvestmentService } from './logic/get-investment.service';
 import { ListInvestmentsService } from './logic/list-investments.service';
 import { UpdateInvestmentService } from './logic/update-investment.service';
+import { SearchInvestmentByYearsService } from './logic/search-investment-by-years.service';
 
 @Module({
   imports: [PrismaModule],
@@ -16,6 +17,7 @@ import { UpdateInvestmentService } from './logic/update-investment.service';
     GetInvestmentService,
     ListInvestmentsService,
     UpdateInvestmentService,
+    SearchInvestmentByYearsService
   ],
 })
 export class InvestmentHistoryModule {}

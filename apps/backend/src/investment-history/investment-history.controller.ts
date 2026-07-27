@@ -9,6 +9,8 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  Query,
+  NotAcceptableException
 } from '@nestjs/common';
 import { CreateInvestmentHistoryDto } from './dto/create-investment-history.dto';
 import { UpdateInvestmentHistoryDto } from './dto/update-investment-history.dto';
@@ -19,6 +21,7 @@ import { DeleteInvestmentService } from './logic/delete-investment.service';
 import { GetInvestmentService } from './logic/get-investment.service';
 import { ListInvestmentsService } from './logic/list-investments.service';
 import { UpdateInvestmentService } from './logic/update-investment.service';
+import { SearchInvestmentByYearsService} from './logic/search-investment-by-years.service';
 
 @Controller('investment-history')
 @UseGuards(JwtAuthGuard)
@@ -29,6 +32,7 @@ export class InvestmentHistoryController {
     private readonly getInvestment: GetInvestmentService,
     private readonly updateInvestment: UpdateInvestmentService,
     private readonly deleteInvestment: DeleteInvestmentService,
+    private readonly searchInvestment: SearchInvestmentByYearsService
   ) {}
 
   @Post()
@@ -43,6 +47,37 @@ export class InvestmentHistoryController {
   @Get()
   async findAll(@CurrentUser('sub') userId: string) {
     return this.listInvestments.execute(userId);
+  }
+
+@Get('by-period')
+  async findByPeriod(
+    @CurrentUser('sub') userId: string,
+    @Query('fromDate') fromDate?: string,
+    @Query('untilDate') untilDate?: string,
+  ) {
+    const parsedFromDate = fromDate
+      ? this.parseDate(fromDate, 'fromDate')
+      : undefined;
+
+    const parsedUntilDate = untilDate
+      ? this.parseDate(untilDate, 'untilDate')
+      : undefined;
+
+    return this.searchInvestment.search(
+      userId,
+      parsedFromDate,
+      parsedUntilDate,
+    );
+  }
+
+  private parseDate(value: string, field: string):  Date | undefined {
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+      return undefined
+    }
+
+    return date;
   }
 
   @Get(':id')
