@@ -10,6 +10,7 @@ import { useInvestmentHistoryFilter } from './investments-context/investment-his
 import { YearFilters } from './parts/filters/year-filters';
 import { TotalIncomeDisplayer } from './parts/total-income-displayer';
 import { RealizedIncomeByYearChart } from './parts/charts/realized-income-by-year';
+import { MonthlyIncomeSpecificYearChart } from './parts/charts/monthly-income-specific-year';
 
 export const InvestmentsHistoryPage = () => {
   const [investments, setInvestments] = useState<InvestmentHistory[]>([]);
@@ -38,6 +39,7 @@ export const InvestmentsHistoryPage = () => {
     >
       <TotalIncomeDisplayer investments ={investments}/>
       <RealizedIncomeByYearChart/>
+      <MonthlyIncomeSpecificYearChart/>
       <InvestmentCreateButton onCreated={fetchInvestments}/>
       <YearFilters/>
       <InvestmentTable investments={investments} onRefetch={fetchInvestments} isLoading={loading}/>
