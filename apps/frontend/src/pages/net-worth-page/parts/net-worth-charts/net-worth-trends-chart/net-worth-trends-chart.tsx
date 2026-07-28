@@ -55,7 +55,7 @@ export const NetWorthTrendChart = () => {
 
             <YAxis
               tickFormatter={(value) =>
-                new Intl.NumberFormat('it-IT', {
+                new Intl.NumberFormat('en-EN', {
                   notation: 'compact',
                   compactDisplay: 'short',
                 }).format(Number(value))
