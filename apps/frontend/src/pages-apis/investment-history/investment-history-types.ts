@@ -42,3 +42,19 @@ export type UpdateInvestmentHistoryPayload = Partial<CreateInvestmentHistoryPayl
   salePrice?: number | null;
   taxes?: number | null;
 };
+
+export interface YearlyIncomes {
+    year: number
+    income: number
+}[]
+
+export interface MonthlyIncomes {
+    month: number;
+    income: number;
+}[]
+
+export type InvestmentAnalytics = {
+      selectedYear: number,
+      yearlyIncome: YearlyIncomes,
+      monthlyIncome: MonthlyIncomes,
+}

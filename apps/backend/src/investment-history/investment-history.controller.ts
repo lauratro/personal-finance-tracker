@@ -22,6 +22,8 @@ import { GetInvestmentService } from './logic/get-investment.service';
 import { ListInvestmentsService } from './logic/list-investments.service';
 import { UpdateInvestmentService } from './logic/update-investment.service';
 import { SearchInvestmentByYearsService} from './logic/search-investment-by-years.service';
+import { InvestmentIncomeAnalyticsService } from './logic/analytics/investment-income-analytics.service';
+import { InvestmentIncomeAnalyticsQueryDto } from './dto/investment-analytics.dto';
 
 @Controller('investment-history')
 @UseGuards(JwtAuthGuard)
@@ -32,7 +34,8 @@ export class InvestmentHistoryController {
     private readonly getInvestment: GetInvestmentService,
     private readonly updateInvestment: UpdateInvestmentService,
     private readonly deleteInvestment: DeleteInvestmentService,
-    private readonly searchInvestment: SearchInvestmentByYearsService
+    private readonly searchInvestment: SearchInvestmentByYearsService,
+    private readonly investmentIncomeAnalyticsService: InvestmentIncomeAnalyticsService
   ) {}
 
   @Post()
@@ -84,6 +87,17 @@ export class InvestmentHistoryController {
   async findOne(@Param('id') id: string, @CurrentUser('sub') userId: string) {
     return this.getInvestment.execute(id, userId);
   }
+
+  @Get('analytics/income')
+  getIncomeAnalytics(
+  @CurrentUser('id') userId: string,
+    @Query() query: InvestmentIncomeAnalyticsQueryDto,
+) {
+  return this.investmentIncomeAnalyticsService.get(
+    userId,
+    query.year
+  )
+}
 
   @Patch(':id')
   async update(

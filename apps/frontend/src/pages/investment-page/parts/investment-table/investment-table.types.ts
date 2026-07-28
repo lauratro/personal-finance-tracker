@@ -1,6 +1,6 @@
 import { InvestmentHistory } from "@/pages-apis/investment-history";
 export interface InvestmentTableProps {
     investments: InvestmentHistory[];
-     isLoading: boolean;
+    isLoading: boolean;
     onRefetch: () => void;
 }

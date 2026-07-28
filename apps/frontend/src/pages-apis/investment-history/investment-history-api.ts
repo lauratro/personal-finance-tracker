@@ -3,6 +3,7 @@ import {
   InvestmentHistory,
   CreateInvestmentHistoryPayload,
   UpdateInvestmentHistoryPayload,
+  InvestmentAnalytics
 } from './investment-history-types';
 
 export function createInvestmentHistory(payload: CreateInvestmentHistoryPayload) {
@@ -36,6 +37,23 @@ return http<InvestmentHistory[]>(`/investment-history/by-period?fromDate=${fromD
   method: "GET",
 }
 )
+}
+
+export function getInvestmentIncomeAnalytics(year?: number) {
+  const params = new URLSearchParams();
+
+  if (year !== undefined) {
+    params.set('year', String(year));
+  }
+
+  const query = params.toString();
+
+  return http<InvestmentAnalytics>(
+    `/investment-history/analytics/income${query ? `?${query}` : ''}`,
+    {
+      method: 'GET',
+    },
+  );
 }
 
 export function deleteInvestmentHistory(id: string) {
