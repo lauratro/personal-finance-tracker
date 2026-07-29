@@ -12,35 +12,6 @@ enum UserRole {
   ADMIN
 }
 
-enum AccountType {
-  CASH
-  CHECKING
-  SAVINGS
-  CREDIT_CARD
-  INVESTMENT
-  CRYPTO
-  OTHER
-}
-
-enum CategoryType {
-  INCOME
-  EXPENSE
-  TRANSFER
-}
-
-enum TransactionType {
-  INCOME
-  EXPENSE
-  TRANSFER
-  BUY
-  SELL
-  DIVIDEND
-  FEE
-  INTEREST
-  DEPOSIT
-  WITHDRAWAL
-}
-
 enum AssetType {
   STOCK
   ETF
@@ -51,152 +22,59 @@ enum AssetType {
   OTHER
 }
 
-enum MarketDataProvider {
-  MANUAL
-  YAHOO_FINANCE
-  ALPHA_VANTAGE
-  TWELVE_DATA
-  OTHER
-}
-
-
 model User {
-  id               String         @id @default(uuid())
-  email            String         @unique
-  passwordHash     String
-  firstName        String?
-  lastName         String?
-  role             UserRole       @default(USER)
-  twoFactorEnabled Boolean        @default(false)
-  twoFactorSecret  String?
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
-  accounts         Account[]
-  categories       Category[]
-  transactions     Transaction[]
-  budgetMonths     BudgetMonth[]
-  portfolios       Portfolio[]
-  refreshTokens    RefreshToken[]
-  investments      Investment[]
+  id                String             @id @default(uuid())
+  email             String             @unique
+  passwordHash      String
+  firstName         String?
+  lastName          String?
+  role              UserRole           @default(USER)
+  twoFactorEnabled  Boolean            @default(false)
+  twoFactorSecret   String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  refreshTokens     RefreshToken[]
+  investments       Investment[]
   netWorthSnapshots NetWorthSnapshot[]
+  dashboard         Dashboard?
 }
 
 model RefreshToken {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   userId    String
   tokenHash String
   userAgent String?
   ipAddress String?
   expiresAt DateTime
   revokedAt DateTime?
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, revokedAt])
   @@index([expiresAt])
 }
 
 model Investment {
-  id                 String     @id @default(uuid())
-  userId             String
-  name               String
-  assetType          AssetType
-  boughtDate         DateTime
+  id                  String    @id @default(uuid())
+  userId              String
+  name                String
+  assetType           AssetType
+  boughtDate          DateTime
   totalAmountInvested Decimal   @db.Decimal(18, 2)
-  costSingleStock    Decimal   @db.Decimal(18, 4)
-  quantity           Decimal   @db.Decimal(24, 8)
-  plannedPriceToSell Decimal?  @db.Decimal(18, 4)
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
-  saleDate           DateTime?
-  salePrice          Decimal?  @db.Decimal(18, 4)
-  taxes              Decimal?  @db.Decimal(18, 4)
-  income             Decimal?  @db.Decimal(18, 2)
-  percentageIncome   Decimal?  @db.Decimal(18, 2)
-  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  costSingleStock     Decimal   @db.Decimal(18, 4)
+  quantity            Decimal   @db.Decimal(24, 8)
+  plannedPriceToSell  Decimal?  @db.Decimal(18, 4)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  saleDate            DateTime?
+  salePrice           Decimal?  @db.Decimal(18, 4)
+  taxes               Decimal?  @db.Decimal(18, 4)
+  income              Decimal?  @db.Decimal(18, 2)
+  percentageIncome    Decimal?  @db.Decimal(18, 2)
+  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
-
-model Account {
-  id                String        @id @default(uuid())
-  userId            String
-  name              String
-  type              AccountType
-  currency          String        @default("EUR")
-  institution       String?
-  balance           Decimal       @default(0) @db.Decimal(18, 2)
-  includeInNetWorth Boolean       @default(true)
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
-  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  transactions      Transaction[]
-  linkedPortfolios  Portfolio[]   @relation("BrokerAccountPortfolio")
-
-  @@unique([userId, name])
-  @@index([userId, type])
-}
-
-model Category {
-  id           String                @id @default(uuid())
-  userId       String
-  name         String
-  type         CategoryType
-  color        String?
-  icon         String?
-  isSystem     Boolean               @default(false)
-  createdAt    DateTime              @default(now())
-  updatedAt    DateTime              @updatedAt
-  user         User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  transactions Transaction[]
-  budgetLimits BudgetCategoryLimit[]
-
-  @@unique([userId, name, type])
-  @@index([userId, type])
-}
-
-model BudgetMonth {
-  id             String                @id @default(uuid())
-  userId         String
-  monthStart     DateTime
-  incomePlanned  Decimal               @default(0) @db.Decimal(18, 2)
-  expensePlanned Decimal               @default(0) @db.Decimal(18, 2)
-  createdAt      DateTime              @default(now())
-  updatedAt      DateTime              @updatedAt
-  user           User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  limits         BudgetCategoryLimit[]
-  items          BudgetItem[]
-
-  @@unique([userId, monthStart])
-  @@index([userId, monthStart])
-}
-
-model BudgetItem {
-  id            String      @id @default(uuid())
-  budgetMonthId String
-  name          String
-  category      AccountType
-  value         Decimal     @db.Decimal(18, 2)
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  budgetMonth   BudgetMonth @relation(fields: [budgetMonthId], references: [id], onDelete: Cascade )
-
-  @@index([budgetMonthId, category])
-}
-
-model BudgetCategoryLimit {
-  id            String      @id @default(uuid())
-  budgetMonthId String
-  categoryId    String
-  amount        Decimal     @default(0) @db.Decimal(18, 2)
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  budgetMonth   BudgetMonth @relation(fields: [budgetMonthId], references: [id], onDelete: Cascade)
-  category      Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-
-  @@unique([budgetMonthId, categoryId])
-}
-
 
 enum NetWorthCategory {
   CHECKING_ACCOUNT
@@ -209,108 +87,64 @@ enum NetWorthCategory {
 }
 
 model NetWorthSnapshot {
-  id            String         @id @default(uuid())
-  userId        String
-  monthStart    DateTime
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items         NetWorthItem[]
+  id         String         @id @default(uuid())
+  userId     String
+  monthStart DateTime
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items      NetWorthItem[]
 
   @@unique([userId, monthStart])
   @@index([userId, monthStart])
 }
 
 model NetWorthItem {
-  id          String           @id @default(uuid())
-  snapshotId  String
-  name        String
-  category    NetWorthCategory
-  value       Decimal          @db.Decimal(18, 2)
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
-  snapshot    NetWorthSnapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+  id         String           @id @default(uuid())
+  snapshotId String
+  name       String
+  category   NetWorthCategory
+  value      Decimal          @db.Decimal(18, 2)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+  snapshot   NetWorthSnapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
 
   @@index([snapshotId, category])
 }
 
-model Portfolio {
-  id             String             @id @default(uuid())
-  userId         String
-  name           String
-  baseCurrency   String             @default("EUR")
-  brokerAccountId String?
-  createdAt      DateTime           @default(now())
-  updatedAt      DateTime           @updatedAt
-  user           User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  brokerAccount  Account?           @relation("BrokerAccountPortfolio", fields: [brokerAccountId], references: [id], onDelete: SetNull)
-  holdings       Holding[]
-  marketSnapshots MarketSnapshot[]
-  transactions   Transaction[]
+model Dashboard {
+  id              String            @id @default(uuid())
+  userId          String            @unique
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
 
-  @@unique([userId, name])
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  widgets DashboardWidget[]   
+  
 }
 
-model Holding {
-  id          String    @id @default(uuid())
-  portfolioId String
-  symbol      String
-  name        String?
-  assetType   AssetType
-  quantity    Decimal   @default(0) @db.Decimal(24, 8)
-  averageCost Decimal   @default(0) @db.Decimal(18, 4)
-  currency    String    @default("EUR")
-  exchange    String?
+model DashboardWidget {
+  id           String        @id @default(uuid())
+  dashboardId  String
+  type         String
+
+  x            Int
+  y            Int
+  width        Int
+  height       Int
+
+  minWidth     Int?
+  maxWidth     Int?
+  minHeight    Int?
+  maxHeight    Int?
+
+
+  configuration Json?
+
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
 
-  @@unique([portfolioId, symbol])
-  @@index([symbol])
-}
+  dashboard   Dashboard @relation(fields: [dashboardId], references:[id], onDelete: Cascade)
 
-model MarketSnapshot {
-  id          String             @id @default(uuid())
-  portfolioId String
-  symbol      String
-  provider    MarketDataProvider @default(MANUAL)
-  price       Decimal            @db.Decimal(18, 4)
-  currency    String             @default("EUR")
-  priceDate   DateTime
-  capturedAt  DateTime           @default(now())
-  portfolio   Portfolio          @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
-
-  @@index([portfolioId, priceDate])
-  @@index([symbol, priceDate])
-}
-
-model Transaction {
-  id            String          @id @default(uuid())
-  userId        String
-  accountId     String
-  categoryId    String?
-  portfolioId   String?
-  type          TransactionType
-  amount        Decimal         @db.Decimal(18, 2)
-  quantity      Decimal?        @db.Decimal(24, 8)
-  unitPrice     Decimal?        @db.Decimal(18, 4)
-  fee           Decimal?        @db.Decimal(18, 2)
-  currency      String          @default("EUR")
-  occurredAt    DateTime
-  merchant      String?
-  description   String?
-  externalId    String?
-  transferGroup String?
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  account       Account         @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  category      Category?       @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  portfolio     Portfolio?      @relation(fields: [portfolioId], references: [id], onDelete: SetNull)
-
-  @@index([userId, occurredAt])
-  @@index([accountId, occurredAt])
-  @@index([categoryId, occurredAt])
-  @@index([portfolioId, occurredAt])
-  @@index([type, occurredAt])
+  @@index([id])
 }
