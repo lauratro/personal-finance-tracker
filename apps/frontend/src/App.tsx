@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { ProtectedRoute } from './components/protected-route';
-import { DashboardPage } from './pages/dashboard-page';
+import { DashboardPage } from './pages/dashboard-page/dashboard-page';
 import { InvestmentsHistoryPage } from './pages/investment-page/investments-history-page';
 import { LoginPage } from './pages/login-page';
 import { RegisterPage } from './pages/register-page';
