@@ -78,7 +78,7 @@ const saveLayout = async (newLayout: Layout) => {
 
 return (
     <div>
-        <div className='m-4'>
+        <div className='my-4'>
          <AddWidgetSelector onAdd={addWidget}/> </div>
                  <div ref={containerRef}>
           {mounted && (

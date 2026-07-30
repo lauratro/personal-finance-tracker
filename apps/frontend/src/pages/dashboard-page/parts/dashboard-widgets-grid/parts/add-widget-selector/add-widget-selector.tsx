@@ -6,7 +6,7 @@ import {
   dashboardWidgetRegistry,
 } from '../../../dashboard-widgets/dashboard-widget.registry';
 import {AddWidgetSelectorProps} from "./add-widget-selector.types"
-
+import { ButtonPrimary } from '@/components/ui/button-primary';
 
 export const AddWidgetSelector = ({
   onAdd,
@@ -42,12 +42,12 @@ export const AddWidgetSelector = ({
 
   if (!isOpen) {
     return (
-      <Button
+      <ButtonPrimary
         leftSection={<IconPlus size={18} />}
         onClick={() => setIsOpen(true)}
       >
         Add widget
-      </Button>
+      </ButtonPrimary>
     );
   }
 
@@ -65,13 +65,13 @@ export const AddWidgetSelector = ({
         }
       />
 
-      <Button
+      <ButtonPrimary
         onClick={handleAdd}
         loading={isCreating}
         disabled={!selectedType}
       >
         Add
-      </Button>
+      </ButtonPrimary>
 
       <Button
         variant="default"

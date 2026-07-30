@@ -37,9 +37,9 @@ export const NavLink = styled(Link)`
 
 export const LogoutButton = styled.button`
   border: 1px solid rgba(95, 158, 160, 0.4);
-  background: rgba(95, 158, 160, 0.4);
+  background: var(--primary);
   font-weight: 700;
-  color: #0f172a;
+  color: white;
   cursor: pointer;
    padding: 0.75rem 1rem;
   border-radius: 14px;
