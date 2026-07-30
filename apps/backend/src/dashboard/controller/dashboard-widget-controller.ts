@@ -25,7 +25,7 @@ import { GetDashboardWidgetsService } from '../logic/get-dashboard-widgets-servi
 export class DashboardWidgetController {
     constructor(
         private readonly createDashboardWidgetService: CreateDashboardWidget,
-        private readonly getDashboardWidgetService: GetDashboardWidgetsService,
+        private readonly getDashboardWidgetsService: GetDashboardWidgetsService,
         private readonly editDashboardWidgetService: EditDashboardWidgetService,
         private readonly deleteDashboardWidgetService: DeleteDashboardWidget
     ) {}
@@ -40,7 +40,7 @@ export class DashboardWidgetController {
 
     @Get()
     async get(@CurrentUser("sub") userId: string) {
-        return this.getDashboardWidgetService.get(userId)
+        return this.getDashboardWidgetsService.get(userId)
     }
 
     @Patch(":widgetId")
