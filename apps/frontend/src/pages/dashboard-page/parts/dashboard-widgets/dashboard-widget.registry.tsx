@@ -11,7 +11,7 @@ export const dashboardWidgetRegistry = {
     label: 'Realized income by month',
     component: MonthlyIncomeSpecificYearChart,
   },
-  networthTrends:{
+  netWorthTrend:{
     label: "Networth Trends",
     component: NetWorthTrendChart
   }

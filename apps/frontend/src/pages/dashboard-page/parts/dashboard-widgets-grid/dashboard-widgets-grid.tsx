@@ -63,14 +63,14 @@ const layout = userWidgets.map((widget) => ({
    }
     
 
-   const saveLayout = async (layout: any) => {
-      await Promise.all(
-    layout.map((item: DashboardWidgetItem) =>
-      editDashboardWidget(item.id, {
+const saveLayout = async (newLayout: Layout) => {
+  await Promise.all(
+    newLayout.map((item) =>
+      editDashboardWidget(item.i, {
         x: item.x,
         y: item.y,
-        width: item.width,
-        height: item.height,
+        width: item.w,
+        height: item.h,
       }),
     ),
   );
