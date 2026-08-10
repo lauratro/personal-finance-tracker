@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { PrismaModule } from '../../prisma/prisma.module';
+import { PrismaModule } from '../../../prisma/prisma.module';
 import { CreateNetWorthItemService } from './../logic/create-net-worth-item-service';
 import { CreateNetWorthService } from '../logic/create-net-worth-service';
 import { UpdateNetWorthItemService } from './../logic/update-net-worth-item-service';
