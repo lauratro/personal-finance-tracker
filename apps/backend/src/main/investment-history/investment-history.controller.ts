@@ -10,12 +10,11 @@ import {
   HttpCode,
   HttpStatus,
   Query,
-  NotAcceptableException
 } from '@nestjs/common';
 import { CreateInvestmentHistoryDto } from './dto/create-investment-history.dto';
 import { UpdateInvestmentHistoryDto } from './dto/update-investment-history.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { JwtAuthGuard } from '../../main/auth/guards/jwt-auth.guard';
+import { CurrentUser } from '../../main/auth/decorators/current-user.decorator';
 import { CreateInvestmentService } from './logic/create-investment.service';
 import { DeleteInvestmentService } from './logic/delete-investment.service';
 import { GetInvestmentService } from './logic/get-investment.service';

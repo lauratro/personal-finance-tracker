@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from '../../prisma/prisma.service';
+import { PrismaService } from '../../../prisma/prisma.service';
 import { calculateInvestmentIncome } from '../utils/calculate-investment-income';
 import { UpdateInvestmentHistoryDto } from '../dto/update-investment-history.dto';
 

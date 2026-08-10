@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { InvestmentHistoryController } from './investment-history.controller';
-import { PrismaModule } from '../prisma/prisma.module';
+import { PrismaModule } from '../../prisma/prisma.module';
 import { CreateInvestmentService } from './logic/create-investment.service';
 import { DeleteInvestmentService } from './logic/delete-investment.service';
 import { GetInvestmentService } from './logic/get-investment.service';
