@@ -1,5 +1,7 @@
-import { Select } from '@mantine/core';
-import { IconGripVertical, IconTrash } from '@tabler/icons-react';
+import {
+  IconGripVertical,
+  IconTrash,
+} from '@tabler/icons-react';
 
 import {
   DashboardWidgetType,
@@ -8,30 +10,19 @@ import {
 
 type DashboardWidgetProps = {
   widgetId: string;
-  type?: DashboardWidgetType;
-  onSelect: (
-    widgetId: string,
-    widgetType: DashboardWidgetType,
-  ) => void;
+  type: DashboardWidgetType;
   onRemove: (widgetId: string) => void;
 };
 
 export const DashboardWidget = ({
   widgetId,
   type,
-  onSelect,
   onRemove,
 }: DashboardWidgetProps) => {
-  const WidgetComponent = type
-    ? dashboardWidgetRegistry[type].component
-    : null;
+  const configuration =
+    dashboardWidgetRegistry[type];
 
-  const options = Object.entries(dashboardWidgetRegistry).map(
-    ([value, configuration]) => ({
-      value,
-      label: configuration.label,
-    }),
-  );
+  const WidgetComponent = configuration.component;
 
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
@@ -44,20 +35,9 @@ export const DashboardWidget = ({
           <IconGripVertical size={20} />
         </button>
 
-        <Select
-          className="flex-1"
-          placeholder="Select chart"
-          data={options}
-          value={type ?? null}
-          onChange={(value) => {
-            if (value) {
-              onSelect(
-                widgetId,
-                value as DashboardWidgetType,
-              );
-            }
-          }}
-        />
+        <div className="flex-1 font-medium">
+          {configuration.label}
+        </div>
 
         <button
           type="button"
@@ -69,13 +49,7 @@ export const DashboardWidget = ({
       </div>
 
       <div className="min-h-0 flex-1 overflow-hidden p-3">
-        {WidgetComponent ? (
-          <WidgetComponent />
-        ) : (
-          <div className="flex h-full items-center justify-center text-sm text-gray-500">
-            Select a chart to display
-          </div>
-        )}
+        <WidgetComponent />
       </div>
     </div>
   );

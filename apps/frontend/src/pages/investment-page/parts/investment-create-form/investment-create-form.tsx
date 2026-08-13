@@ -44,7 +44,7 @@ export const InvestmentCreateForm = () => {
          onClick={() => setShowForm(!showForm)}
          className="button-primary"
         >
-          {showForm ? 'Cancel' : 'Add Investmentt'}
+          {showForm ? 'Cancel' : 'Add Investment'}
         </Button>
 
 

@@ -25,7 +25,7 @@ export type DashboardWidgetItem = DashboardWidgetBase & {
 
 export type CreateDashboardWidgetItem =
   DashboardWidgetBase & {
-type: DashboardWidgetType;
+ type: DashboardWidgetType;
   }
 
 

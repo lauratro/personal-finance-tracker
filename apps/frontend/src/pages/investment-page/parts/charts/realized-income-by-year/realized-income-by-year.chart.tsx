@@ -29,15 +29,12 @@ const chartData = allYearsArray.map(({ year, income }) => ({
   year: year.toString(),
   income: income,
 }));
-  return   <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+  return <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
       <div className="mb-5">
         <h3 className="text-lg font-semibold">Realized income by year</h3>
 
       </div>
-
-
     <div className="h-[350px]">
-
     <ResponsiveContainer width="100%" height="100%">
       <StyledLineChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
