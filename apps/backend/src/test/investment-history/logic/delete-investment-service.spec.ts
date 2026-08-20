@@ -1,21 +1,13 @@
 import { PrismaService } from '../../../prisma/prisma.service';
 import { DeleteInvestmentService } from '../../../main/investment-history/logic/delete-investment.service';
-
+import { createInvestmentPrismaMock, InvestmentPrismaMock } from '../mocks/investment-prisma.mock';
 
 describe('DeleteInvestmentService', () => {    
     let service: DeleteInvestmentService;
-    let prisma: {
-        investment: {
-            deleteMany: jest.Mock;
-        };
-    };
-
+    let prisma: InvestmentPrismaMock
+    
     beforeEach(() => {
-        prisma = {
-            investment: {
-                deleteMany: jest.fn(),
-            },
-        };
+        prisma = createInvestmentPrismaMock();
 
         service = new DeleteInvestmentService(
             prisma as unknown as PrismaService,
