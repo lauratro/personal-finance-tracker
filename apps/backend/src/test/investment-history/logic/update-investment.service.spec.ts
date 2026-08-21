@@ -69,8 +69,8 @@ describe('UpdateInvestmentService', () => {
         await service.execute(investmentId, userId, dto);
 
     expect(prisma.investment.update).toHaveBeenCalledWith({
-  where: { id: investmentId },
-  data: {
+    where: { id: investmentId },
+     data: {
     quantity: new Prisma.Decimal(20),
     totalAmountInvested: new Prisma.Decimal(1002),
     saleDate: null,
@@ -78,8 +78,8 @@ describe('UpdateInvestmentService', () => {
     taxes: null,
     income: null,
     percentageIncome: null,
-  },
-});
+     },
+        });
 
         expect(prisma.investment.findFirst).toHaveBeenCalledWith({
          where: {
