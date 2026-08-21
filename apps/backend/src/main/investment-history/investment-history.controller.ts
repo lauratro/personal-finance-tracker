@@ -20,7 +20,7 @@ import { DeleteInvestmentService } from './logic/delete-investment.service';
 import { GetInvestmentService } from './logic/get-investment.service';
 import { ListInvestmentsService } from './logic/list-investments.service';
 import { UpdateInvestmentService } from './logic/update-investment.service';
-import { SearchInvestmentByYearsService} from './logic/search-investment-by-years.service';
+import { SearchInvestmentByYearsService } from './logic/search-investment-by-years.service';
 import { InvestmentIncomeAnalyticsService } from './logic/analytics/investment-income-analytics.service';
 import { InvestmentIncomeAnalyticsQueryDto } from './dto/investment-analytics.dto';
 
@@ -34,7 +34,7 @@ export class InvestmentHistoryController {
     private readonly updateInvestment: UpdateInvestmentService,
     private readonly deleteInvestment: DeleteInvestmentService,
     private readonly searchInvestment: SearchInvestmentByYearsService,
-    private readonly investmentIncomeAnalyticsService: InvestmentIncomeAnalyticsService
+    private readonly investmentIncomeAnalyticsService: InvestmentIncomeAnalyticsService,
   ) {}
 
   @Post()
@@ -51,7 +51,7 @@ export class InvestmentHistoryController {
     return this.listInvestments.execute(userId);
   }
 
-@Get('by-period')
+  @Get('by-period')
   async findByPeriod(
     @CurrentUser('sub') userId: string,
     @Query('fromDate') fromDate?: string,
@@ -72,11 +72,11 @@ export class InvestmentHistoryController {
     );
   }
 
-  private parseDate(value: string, field: string):  Date | undefined {
+  private parseDate(value: string, field: string): Date | undefined {
     const date = new Date(value);
 
     if (Number.isNaN(date.getTime())) {
-      return undefined
+      return undefined;
     }
 
     return date;
@@ -89,14 +89,11 @@ export class InvestmentHistoryController {
 
   @Get('analytics/income')
   getIncomeAnalytics(
-  @CurrentUser('id') userId: string,
+    @CurrentUser('id') userId: string,
     @Query() query: InvestmentIncomeAnalyticsQueryDto,
-) {
-  return this.investmentIncomeAnalyticsService.get(
-    userId,
-    query.year
-  )
-}
+  ) {
+    return this.investmentIncomeAnalyticsService.get(userId, query.year);
+  }
 
   @Patch(':id')
   async update(
@@ -104,8 +101,16 @@ export class InvestmentHistoryController {
     @CurrentUser('sub') userId: string,
     @Body() updateInvestmentHistoryDto: UpdateInvestmentHistoryDto,
   ) {
-    console.log('DEBUG controller update route hit', { id, userId, body: updateInvestmentHistoryDto });
-    return this.updateInvestment.execute(id, userId, updateInvestmentHistoryDto);
+    console.log('DEBUG controller update route hit', {
+      id,
+      userId,
+      body: updateInvestmentHistoryDto,
+    });
+    return this.updateInvestment.execute(
+      id,
+      userId,
+      updateInvestmentHistoryDto,
+    );
   }
 
   @Delete(':id')
