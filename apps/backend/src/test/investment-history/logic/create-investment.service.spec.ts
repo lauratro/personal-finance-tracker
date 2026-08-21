@@ -1,25 +1,19 @@
 import { Prisma } from '@prisma/client';
 import { CreateInvestmentService } from '../../../main/investment-history/logic/create-investment.service';
 import { PrismaService } from '../../../prisma/prisma.service';
+import {
+  createInvestmentPrismaMock,
+  InvestmentPrismaMock,
+} from '../mocks/investment-prisma.mock';
 
 describe('CreateInvestmentService', () => {
   let service: CreateInvestmentService;
-  let prisma: {
-    investment: {
-      create: jest.Mock;
-    };
-  };
+  let prisma: InvestmentPrismaMock;
 
   beforeEach(() => {
-    prisma = {
-      investment: {
-        create: jest.fn(),
-      },
-    };
+    prisma = createInvestmentPrismaMock();
 
-    service = new CreateInvestmentService(
-      prisma as unknown as PrismaService,
-    );
+    service = new CreateInvestmentService(prisma as unknown as PrismaService);
   });
 
   it('should create an investment with the correct data', async () => {
