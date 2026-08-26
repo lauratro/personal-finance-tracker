@@ -17,12 +17,7 @@ describe('DeleteButton', () => {
       />,
     );
     await user.click(screen.getByRole('button', { name: 'Delete investment' }));
-    await user.click(
-      screen.getByRole('button', {
-        name: 'Delete investment',
-      }),
-    );
 
-    expect(screen.getByText('Are you sure?')).toBeInTheDocument();
+    expect(await screen.findByText('Are you sure?')).toBeInTheDocument();
   });
 });

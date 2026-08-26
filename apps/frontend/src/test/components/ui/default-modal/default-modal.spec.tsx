@@ -62,4 +62,19 @@ describe('DefaultModal', () => {
 
     expect(onCancel).toHaveBeenCalledTimes(1);
   });
+
+  it('should not render the modal when isOpen is false', () => {
+    renderWithProviders(
+      <DefaultModal
+        isOpen={false}
+        title="Delete investment"
+        question="Are you sure?"
+        onAccept={vi.fn()}
+        onCancel={vi.fn()}
+        onClose={vi.fn()}
+      />,
+    );
+
+    expect(screen.queryByText('Are you sure?')).not.toBeInTheDocument();
+  });
 });

@@ -11,10 +11,7 @@ export const DeleteButton = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <div>
-      <button
-        aria-label="Delete investment"
-        onClick={() => setIsModalOpen(true)}
-      >
+      <button aria-label={title} onClick={() => setIsModalOpen(true)}>
         <IconTrash color="red" />
       </button>{' '}
       <DefaultModal
