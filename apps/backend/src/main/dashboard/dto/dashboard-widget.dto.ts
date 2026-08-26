@@ -1,8 +1,7 @@
-import { IsEnum , IsInt, IsOptional } from 'class-validator';
+import { IsEnum, IsInt, IsOptional } from 'class-validator';
 import { DashboardWidgetType } from '../schema/types/dashboard-widget-type';
 
 export class DashboardWidgetDto {
-
   @IsInt()
   x!: number;
 
@@ -19,7 +18,7 @@ export class DashboardWidgetDto {
   configuration?: Record<string, unknown>;
 }
 
-export class CreateDashboardWidgetDto extends DashboardWidgetDto{
+export class CreateDashboardWidgetDto extends DashboardWidgetDto {
   @IsEnum(DashboardWidgetType)
   type!: DashboardWidgetType;
 
@@ -38,5 +37,4 @@ export class CreateDashboardWidgetDto extends DashboardWidgetDto{
   @IsOptional()
   @IsInt()
   maxHeight?: number;
-
 }
