@@ -12,11 +12,13 @@ coverage/
 
 # environment files
 .env
+.env.docker
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 apps/backend/.env
+apps/backend/.env.docker
 apps/frontend/.env
 **/.env
 **/.env.local
