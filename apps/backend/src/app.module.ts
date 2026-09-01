@@ -5,6 +5,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { InvestmentHistoryModule } from './main/investment-history/investment-history.module';
 import { NetWorthModule } from './main/net-worth/modules/net-worth-module';
 import { DashboardModule } from './main/dashboard/modules/dashboard-module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { DashboardModule } from './main/dashboard/modules/dashboard-module';
     AuthModule,
     InvestmentHistoryModule,
     NetWorthModule,
-    DashboardModule
+    DashboardModule,
+    HealthModule,
   ],
 })
 export class AppModule {}
