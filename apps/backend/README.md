@@ -1,85 +1,184 @@
-# Personal Finance Backend Foundation
+# Personal Finance Tracker
 
-This starter gives you the backend foundation for the portfolio project:
+A full-stack personal finance application built with React, NestJS, Prisma, and PostgreSQL.
 
-- NestJS app structure
-- Prisma + PostgreSQL schema for the MVP domain
-- Auth module skeleton with JWT access + refresh flow
-- Prisma service/module wiring
-- Docker Compose for local PostgreSQL
+## Tech Stack
 
-## 1) Create the Nest app
+### Frontend
+
+- React
+- TypeScript
+- Vite
+- Mantine
+
+### Backend
+
+- NestJS
+- TypeScript
+- Prisma
+
+### Database
+
+- PostgreSQL
+
+### Infrastructure
+
+- Docker
+- Docker Compose
+- Nginx
+
+---
+
+## Run with Docker
+
+Docker Compose starts the complete application:
+
+- PostgreSQL
+- NestJS backend
+- React frontend served by Nginx
+
+### 1. Configure Docker environment variables
+
+From `apps/backend`:
 
 ```bash
-npm install -g @nestjs/cli
-nest new backend
-cd backend
+cp .env.example .env.docker
 ```
 
-Install the runtime dependencies:
+Configure the required environment variables in `.env.docker`.
+
+For Docker, the database host must be the Compose service name `postgres`:
+
+```env
+DATABASE_URL=postgresql://postgres:postgres@postgres:5432/personal_finance?schema=public
+PORT=3000
+FRONTEND_ORIGIN=http://localhost:8080
+```
+
+Add your JWT secrets as well.
+
+> `.env.docker` contains local secrets and must not be committed to Git.
+
+### 2. Start the application
+
+From `apps/backend`:
 
 ```bash
-npm install @nestjs/config @nestjs/jwt @nestjs/passport passport passport-jwt bcrypt class-validator class-transformer @prisma/client
+npm run docker:up
 ```
 
-Install the development dependencies:
+This builds and starts all containers.
+
+The application is available at:
+
+- Frontend: `http://localhost:8080`
+- Backend API: `http://localhost:3000/api`
+- Health endpoint: `http://localhost:3000/api/health`
+- PostgreSQL: `localhost:5432`
+
+### 3. Check container status
 
 ```bash
-npm install -D prisma @types/passport-jwt @types/bcrypt
+docker compose ps
 ```
 
-## 2) Copy this scaffold into your Nest project
+PostgreSQL and the backend should report:
 
-Copy the contents of this folder into your generated `backend/` project.
+```text
+(healthy)
+```
 
-## 3) Start PostgreSQL locally
+The backend health check also verifies the connection to PostgreSQL.
+
+### 4. Stop the application
 
 ```bash
-docker compose up -d
+npm run docker:down
 ```
 
-## 4) Configure environment variables
+The PostgreSQL data is persisted in a Docker volume and is not deleted by this command.
+
+---
+
+## Run locally for development
+
+You can also run the application directly on your machine while using Docker only for PostgreSQL.
+
+### 1. Start PostgreSQL
+
+```bash
+docker compose up -d postgres
+```
+
+### 2. Configure the local environment
 
 ```bash
 cp .env.example .env
 ```
 
-Update secrets before using this outside local development.
+For local development, the database is reached through `localhost`:
 
-## 5) Initialize Prisma
+```env
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/personal_finance?schema=public
+PORT=3000
+FRONTEND_ORIGIN=http://localhost:5173
+```
+
+### 3. Initialize Prisma
 
 ```bash
 npx prisma generate
-npx prisma migrate dev --name init
+npx prisma migrate dev
 ```
 
-## 6) Run the app
+### 4. Start the backend
 
 ```bash
 npm run start:dev
 ```
 
-## Suggested next implementation order
+### 5. Start the frontend
 
-1. Finish `AuthService.verifyTwoFactor()` and add real TOTP support.
-2. Add a `UsersModule` or `ProfileModule` for user settings.
-3. Implement CRUD modules for accounts, categories, and transactions.
-4. Add dashboard aggregation endpoints for monthly cashflow and net worth.
-5. Add portfolio valuation sync jobs and AI insight generation.
+From `apps/frontend`:
 
-## Auth endpoints in this scaffold
+```bash
+npm install
+npm run dev
+```
 
-- `POST /auth/register`
-- `POST /auth/login`
-- `POST /auth/refresh`
-- `POST /auth/logout`
-- `POST /auth/2fa/verify`
-- `GET /auth/me`
+---
+
+## Docker Architecture
+
+```text
+Browser
+  │
+  ├── localhost:8080 → Frontend (Nginx)
+  │
+  └── localhost:3000 → Backend (NestJS)
+                              │
+                              └── postgres:5432 → PostgreSQL
+```
+
+Docker Compose manages service startup and networking.
+
+PostgreSQL must become healthy before the backend starts. The backend must then pass its `/api/health` readiness check before the frontend starts.
+
+---
+
+## Auth Endpoints
+
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `POST /api/auth/refresh`
+- `POST /api/auth/logout`
+- `POST /api/auth/2fa/verify`
+- `GET /api/auth/me`
 
 ## Notes
 
 - Refresh tokens are stored hashed in the database.
 - Access token TTL defaults to 15 minutes.
 - Refresh token TTL defaults to 7 days.
-- 2FA is intentionally scaffolded but not fully implemented yet.
-- The Prisma schema already covers finance + portfolio MVP entities so you do not have to redesign the database later.
+- 2FA is scaffolded but not fully implemented yet.
+- Prisma manages the finance and portfolio domain schema.
