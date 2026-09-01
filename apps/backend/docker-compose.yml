@@ -29,5 +29,15 @@ services:
     depends_on:
       - postgres
 
+  frontend:
+    build:
+      context: ../frontend
+    container_name: personal-finance-frontend
+    restart: unless-stopped
+    ports:
+      - '8080:80'
+    depends_on:
+      - backend
+
 volumes:
   postgres_data:
