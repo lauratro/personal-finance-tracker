@@ -30,5 +30,6 @@ import { GetLastNetWorthIndicatorsService } from '../logic/get-last-net-wort-ind
     GetNetWorthYearsListService,
     GetLastNetWorthIndicatorsService,
   ],
+  exports: [GetNetWorthsService],
 })
 export class NetWorthModule {}
