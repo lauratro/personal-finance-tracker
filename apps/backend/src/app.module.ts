@@ -6,6 +6,7 @@ import { InvestmentHistoryModule } from './main/investment-history/investment-hi
 import { NetWorthModule } from './main/net-worth/modules/net-worth-module';
 import { DashboardModule } from './main/dashboard/modules/dashboard-module';
 import { HealthModule } from './health/health.module';
+import { AiModule } from './main/ai/ai.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { HealthModule } from './health/health.module';
     NetWorthModule,
     DashboardModule,
     HealthModule,
+    AiModule,
   ],
 })
 export class AppModule {}
