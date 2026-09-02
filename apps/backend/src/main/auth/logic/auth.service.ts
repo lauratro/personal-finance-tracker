@@ -15,7 +15,6 @@ import { RegisterDto } from '../dto/register.dto';
 import { randomUUID } from 'crypto';
 import { hashData } from '../utils/hashData';
 
-
 type TokenPair = {
   accessToken: string;
   refreshToken: string;
@@ -33,13 +32,13 @@ export class AuthService {
     const existingUser = await this.prisma.user.findUnique({
       where: { email: dto.email.toLowerCase() },
     });
-  
+
     if (existingUser) {
       throw new ConflictException('Email already in use');
     }
-  
+
     const passwordHash = await hashData(dto.password);
-  
+
     const user = await this.prisma.user.create({
       data: {
         id: `User:${randomUUID()}`,
@@ -59,10 +58,10 @@ export class AuthService {
         updatedAt: true,
       },
     });
-  
+
     const tokens = await this.issueTokens(user.id, user.email);
     await this.storeRefreshToken(user.id, tokens.refreshToken);
-  
+
     return {
       user,
       ...tokens,
@@ -71,28 +70,28 @@ export class AuthService {
 
   async login(dto: LoginDto, req: Request) {
     const email = dto.email.toLowerCase();
-  
+
     const user = await this.prisma.user.findUnique({
       where: { email },
     });
-  
+
     if (!user) {
       throw new UnauthorizedException('Invalid email or password');
     }
-  
+
     const passwordValid = await bcrypt.compare(dto.password, user.passwordHash);
-  
+
     if (!passwordValid) {
       throw new UnauthorizedException('Invalid email or password');
     }
-  
+
     if (user.twoFactorEnabled) {
       return {
         requiresTwoFactor: true,
         message: 'Two-factor authentication is required.',
       };
     }
-  
+
     const safeUser = await this.prisma.user.findUnique({
       where: { id: user.id },
       select: {
@@ -106,14 +105,14 @@ export class AuthService {
         updatedAt: true,
       },
     });
-  
+
     if (!safeUser) {
       throw new UnauthorizedException('User not found');
     }
-  
+
     const tokens = await this.issueTokens(user.id, user.email);
     await this.storeRefreshToken(user.id, tokens.refreshToken, req);
-  
+
     return {
       user: safeUser,
       ...tokens,
@@ -141,6 +140,7 @@ export class AuthService {
     }
 
     const tokens = await this.issueTokens(userId, email);
+
     const tokenHash = await hashData(tokens.refreshToken);
 
     await this.prisma.$transaction(async (transaction) => {
@@ -202,17 +202,19 @@ export class AuthService {
 
   private async issueTokens(userId: string, email: string): Promise<TokenPair> {
     const payload = { sub: userId, email };
-  
+
     const accessSecret =
       this.configService.getOrThrow<string>('JWT_ACCESS_SECRET');
     const refreshSecret =
       this.configService.getOrThrow<string>('JWT_REFRESH_SECRET');
-  
-    const accessTtl =
-      this.configService.getOrThrow<string>('JWT_ACCESS_TTL') as any;
-    const refreshTtl =
-      this.configService.getOrThrow<string>('JWT_REFRESH_TTL') as any;
-  
+
+    const accessTtl = this.configService.getOrThrow<string>(
+      'JWT_ACCESS_TTL',
+    ) as any;
+    const refreshTtl = this.configService.getOrThrow<string>(
+      'JWT_REFRESH_TTL',
+    ) as any;
+
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
         secret: accessSecret,
@@ -223,17 +225,17 @@ export class AuthService {
         expiresIn: refreshTtl,
       }),
     ]);
-  
+
     return { accessToken, refreshToken };
   }
-  
+
   private async storeRefreshToken(
     userId: string,
     refreshToken: string,
     req?: Request,
   ) {
     const tokenHash = await hashData(refreshToken);
-  
+
     await this.prisma.refreshToken.create({
       data: {
         userId,
@@ -244,29 +246,29 @@ export class AuthService {
       },
     });
   }
-  
+
   private getRefreshExpiryDate() {
     return new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
   }
-  
+
   private extractHeader(req: Request | undefined, key: string): string | null {
     if (!req || !(req as any).headers) {
       return null;
     }
-  
+
     const value = req.headers[key];
     if (!value) {
       return null;
     }
-  
+
     return Array.isArray(value) ? value[0] : value;
   }
-  
+
   private extractIp(req: Request | undefined): string | null {
     if (!req) {
       return null;
     }
-  
+
     return req.ip ?? null;
   }
 }
