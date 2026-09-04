@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { FunctionDeclaration, Type } from '@google/genai';
 import { GetNetWorthsService } from '../../net-worth/logic/get-net-worths.service';
 import { AiService } from './ai.service';
+import { SortDirectionType } from '../../net-worth/schema/types/sortDirectionTypes';
 
 @Injectable()
 export class FinancialAgentService {
@@ -39,7 +40,7 @@ export class FinancialAgentService {
     }
 
     if (functionCall.name === 'getNetWorthHistory') {
-      const sortDirection =
+      const sortDirection: SortDirectionType =
         functionCall.args?.sortDirection === 'asc' ? 'asc' : 'desc';
 
       const netWorthHistory = await this.getNetWorthsService.execute(
@@ -57,6 +58,8 @@ export class FinancialAgentService {
       return finalResponse;
     }
 
-    return '';
+    throw new InternalServerErrorException(
+      `Unsupported AI tool: ${functionCall.name}`,
+    );
   }
 }
