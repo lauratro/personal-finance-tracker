@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { FunctionDeclaration, GoogleGenAI } from '@google/genai';
+import {
+  FunctionDeclaration,
+  GoogleGenAI,
+  GenerateContentResponse,
+  FunctionCall,
+} from '@google/genai';
 
 @Injectable()
 export class AiService {
@@ -40,5 +45,49 @@ export class AiService {
         ],
       },
     });
+  }
+
+  async generateAfterToolCall(
+    prompt: string,
+    previousResponse: GenerateContentResponse,
+    functionCall: FunctionCall,
+    toolResult: unknown,
+  ): Promise<string> {
+    const modelContent = previousResponse.candidates?.[0]?.content;
+
+    if (!modelContent) {
+      throw new Error('Gemini response does not contain model content');
+    }
+
+    const response = await this.client.models.generateContent({
+      model: this.model,
+      contents: [
+        {
+          role: 'user',
+          parts: [{ text: prompt }],
+        },
+
+        // IMPORTANT:
+        // reuse Gemini's original content exactly as returned
+        modelContent,
+
+        {
+          role: 'user',
+          parts: [
+            {
+              functionResponse: {
+                name: functionCall.name,
+                id: functionCall.id,
+                response: {
+                  result: toolResult,
+                },
+              },
+            },
+          ],
+        },
+      ],
+    });
+
+    return response.text ?? '';
   }
 }

@@ -32,21 +32,31 @@ export class FinancialAgentService {
       this.getNetWorthHistoryTool,
     ]);
 
-    const functionCalls = response.functionCalls;
-    if (!functionCalls) {
+    const functionCall = response.functionCalls?.[0];
+
+    if (!functionCall) {
       return response.text ?? '';
     }
-    if (functionCalls && functionCalls.length > 0) {
-      const functionCall = functionCalls[0];
-      if (functionCall.name === 'getNetWorthHistory') {
-        const sortDirection = functionCall.args?.sortDirection || 'desc';
-        const netWorthHistory = await this.getNetWorthsService.execute(
-          userId,
-          sortDirection as 'asc' | 'desc',
-        );
-        console.log(netWorthHistory);
-      }
+
+    if (functionCall.name === 'getNetWorthHistory') {
+      const sortDirection =
+        functionCall.args?.sortDirection === 'asc' ? 'asc' : 'desc';
+
+      const netWorthHistory = await this.getNetWorthsService.execute(
+        userId,
+        sortDirection,
+      );
+
+      const finalResponse = await this.aiService.generateAfterToolCall(
+        prompt,
+        response,
+        functionCall,
+        netWorthHistory,
+      );
+
+      return finalResponse;
     }
+
     return '';
   }
 }
