@@ -4,7 +4,7 @@ import { IconSubtitlesAi } from '@tabler/icons-react';
 export const AiChatIcon = () => {
   return (
     <AiChatIconContainer>
-      <IconSubtitlesAi stroke={2} />
+      <IconSubtitlesAi stroke={2} color="white" />
     </AiChatIconContainer>
   );
 };
