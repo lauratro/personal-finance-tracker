@@ -3,12 +3,14 @@ import { FunctionDeclaration, Type } from '@google/genai';
 import { GetNetWorthsService } from '../../net-worth/logic/get-net-worths.service';
 import { AiService } from './ai.service';
 import { SortDirectionType } from '../../net-worth/schema/types/sortDirectionTypes';
+import { ListInvestmentsService } from '../../investment-history/logic/list-investments.service';
 
 @Injectable()
 export class FinancialAgentService {
   constructor(
     private readonly aiService: AiService,
     private readonly getNetWorthsService: GetNetWorthsService,
+    private readonly listInvestmentsService: ListInvestmentsService,
   ) {}
 
   private readonly getNetWorthHistoryTool: FunctionDeclaration = {
@@ -28,9 +30,20 @@ export class FinancialAgentService {
     },
   };
 
+  private readonly getInvestmentsTool: FunctionDeclaration = {
+    name: 'getInvestments',
+    description:
+      'Get all investments belonging to the authenticated user, ordered by purchase date from newest to oldest.',
+    parameters: {
+      type: Type.OBJECT,
+      properties: {},
+    },
+  };
+
   async chat(prompt: string, userId: string) {
     const response = await this.aiService.generateWithTools(prompt, [
       this.getNetWorthHistoryTool,
+      this.getInvestmentsTool,
     ]);
 
     const functionCall = response.functionCalls?.[0];
@@ -56,6 +69,17 @@ export class FinancialAgentService {
       );
 
       return finalResponse;
+    }
+
+    if (functionCall.name === 'getInvestments') {
+      const investments = await this.listInvestmentsService.execute(userId);
+
+      return this.aiService.generateAfterToolCall(
+        prompt,
+        response,
+        functionCall,
+        investments,
+      );
     }
 
     throw new InternalServerErrorException(
