@@ -6,7 +6,7 @@ import {
   ButtonsContainer,
   HeaderCell,
 } from './investment-table.style';
-import { DeleteButton } from '@/components/ui/delete-button';
+import { DeleteButton } from './../../../../components/ui/delete-button';
 import { IconEdit } from '@tabler/icons-react';
 import { InvestmentTableProps } from './investment-table.types';
 
