@@ -5,6 +5,7 @@ import {
   GoogleGenAI,
   GenerateContentResponse,
   FunctionCall,
+  ThinkingLevel,
 } from '@google/genai';
 
 @Injectable()
@@ -38,6 +39,9 @@ export class AiService {
       model: this.model,
       contents: prompt,
       config: {
+        thinkingConfig: {
+          thinkingLevel: ThinkingLevel.LOW,
+        },
         tools: [
           {
             functionDeclarations: tools,
@@ -86,6 +90,11 @@ export class AiService {
           ],
         },
       ],
+      config: {
+        thinkingConfig: {
+          thinkingLevel: ThinkingLevel.LOW,
+        },
+      },
     });
 
     return response.text ?? '';
