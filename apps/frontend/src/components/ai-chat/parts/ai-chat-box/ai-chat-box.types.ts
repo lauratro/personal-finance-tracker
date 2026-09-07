@@ -6,3 +6,8 @@ export interface AiChatBoxProps {
 export type AiChatBoxFormValues = {
   text: string;
 };
+
+export type ChatMessage = {
+  role: 'user' | 'assistant';
+  content: string;
+};
