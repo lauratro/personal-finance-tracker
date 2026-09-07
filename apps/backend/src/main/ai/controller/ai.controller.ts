@@ -17,6 +17,10 @@ export class AiController {
     @CurrentUser('sub') userId: string,
     @Body('prompt') prompt: string,
   ) {
-    return this.financialAgentService.chat(prompt, userId);
+    const response = await this.financialAgentService.chat(prompt, userId);
+
+    return {
+      response,
+    };
   }
 }
