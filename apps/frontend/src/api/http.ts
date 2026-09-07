@@ -28,11 +28,7 @@ export class ApiError extends Error {
 let refreshPromise: Promise<AuthTokens> | null = null;
 
 const errorMessage = (data: unknown) => {
-  if (
-    typeof data === 'object' &&
-    data !== null &&
-    'message' in data
-  ) {
+  if (typeof data === 'object' && data !== null && 'message' in data) {
     const message = (data as { message?: unknown }).message;
     if (typeof message === 'string') return message;
     if (Array.isArray(message)) return message.join(', ');
@@ -47,7 +43,9 @@ const performTokenRefresh = async (): Promise<AuthTokens> => {
     headers: { 'Content-Type': 'application/json' },
   });
 
-  const data = response.headers.get('content-type')?.includes('application/json')
+  const data = response.headers
+    .get('content-type')
+    ?.includes('application/json')
     ? await response.json()
     : null;
 
@@ -78,8 +76,7 @@ export async function http<T>(
   path: string,
   options: RequestOptions = {},
 ): Promise<T> {
-  const token =
-    options.token !== undefined ? options.token : getAccessToken();
+  const token = options.token !== undefined ? options.token : getAccessToken();
 
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method: options.method ?? 'GET',
@@ -91,7 +88,9 @@ export async function http<T>(
     body: options.body ? JSON.stringify(options.body) : undefined,
   });
 
-  const data = response.headers.get('content-type')?.includes('application/json')
+  const data = response.headers
+    .get('content-type')
+    ?.includes('application/json')
     ? await response.json()
     : null;
 
