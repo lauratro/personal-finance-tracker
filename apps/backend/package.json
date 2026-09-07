@@ -14,7 +14,8 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
     "docker:up": "docker compose up --build",
-    "docker:down": "docker compose down"
+    "docker:down": "docker compose down",
+    "postgres": "docker compose up -d postgres"
   },
   "dependencies": {
     "@google/genai": "^2.20.0",
