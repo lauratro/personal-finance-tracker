@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { AppMenubar } from '../../components/ui/app-menubar/app-menubar';
 import { Wrapper, PageContent } from './page-container.style';
-import { AiChatIcon } from '@/components/ui/ai-chat-icon';
+import { AiChatBoxContainer } from '@/components/ai-chat';
 
 interface PageContainerProps {
   title: string;
@@ -26,7 +26,7 @@ export const PageContainer = ({
         </div>
 
         <PageContent>
-          <AiChatIcon />
+          <AiChatBoxContainer />
           {children}
         </PageContent>
       </main>

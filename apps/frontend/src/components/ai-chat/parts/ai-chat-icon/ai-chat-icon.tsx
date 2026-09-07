@@ -1,9 +1,8 @@
 import { AiChatIconButton, AiChatIconContainer } from './ai-chat-icon.style';
 import { IconSubtitlesAi } from '@tabler/icons-react';
-import React, { useState } from 'react';
+import { AiChatIconProps } from './ai-chat-icon.types';
 
-export const AiChatIcon = () => {
-  const [isVisible, setIsVisible] = useState(false);
+export const AiChatIcon = ({ isVisible, setIsVisible }: AiChatIconProps) => {
   return (
     <AiChatIconContainer>
       <AiChatIconButton onClick={() => setIsVisible(!isVisible)}>
