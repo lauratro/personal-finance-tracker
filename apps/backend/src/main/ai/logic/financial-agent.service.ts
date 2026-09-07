@@ -45,7 +45,9 @@ export class FinancialAgentService {
       this.getNetWorthHistoryTool,
       this.getInvestmentsTool,
     ]);
+
     const functionCall = response.functionCalls?.[0];
+
     if (!functionCall) {
       return response.text ?? '';
     }
@@ -71,6 +73,7 @@ export class FinancialAgentService {
 
     if (functionCall.name === 'getInvestments') {
       const investments = await this.listInvestmentsService.execute(userId);
+
       return this.aiService.generateAfterToolCall(
         prompt,
         response,
