@@ -1,4 +1,12 @@
-import { Dialog, Button, TextInput, Text, Stack, Paper } from '@mantine/core';
+import {
+  Dialog,
+  Button,
+  TextInput,
+  Text,
+  Stack,
+  Paper,
+  Alert,
+} from '@mantine/core';
 import {
   AiChatBoxFormValues,
   AiChatBoxProps,
@@ -11,6 +19,7 @@ import { ButtonPrimary } from './../../../ui/button-primary/button-primary';
 
 export const AiChatBox = ({ opened, setOpened }: AiChatBoxProps) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [error, setError] = useState<string | null>(null);
   const formik = useFormik<AiChatBoxFormValues>({
     initialValues: {
       text: '',
@@ -40,8 +49,11 @@ export const AiChatBox = ({ opened, setOpened }: AiChatBoxProps) => {
             content: result.response,
           },
         ]);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error sending message to AI chat:', error);
+        setError(
+          error.message || 'An error occurred while sending the message.',
+        );
       }
     },
   });
@@ -69,6 +81,11 @@ export const AiChatBox = ({ opened, setOpened }: AiChatBoxProps) => {
                 <Text>{message.content}</Text>
               </Paper>
             ))}
+            {error && (
+              <Alert color="red" mt="md">
+                {error}
+              </Alert>
+            )}
             <TextInput
               name="text"
               label="Ask your financial assistant"
