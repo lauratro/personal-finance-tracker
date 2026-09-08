@@ -12,6 +12,7 @@ import {
   FunctionCall,
   ThinkingLevel,
 } from '@google/genai';
+import { AiEmptyResponseException } from '../exceptions/AiEmptyResponseException';
 
 @Injectable()
 export class AiService {
@@ -36,7 +37,11 @@ export class AiService {
         contents: prompt,
       });
 
-      return response.text ?? '';
+      if (!response.text?.trim()) {
+        throw new AiEmptyResponseException();
+      }
+
+      return response.text;
     } catch (error) {
       this.handleGeminiError(error);
     }
@@ -110,8 +115,11 @@ export class AiService {
           },
         },
       });
+      if (!response.text?.trim()) {
+        throw new AiEmptyResponseException();
+      }
 
-      return response.text ?? '';
+      return response.text;
     } catch (error) {
       this.handleGeminiError(error);
     }
