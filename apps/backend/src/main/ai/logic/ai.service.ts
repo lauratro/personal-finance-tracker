@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  Injectable,
+  ServiceUnavailableException,
+} from '@nestjs/common';
+import { TooManyRequestsException } from '../../common/exceptions/TooManyRequestsException';
 import { ConfigService } from '@nestjs/config';
 import {
   FunctionDeclaration,
@@ -25,30 +30,38 @@ export class AiService {
 
   // Normal LLM call: prompt → text response
   async generateResponse(prompt: string): Promise<string> {
-    const response = await this.client.models.generateContent({
-      model: this.model,
-      contents: prompt,
-    });
+    try {
+      const response = await this.client.models.generateContent({
+        model: this.model,
+        contents: prompt,
+      });
 
-    return response.text ?? '';
+      return response.text ?? '';
+    } catch (error) {
+      this.handleGeminiError(error);
+    }
   }
 
   // Agent call: prompt + available tools → Gemini decision
   async generateWithTools(prompt: string, tools: FunctionDeclaration[]) {
-    return this.client.models.generateContent({
-      model: this.model,
-      contents: prompt,
-      config: {
-        thinkingConfig: {
-          thinkingLevel: ThinkingLevel.LOW,
-        },
-        tools: [
-          {
-            functionDeclarations: tools,
+    try {
+      return this.client.models.generateContent({
+        model: this.model,
+        contents: prompt,
+        config: {
+          thinkingConfig: {
+            thinkingLevel: ThinkingLevel.LOW,
           },
-        ],
-      },
-    });
+          tools: [
+            {
+              functionDeclarations: tools,
+            },
+          ],
+        },
+      });
+    } catch (error) {
+      this.handleGeminiError(error);
+    }
   }
 
   async generateAfterToolCall(
@@ -57,46 +70,70 @@ export class AiService {
     functionCall: FunctionCall,
     toolResult: unknown,
   ): Promise<string> {
-    const modelContent = previousResponse.candidates?.[0]?.content;
+    try {
+      const modelContent = previousResponse.candidates?.[0]?.content;
 
-    if (!modelContent) {
-      throw new Error('Gemini response does not contain model content');
-    }
+      if (!modelContent) {
+        throw new Error('Gemini response does not contain model content');
+      }
 
-    const response = await this.client.models.generateContent({
-      model: this.model,
-      contents: [
-        {
-          role: 'user',
-          parts: [{ text: prompt }],
-        },
+      const response = await this.client.models.generateContent({
+        model: this.model,
+        contents: [
+          {
+            role: 'user',
+            parts: [{ text: prompt }],
+          },
 
-        // IMPORTANT:
-        // reuse Gemini's original content exactly as returned
-        modelContent,
+          // IMPORTANT:
+          // reuse Gemini's original content exactly as returned
+          modelContent,
 
-        {
-          role: 'user',
-          parts: [
-            {
-              functionResponse: {
-                name: functionCall.name,
-                id: functionCall.id,
-                response: {
-                  result: toolResult,
+          {
+            role: 'user',
+            parts: [
+              {
+                functionResponse: {
+                  name: functionCall.name,
+                  id: functionCall.id,
+                  response: {
+                    result: toolResult,
+                  },
                 },
               },
-            },
-          ],
+            ],
+          },
+        ],
+        config: {
+          thinkingConfig: {
+            thinkingLevel: ThinkingLevel.LOW,
+          },
         },
-      ],
-      config: {
-        thinkingConfig: {
-          thinkingLevel: ThinkingLevel.LOW,
-        },
-      },
-    });
+      });
 
-    return response.text ?? '';
+      return response.text ?? '';
+    } catch (error) {
+      this.handleGeminiError(error);
+    }
+  }
+
+  private handleGeminiError(error: unknown): never {
+    const status =
+      typeof error === 'object' &&
+      error !== null &&
+      'status' in error &&
+      typeof error.status === 'number'
+        ? error.status
+        : undefined;
+
+    if (status === 429) {
+      throw new TooManyRequestsException(
+        'AI request limit reached. Please try again later.',
+      );
+    }
+
+    throw new ServiceUnavailableException(
+      'AI service is temporarily unavailable.',
+    );
   }
 }
