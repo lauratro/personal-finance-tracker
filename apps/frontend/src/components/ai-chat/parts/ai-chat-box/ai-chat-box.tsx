@@ -10,7 +10,6 @@ import React, { useState } from 'react';
 import { ButtonPrimary } from './../../../ui/button-primary/button-primary';
 
 export const AiChatBox = ({ opened, setOpened }: AiChatBoxProps) => {
-  const [response, setResponse] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const formik = useFormik<AiChatBoxFormValues>({
     initialValues: {
@@ -77,7 +76,9 @@ export const AiChatBox = ({ opened, setOpened }: AiChatBoxProps) => {
               value={formik.values.text}
               onChange={formik.handleChange}
             />
-            <ButtonPrimary type="submit">Send</ButtonPrimary>
+            <ButtonPrimary disabled={formik.isSubmitting} type="submit">
+              Send
+            </ButtonPrimary>
           </Stack>
         </form>
       </div>
