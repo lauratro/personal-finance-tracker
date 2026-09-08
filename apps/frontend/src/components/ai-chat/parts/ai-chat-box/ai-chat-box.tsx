@@ -6,6 +6,7 @@ import {
   Stack,
   Paper,
   Alert,
+  ScrollArea,
 } from '@mantine/core';
 import {
   AiChatBoxFormValues,
@@ -69,23 +70,27 @@ export const AiChatBox = ({ opened, setOpened }: AiChatBoxProps) => {
     >
       <div>
         <form onSubmit={formik.handleSubmit}>
-          <Stack className="mt-8">
-            {messages.map((message, index) => (
-              <Paper
-                key={index}
-                p="sm"
-                withBorder
-                ml={message.role === 'user' ? 'xl' : 0}
-                mr={message.role === 'assistant' ? 'xl' : 0}
-              >
-                <Text>{message.content}</Text>
-              </Paper>
-            ))}
-            {error && (
-              <Alert color="red" mt="md">
-                {error}
-              </Alert>
-            )}
+          <Stack gap={'sm'} className="mt-8">
+            <ScrollArea h={messages.length > 0 ? 200 : 0}>
+              {messages.map((message, index) => (
+                <Paper
+                  key={`message-${index}`}
+                  p="sm"
+                  withBorder
+                  ml={message.role === 'user' ? 'xl' : 0}
+                  mr={message.role === 'assistant' ? 'xl' : 0}
+                  mb="sm"
+                >
+                  <Text size="sm">{message.content}</Text>
+                </Paper>
+              ))}
+
+              {error && (
+                <Alert color="red" mt="md">
+                  {error}
+                </Alert>
+              )}
+            </ScrollArea>
             <TextInput
               name="text"
               label="Ask your financial assistant"
