@@ -15,12 +15,20 @@ import {
 } from './ai-chat-box.types';
 import { useFormik } from 'formik';
 import { sendMessageToAIChat } from '@/components-apis/ai-chat/ai-chat-api';
-import React, { useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { ButtonPrimary } from './../../../ui/button-primary/button-primary';
 
 export const AiChatBox = ({ opened, setOpened }: AiChatBoxProps) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: 'smooth',
+    });
+  }, [messages]);
+
   const formik = useFormik<AiChatBoxFormValues>({
     initialValues: {
       text: '',
@@ -90,6 +98,7 @@ export const AiChatBox = ({ opened, setOpened }: AiChatBoxProps) => {
                   {error}
                 </Alert>
               )}
+              <div ref={messagesEndRef} />
             </ScrollArea>
             <TextInput
               name="text"
