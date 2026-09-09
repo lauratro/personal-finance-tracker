@@ -1,6 +1,5 @@
 import {
   Dialog,
-  Button,
   TextInput,
   Text,
   Stack,
@@ -71,6 +70,8 @@ export const AiChatBox = ({ opened, setOpened }: AiChatBoxProps) => {
     <Dialog
       opened={opened}
       withCloseButton
+      role="dialog"
+      aria-label="Ai Assistant Dialog"
       onClose={() => setOpened(false)}
       size="lg"
       style={{ padding: 15 }}

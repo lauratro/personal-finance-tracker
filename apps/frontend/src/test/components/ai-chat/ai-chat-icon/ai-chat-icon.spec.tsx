@@ -13,6 +13,8 @@ it('Should open the modal when the icon is clicked', async () => {
     <AiChatIcon isVisible={false} setIsVisible={setIsVisible} />,
   );
 
-  const click = await userClick.click(screen.getByRole('button'));
+  await userClick.click(
+    screen.getByRole('button', { name: 'Open Ai Assistant' }),
+  );
   expect(setIsVisible).toHaveBeenCalledWith(true);
 });
