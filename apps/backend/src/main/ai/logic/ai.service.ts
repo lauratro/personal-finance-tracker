@@ -18,6 +18,14 @@ import { AiEmptyResponseException } from '../exceptions/AiEmptyResponseException
 export class AiService {
   private readonly client: GoogleGenAI;
   private readonly model: string;
+  private readonly systemInstruction = `
+    You are a financial assistant for a personal finance application.
+
+    Respond clearly and concisely.
+    Use plain text only.
+    Do not use Markdown formatting.
+    Do not use Markdown syntax such as **bold**, headings, or Markdown lists.
+`;
 
   constructor(private readonly configService: ConfigService) {
     const apiKey = this.configService.getOrThrow<string>('GEMINI_API_KEY');
@@ -29,31 +37,13 @@ export class AiService {
     });
   }
 
-  // Normal LLM call: prompt → text response
-  async generateResponse(prompt: string): Promise<string> {
-    try {
-      const response = await this.client.models.generateContent({
-        model: this.model,
-        contents: prompt,
-      });
-
-      if (!response.text?.trim()) {
-        throw new AiEmptyResponseException();
-      }
-
-      return response.text;
-    } catch (error) {
-      this.handleGeminiError(error);
-    }
-  }
-
-  // Agent call: prompt + available tools → Gemini decision
   async generateWithTools(prompt: string, tools: FunctionDeclaration[]) {
     try {
       return this.client.models.generateContent({
         model: this.model,
         contents: prompt,
         config: {
+          systemInstruction: this.systemInstruction,
           thinkingConfig: {
             thinkingLevel: ThinkingLevel.LOW,
           },
@@ -110,6 +100,7 @@ export class AiService {
           },
         ],
         config: {
+          systemInstruction: this.systemInstruction,
           thinkingConfig: {
             thinkingLevel: ThinkingLevel.LOW,
           },
@@ -126,6 +117,10 @@ export class AiService {
   }
 
   private handleGeminiError(error: unknown): never {
+    if (error instanceof HttpException) {
+      throw error;
+    }
+
     const status =
       typeof error === 'object' &&
       error !== null &&
