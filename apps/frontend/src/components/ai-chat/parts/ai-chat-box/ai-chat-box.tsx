@@ -107,7 +107,10 @@ export const AiChatBox = ({ opened, setOpened }: AiChatBoxProps) => {
               value={formik.values.text}
               onChange={formik.handleChange}
             />
-            <ButtonPrimary disabled={formik.isSubmitting} type="submit">
+            <ButtonPrimary
+              disabled={formik.isSubmitting || !formik.values.text.trim()}
+              type="submit"
+            >
               Send
             </ButtonPrimary>
           </Stack>
