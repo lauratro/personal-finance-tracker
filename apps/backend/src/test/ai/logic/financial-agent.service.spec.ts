@@ -7,6 +7,7 @@ import {
 import { AiService } from '../../../main/ai/logic/ai.service';
 import { GetNetWorthsService } from '../../../main/net-worth/logic/get-net-worths.service';
 import { ListInvestmentsService } from '../../../main/investment-history/logic/list-investments.service';
+import { InternalServerErrorException } from '@nestjs/common';
 
 describe('FinancialAgentService', () => {
   let service: FinancialAgentService;
@@ -105,5 +106,22 @@ describe('FinancialAgentService', () => {
       netWorth,
     );
     expect(result).toBe('This is your net worth');
+  });
+
+  it('should throw an exception if it cannot find the tool', async () => {
+    const functionCall = {
+      name: 'unsupported tool',
+      args: {},
+    };
+
+    const response = {
+      functionCalls: [functionCall],
+    };
+
+    mockAiService.generateWithTools.mockResolvedValue(response);
+
+    await expect(
+      service.chat('How are my investments?', 'user-1'),
+    ).rejects.toThrow(InternalServerErrorException);
   });
 });
