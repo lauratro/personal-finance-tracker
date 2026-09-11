@@ -13,7 +13,7 @@ describe('FinancialAgentService', () => {
   let service: FinancialAgentService;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
 
     service = new FinancialAgentService(
       mockAiService as unknown as AiService,
