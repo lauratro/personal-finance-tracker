@@ -16,15 +16,16 @@ coverage/
 .env.local
 .env.development.local
 .env.test.local
-.env.production.local
+.env.production
 apps/backend/.env
 apps/backend/.env.docker
 apps/frontend/.env
+apps/frontend/.env.production
 **/.env
 **/.env.local
 **/.env.development.local
 **/.env.test.local
-**/.env.production.local
+**/.env.production
 
 # logs
 *.log
