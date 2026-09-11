@@ -8,6 +8,7 @@ import { AiService } from '../../../main/ai/logic/ai.service';
 import { GetNetWorthsService } from '../../../main/net-worth/logic/get-net-worths.service';
 import { ListInvestmentsService } from '../../../main/investment-history/logic/list-investments.service';
 import { InternalServerErrorException } from '@nestjs/common';
+import { AiEmptyResponseException } from '../../../main/ai/exceptions/AiEmptyResponseException';
 
 describe('FinancialAgentService', () => {
   let service: FinancialAgentService;
@@ -123,5 +124,21 @@ describe('FinancialAgentService', () => {
     await expect(
       service.chat('How are my investments?', 'user-1'),
     ).rejects.toThrow(InternalServerErrorException);
+  });
+
+  it('should return the AI response when no tool is requested', async () => {
+    const aiResponse = {
+      functionCalls: [],
+      text: 'Hello! How can I help you?',
+    };
+
+    mockAiService.generateWithTools.mockResolvedValue(aiResponse);
+
+    const result = await service.chat('Hello', 'user-1');
+
+    expect(result).toBe('Hello! How can I help you?');
+
+    expect(mockGetNetWorthsService.execute).not.toHaveBeenCalled();
+    expect(mockListInvestmentsService.execute).not.toHaveBeenCalled();
   });
 });
