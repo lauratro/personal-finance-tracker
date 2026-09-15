@@ -15,7 +15,11 @@
     "prisma:studio": "prisma studio",
     "docker:up": "docker compose up --build",
     "docker:down": "docker compose down",
-    "postgres": "docker compose up -d postgres"
+    "postgres": "docker compose up -d postgres",
+    "postgres:test": "docker compose up -d postgres-test",
+    "test:stop": "docker compose stop postgres-test",
+    "test:integration:migrate": "node --env-file-if-exists=.env.test.local scripts/run-test-migrations.cjs",
+    "test:integration": "npm run test:integration:migrate && node --env-file-if-exists=.env.test.local ./node_modules/jest/bin/jest.js --config jest.integration.config.ts --runInBand"
   },
   "dependencies": {
     "@google/genai": "^2.20.0",
@@ -71,6 +75,10 @@
       "!src/main.ts"
     ],
     "coverageDirectory": "coverage",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/test/integration/"
+    ],
     "testEnvironment": "node"
   }
 }
