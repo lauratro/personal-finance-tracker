@@ -7,7 +7,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+import { CurrentUserId } from '../../auth/decorators/current-user-id.decorator';
 import { CreateDashboardService } from '../logic/create-dashboard-service';
 import { GetDashboardService } from '../logic/get-dashboard-service';
 
@@ -21,12 +21,12 @@ export class DashboardController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@CurrentUser('sub') userId: string) {
+  async create(@CurrentUserId() userId: string) {
     return this.createDashboardService.create(userId);
   }
 
   @Get()
-  async get(@CurrentUser('sub') userId: string) {
+  async get(@CurrentUserId() userId: string) {
     return this.getDashboardService.get(userId);
   }
 }

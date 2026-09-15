@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './logic/auth.service';
 import { CurrentUser } from './decorators/current-user.decorator';
+import { CurrentUserId } from './decorators/current-user-id.decorator';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { VerifyTwoFactorDto } from './dto/verify-2fa.dto';
@@ -105,7 +106,7 @@ async login(
 @UseGuards(JwtAuthGuard)
 @Post('logout')
 async logout(
-  @CurrentUser('sub') userId: string,
+  @CurrentUserId() userId: string,
   @Res({ passthrough: true }) res: Response,
 ) {
   await this.authService.logout(userId);
@@ -125,14 +126,14 @@ async logout(
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async me(@CurrentUser('sub') userId: string) {
+  async me(@CurrentUserId() userId: string) {
     return this.authService.getProfile(userId);
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch('me')
   async updateMe(
-    @CurrentUser('sub') userId: string,
+    @CurrentUserId() userId: string,
     @Body() dto: UpdateUserDto,
   ) {
     return this.updateUserService.execute(userId, dto);

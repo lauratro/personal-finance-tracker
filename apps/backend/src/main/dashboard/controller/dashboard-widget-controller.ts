@@ -11,7 +11,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+import { CurrentUserId } from '../../auth/decorators/current-user-id.decorator';
 import { CreateDashboardWidget } from '../logic/create-dashboard-widget-service';
 import {
   CreateDashboardWidgetDto,
@@ -34,20 +34,20 @@ export class DashboardWidgetController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(
-    @CurrentUser('sub') userId: string,
+    @CurrentUserId() userId: string,
     @Body() dto: CreateDashboardWidgetDto,
   ) {
     return this.createDashboardWidgetService.create(userId, dto);
   }
 
   @Get()
-  async get(@CurrentUser('sub') userId: string) {
+  async get(@CurrentUserId() userId: string) {
     return this.getDashboardWidgetsService.get(userId);
   }
 
   @Patch(':widgetId')
   async edit(
-    @CurrentUser('sub') userId: string,
+    @CurrentUserId() userId: string,
     @Param('widgetId') widgetId: string,
     @Body() dto: DashboardWidgetDto,
   ) {
@@ -56,9 +56,9 @@ export class DashboardWidgetController {
 
   @Delete(':widgetId')
   async delete(
-    @CurrentUser('sub') userId: string,
+    @CurrentUserId() userId: string,
     @Param('widgetId') widgetId: string,
   ) {
-    return this.deleteDashboardWidgetService.delete(widgetId);
+    return this.deleteDashboardWidgetService.delete(userId, widgetId);
   }
 }

@@ -1,7 +1,7 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { AiService } from '../logic/ai.service';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+import { CurrentUserId } from '../../auth/decorators/current-user-id.decorator';
 import { FinancialAgentService } from '../logic/financial-agent.service';
 
 @Controller('ai')
@@ -14,7 +14,7 @@ export class AiController {
 
   @Post('chat')
   async chat(
-    @CurrentUser('sub') userId: string,
+    @CurrentUserId() userId: string,
     @Body('prompt') prompt: string,
   ) {
     const response = await this.financialAgentService.chat(prompt, userId);

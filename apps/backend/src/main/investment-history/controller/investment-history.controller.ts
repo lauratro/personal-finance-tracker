@@ -14,7 +14,7 @@ import {
 import { CreateInvestmentHistoryDto } from './../dto/create-investment-history.dto';
 import { UpdateInvestmentHistoryDto } from './../dto/update-investment-history.dto';
 import { JwtAuthGuard } from '../../../main/auth/guards/jwt-auth.guard';
-import { CurrentUser } from '../../../main/auth/decorators/current-user.decorator';
+import { CurrentUserId } from '../../../main/auth/decorators/current-user-id.decorator';
 import { CreateInvestmentService } from './../logic/create-investment.service';
 import { DeleteInvestmentService } from './../logic/delete-investment.service';
 import { GetInvestmentService } from './../logic/get-investment.service';
@@ -40,20 +40,20 @@ export class InvestmentHistoryController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(
-    @CurrentUser('sub') userId: string,
+    @CurrentUserId() userId: string,
     @Body() createInvestmentHistoryDto: CreateInvestmentHistoryDto,
   ) {
     return this.createInvestment.execute(userId, createInvestmentHistoryDto);
   }
 
   @Get()
-  async findAll(@CurrentUser('sub') userId: string) {
+  async findAll(@CurrentUserId() userId: string) {
     return this.listInvestments.execute(userId);
   }
 
   @Get('by-period')
   async findByPeriod(
-    @CurrentUser('sub') userId: string,
+    @CurrentUserId() userId: string,
     @Query('fromDate') fromDate?: string,
     @Query('untilDate') untilDate?: string,
   ) {
@@ -83,13 +83,13 @@ export class InvestmentHistoryController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string, @CurrentUser('sub') userId: string) {
+  async findOne(@Param('id') id: string, @CurrentUserId() userId: string) {
     return this.getInvestment.execute(id, userId);
   }
 
   @Get('analytics/income')
   getIncomeAnalytics(
-    @CurrentUser('id') userId: string,
+    @CurrentUserId() userId: string,
     @Query() query: InvestmentIncomeAnalyticsQueryDto,
   ) {
     return this.investmentIncomeAnalyticsService.get(userId, query.year);
@@ -98,7 +98,7 @@ export class InvestmentHistoryController {
   @Patch(':id')
   async update(
     @Param('id') id: string,
-    @CurrentUser('sub') userId: string,
+    @CurrentUserId() userId: string,
     @Body() updateInvestmentHistoryDto: UpdateInvestmentHistoryDto,
   ) {
     return this.updateInvestment.execute(
@@ -110,7 +110,7 @@ export class InvestmentHistoryController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id') id: string, @CurrentUser('sub') userId: string) {
+  async remove(@Param('id') id: string, @CurrentUserId() userId: string) {
     return this.deleteInvestment.execute(id, userId);
   }
 }

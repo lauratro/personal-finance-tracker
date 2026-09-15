@@ -17,7 +17,7 @@ import { UpdateNetWorthItemService } from '../logic/update-net-worth-item-servic
 import { UpdateNetWorthItemDto } from '../dto/update-net-worth.dto';
 import { GetNetWorthItemService } from '../logic/get-net-worth-item.service';
 import { DeleteNetWorthItemService } from '../logic/delete-net-worth-item-service';
-import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+import { CurrentUserId } from '../../auth/decorators/current-user-id.decorator';
 
 @Controller('net-worth/:snapshotId/items')
 @UseGuards(JwtAuthGuard)
@@ -32,7 +32,7 @@ export class NetWorthItemController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(
-    @CurrentUser('sub') userId: string,
+    @CurrentUserId() userId: string,
     @Param('snapshotId') snapshotId: string,
     @Body() createNetWorthItemDto: CreateNetWorthItemDto,
   ) {
@@ -45,7 +45,7 @@ export class NetWorthItemController {
 
   @Patch(':itemId')
   async update(
-    @CurrentUser('sub') userId: string,
+    @CurrentUserId() userId: string,
     @Param('itemId') itemId: string,
     @Body() updateNetWorthItemDto: UpdateNetWorthItemDto,
   ) {
@@ -58,7 +58,7 @@ export class NetWorthItemController {
 
   @Get(':itemId')
   async findOne(
-    @CurrentUser('sub') userId: string,
+    @CurrentUserId() userId: string,
     @Param('itemId') itemId: string,
   ) {
     return this.getNetWorthItem.execute(userId, itemId);
@@ -66,7 +66,7 @@ export class NetWorthItemController {
 
   @Delete(':itemId')
   async remove(
-    @CurrentUser('sub') userId: string,
+    @CurrentUserId() userId: string,
     @Param('itemId') itemId: string,
   ) {
     return this.deleteNetWorthItem.execute(userId, itemId);

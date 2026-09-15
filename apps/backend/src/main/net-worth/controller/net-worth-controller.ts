@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { CreateNetWorthDto } from './../dto/create-net-worth.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+import { CurrentUserId } from '../../auth/decorators/current-user-id.decorator';
 import { CreateNetWorthService } from '../logic/create-net-worth-service';
 import { GetNetWorthsService } from '../logic/get-net-worths.service';
 import { UpdateNetWorthDto } from '../dto/update-net-worth.dto';
@@ -41,7 +41,7 @@ export class NetWorthController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(
-    @CurrentUser('sub') userId: string,
+    @CurrentUserId() userId: string,
     @Body() createNetWorthDto: CreateNetWorthDto,
   ) {
     return this.createNetWorth.execute(userId, createNetWorthDto);
@@ -49,7 +49,7 @@ export class NetWorthController {
 
   @Get()
   async findAll(
-    @CurrentUser('sub') userId: string,
+    @CurrentUserId() userId: string,
     @Query('sortDirection') sortDirection?: string,
   ) {
     const safeSortDirection: SortDirectionType =
@@ -61,13 +61,13 @@ export class NetWorthController {
   }
 
   @Get('years-list')
-  async findYearsList(@CurrentUser('sub') userId: string) {
+  async findYearsList(@CurrentUserId() userId: string) {
     return this.getNetWorthYearsList.getListOfYears(userId);
   }
 
   @Get('by-year/:year/:includePreviousYear?')
   async findAllBasedOnYear(
-    @CurrentUser('sub') userId: string,
+    @CurrentUserId() userId: string,
     @Param('year', ParseIntPipe) year: number,
     @Param('includePreviousYear') includePreviousYear: boolean,
   ) {
@@ -79,13 +79,13 @@ export class NetWorthController {
   }
 
   @Get('latest')
-  async findLastIndicators(@CurrentUser('sub') userId: string) {
+  async findLastIndicators(@CurrentUserId() userId: string) {
     return this.getLastNetWorthIndicators.get(userId);
   }
 
   @Patch(':id')
   async update(
-    @CurrentUser('sub') userId: string,
+    @CurrentUserId() userId: string,
     @Param('id') id: string,
     @Body() updateNetWorthDto: UpdateNetWorthDto,
   ) {
@@ -93,7 +93,7 @@ export class NetWorthController {
   }
 
   @Delete(':id')
-  async remove(@CurrentUser('sub') userId: string, @Param('id') id: string) {
+  async remove(@CurrentUserId() userId: string, @Param('id') id: string) {
     return this.deleteNetWorth.execute(userId, id);
   }
 }
