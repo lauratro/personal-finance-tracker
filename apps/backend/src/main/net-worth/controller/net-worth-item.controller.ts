@@ -17,48 +17,52 @@ import { UpdateNetWorthItemService } from '../logic/update-net-worth-item-servic
 import { UpdateNetWorthItemDto } from '../dto/update-net-worth.dto';
 import { GetNetWorthItemService } from '../logic/get-net-worth-item.service';
 import { DeleteNetWorthItemService } from '../logic/delete-net-worth-item-service';
+import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 
 @Controller('net-worth/:snapshotId/items')
 @UseGuards(JwtAuthGuard)
 export class NetWorthItemController {
-    constructor(
-        private readonly createNetWorthItem: CreateNetWorthItemService,
-        private readonly updateNetWorthItem: UpdateNetWorthItemService,
-        private readonly getNetWorthItem: GetNetWorthItemService,
-        private readonly deleteNetWorthItem: DeleteNetWorthItemService,
-    
-    ) {}
+  constructor(
+    private readonly createNetWorthItem: CreateNetWorthItemService,
+    private readonly updateNetWorthItem: UpdateNetWorthItemService,
+    private readonly getNetWorthItem: GetNetWorthItemService,
+    private readonly deleteNetWorthItem: DeleteNetWorthItemService,
+  ) {}
 
-    @Post()
-    @HttpCode(HttpStatus.CREATED)
-    async create(
-        @Param('snapshotId') snapshotId: string,
-        @Body() createNetWorthItemDto: CreateNetWorthItemDto,
-    ) {
-        return this.createNetWorthItem.execute(snapshotId, createNetWorthItemDto);
-    }
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  async create(
+    @CurrentUser('userId') userId: string,
+    @Param('snapshotId') snapshotId: string,
+    @Body() createNetWorthItemDto: CreateNetWorthItemDto,
+  ) {
+    return this.createNetWorthItem.execute(
+      userId,
+      snapshotId,
+      createNetWorthItemDto,
+    );
+  }
 
-    @Patch(':itemId')
-    async update(
-        @Param('itemId') itemId: string,
-        @Body() updateNetWorthItemDto: UpdateNetWorthItemDto,
-    ) {
-        return this.updateNetWorthItem.execute(itemId, updateNetWorthItemDto);
-    }
-    
+  @Patch(':itemId')
+  async update(
+    @CurrentUser('userId') userId: string,
+    @Param('itemId') itemId: string,
+    @Body() updateNetWorthItemDto: UpdateNetWorthItemDto,
+  ) {
+    return this.updateNetWorthItem.execute(
+      userId,
+      itemId,
+      updateNetWorthItemDto,
+    );
+  }
 
-    @Get(':itemId')
-    async findOne(
-        @Param('itemId') itemId: string,
-    ) {
-        return this.getNetWorthItem.execute(itemId);
-    }
-
+  @Get(':itemId')
+  async findOne(@Param('itemId') itemId: string) {
+    return this.getNetWorthItem.execute(itemId);
+  }
 
   @Delete(':itemId')
-  async remove(
-    @Param("itemId") itemId: string
-  ) {
+  async remove(@Param('itemId') itemId: string) {
     return this.deleteNetWorthItem.execute(itemId);
   }
 }
