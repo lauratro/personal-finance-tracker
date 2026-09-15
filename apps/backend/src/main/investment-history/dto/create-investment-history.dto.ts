@@ -1,4 +1,11 @@
-import { IsString, IsDateString, IsNumber, IsOptional, IsEnum } from 'class-validator';
+import {
+  IsString,
+  IsDateString,
+  IsNumber,
+  IsOptional,
+  IsEnum,
+  IsPositive,
+} from 'class-validator';
 import { AssetType } from '@prisma/client';
 
 export class CreateInvestmentHistoryDto {
@@ -11,16 +18,16 @@ export class CreateInvestmentHistoryDto {
   @IsDateString()
   boughtDate!: string;
 
-  @IsNumber()
+  @IsPositive()
   totalAmountInvested!: number;
 
-  @IsNumber()
+  @IsPositive()
   costSingleStock!: number;
 
-  @IsNumber()
+  @IsPositive()
   quantity!: number;
 
   @IsOptional()
-  @IsNumber()
+  @IsPositive()
   plannedPriceToSell?: number;
 }

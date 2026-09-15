@@ -1,8 +1,16 @@
-import { IsString, IsDateString, IsNumber, IsOptional, IsEnum } from 'class-validator';
+import {
+  IsString,
+  IsDateString,
+  IsNumber,
+  IsOptional,
+  IsEnum,
+  IsPositive,
+  IsNotEmpty,
+} from 'class-validator';
 import { AssetType } from '@prisma/client';
 
 export class UpdateInvestmentHistoryDto {
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   name?: string;
 
@@ -15,19 +23,19 @@ export class UpdateInvestmentHistoryDto {
   boughtDate?: string;
 
   @IsOptional()
-  @IsNumber()
+  @IsPositive()
   totalAmountInvested?: number;
 
   @IsOptional()
-  @IsNumber()
+  @IsPositive()
   costSingleStock?: number;
 
   @IsOptional()
-  @IsNumber()
+  @IsPositive()
   quantity?: number;
 
   @IsOptional()
-  @IsNumber()
+  @IsPositive()
   plannedPriceToSell?: number;
 
   @IsOptional()
@@ -35,7 +43,7 @@ export class UpdateInvestmentHistoryDto {
   saleDate?: string | null;
 
   @IsOptional()
-  @IsNumber()
+  @IsPositive()
   salePrice?: number | null;
 
   @IsOptional()
