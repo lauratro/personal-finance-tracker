@@ -14,7 +14,6 @@ import {
 import { CreateInvestmentHistoryDto } from './../dto/create-investment-history.dto';
 import { UpdateInvestmentHistoryDto } from './../dto/update-investment-history.dto';
 import { JwtAuthGuard } from '../../../main/auth/guards/jwt-auth.guard';
-import { CurrentUserId } from '../../../main/auth/decorators/current-user-id.decorator';
 import { CreateInvestmentService } from './../logic/create-investment.service';
 import { DeleteInvestmentService } from './../logic/delete-investment.service';
 import { GetInvestmentService } from './../logic/get-investment.service';
@@ -23,6 +22,7 @@ import { UpdateInvestmentService } from './../logic/update-investment.service';
 import { SearchInvestmentByYearsService } from './../logic/search-investment-by-years.service';
 import { InvestmentIncomeAnalyticsService } from './../logic/analytics/investment-income-analytics.service';
 import { InvestmentIncomeAnalyticsQueryDto } from './../dto/investment-analytics.dto';
+import { CurrentUserId } from '../../auth/decorators/current-user-id.decorator';
 
 @Controller('investment-history')
 @UseGuards(JwtAuthGuard)
