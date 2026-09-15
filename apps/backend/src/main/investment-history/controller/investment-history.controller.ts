@@ -10,6 +10,7 @@ import {
   HttpCode,
   HttpStatus,
   Query,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { CreateInvestmentHistoryDto } from './../dto/create-investment-history.dto';
 import { UpdateInvestmentHistoryDto } from './../dto/update-investment-history.dto';
@@ -82,11 +83,6 @@ export class InvestmentHistoryController {
     return date;
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string, @CurrentUserId() userId: string) {
-    return this.getInvestment.execute(id, userId);
-  }
-
   @Get('analytics/income')
   getIncomeAnalytics(
     @CurrentUserId() userId: string,
@@ -95,9 +91,17 @@ export class InvestmentHistoryController {
     return this.investmentIncomeAnalyticsService.get(userId, query.year);
   }
 
+  @Get(':id')
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUserId() userId: string,
+  ) {
+    return this.getInvestment.execute(id, userId);
+  }
+
   @Patch(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @CurrentUserId() userId: string,
     @Body() updateInvestmentHistoryDto: UpdateInvestmentHistoryDto,
   ) {
@@ -110,7 +114,10 @@ export class InvestmentHistoryController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id') id: string, @CurrentUserId() userId: string) {
+  async remove(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUserId() userId: string,
+  ) {
     return this.deleteInvestment.execute(id, userId);
   }
 }
