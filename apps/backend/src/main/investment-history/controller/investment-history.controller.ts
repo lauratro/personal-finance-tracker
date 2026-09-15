@@ -101,11 +101,6 @@ export class InvestmentHistoryController {
     @CurrentUser('sub') userId: string,
     @Body() updateInvestmentHistoryDto: UpdateInvestmentHistoryDto,
   ) {
-    console.log('DEBUG controller update route hit', {
-      id,
-      userId,
-      body: updateInvestmentHistoryDto,
-    });
     return this.updateInvestment.execute(
       id,
       userId,

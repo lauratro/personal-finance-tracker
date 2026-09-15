@@ -32,7 +32,7 @@ export class NetWorthItemController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(
-    @CurrentUser('userId') userId: string,
+    @CurrentUser('sub') userId: string,
     @Param('snapshotId') snapshotId: string,
     @Body() createNetWorthItemDto: CreateNetWorthItemDto,
   ) {
@@ -45,7 +45,7 @@ export class NetWorthItemController {
 
   @Patch(':itemId')
   async update(
-    @CurrentUser('userId') userId: string,
+    @CurrentUser('sub') userId: string,
     @Param('itemId') itemId: string,
     @Body() updateNetWorthItemDto: UpdateNetWorthItemDto,
   ) {
@@ -58,7 +58,7 @@ export class NetWorthItemController {
 
   @Get(':itemId')
   async findOne(
-    @CurrentUser('userId') userId: string,
+    @CurrentUser('sub') userId: string,
     @Param('itemId') itemId: string,
   ) {
     return this.getNetWorthItem.execute(userId, itemId);
@@ -66,7 +66,7 @@ export class NetWorthItemController {
 
   @Delete(':itemId')
   async remove(
-    @CurrentUser('userId') userId: string,
+    @CurrentUser('sub') userId: string,
     @Param('itemId') itemId: string,
   ) {
     return this.deleteNetWorthItem.execute(userId, itemId);
