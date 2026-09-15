@@ -57,12 +57,18 @@ export class NetWorthItemController {
   }
 
   @Get(':itemId')
-  async findOne(@Param('itemId') itemId: string) {
-    return this.getNetWorthItem.execute(itemId);
+  async findOne(
+    @CurrentUser('userId') userId: string,
+    @Param('itemId') itemId: string,
+  ) {
+    return this.getNetWorthItem.execute(userId, itemId);
   }
 
   @Delete(':itemId')
-  async remove(@Param('itemId') itemId: string) {
-    return this.deleteNetWorthItem.execute(itemId);
+  async remove(
+    @CurrentUser('userId') userId: string,
+    @Param('itemId') itemId: string,
+  ) {
+    return this.deleteNetWorthItem.execute(userId, itemId);
   }
 }
