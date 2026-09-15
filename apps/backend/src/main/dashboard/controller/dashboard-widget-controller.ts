@@ -11,7 +11,6 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { CurrentUserId } from '../../auth/decorators/current-user-id.decorator';
 import { CreateDashboardWidget } from '../logic/create-dashboard-widget-service';
 import {
   CreateDashboardWidgetDto,
@@ -20,6 +19,7 @@ import {
 import { EditDashboardWidgetService } from '../logic/edit-dashboard-widget-service';
 import { DeleteDashboardWidget } from '../logic/delete-dashboard-widget-service';
 import { GetDashboardWidgetsService } from '../logic/get-dashboard-widgets-service';
+import { CurrentUserId } from '../../auth/decorators/current-user-id.decorator';
 
 @Controller('widget')
 @UseGuards(JwtAuthGuard)
