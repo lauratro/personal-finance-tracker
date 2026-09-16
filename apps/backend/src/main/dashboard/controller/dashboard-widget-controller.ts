@@ -9,6 +9,7 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { CreateDashboardWidget } from '../logic/create-dashboard-widget-service';
@@ -48,7 +49,7 @@ export class DashboardWidgetController {
   @Patch(':widgetId')
   async edit(
     @CurrentUserId() userId: string,
-    @Param('widgetId') widgetId: string,
+    @Param('widgetId', ParseUUIDPipe) widgetId: string,
     @Body() dto: DashboardWidgetDto,
   ) {
     return this.editDashboardWidgetService.edit(userId, widgetId, dto);
@@ -57,7 +58,7 @@ export class DashboardWidgetController {
   @Delete(':widgetId')
   async delete(
     @CurrentUserId() userId: string,
-    @Param('widgetId') widgetId: string,
+    @Param('widgetId', ParseUUIDPipe) widgetId: string,
   ) {
     return this.deleteDashboardWidgetService.delete(userId, widgetId);
   }

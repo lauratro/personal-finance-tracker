@@ -10,6 +10,7 @@ import {
   HttpCode,
   HttpStatus,
   ParseIntPipe,
+  ParseUUIDPipe,
   Query,
 } from '@nestjs/common';
 import { CreateNetWorthDto } from './../dto/create-net-worth.dto';
@@ -86,14 +87,17 @@ export class NetWorthController {
   @Patch(':id')
   async update(
     @CurrentUserId() userId: string,
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateNetWorthDto: UpdateNetWorthDto,
   ) {
     return this.updateNetWorth.execute(userId, id, updateNetWorthDto);
   }
 
   @Delete(':id')
-  async remove(@CurrentUserId() userId: string, @Param('id') id: string) {
+  async remove(
+    @CurrentUserId() userId: string,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
     return this.deleteNetWorth.execute(userId, id);
   }
 }

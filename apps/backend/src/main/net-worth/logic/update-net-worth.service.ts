@@ -20,7 +20,7 @@ export class UpdateNetWorthService {
     return this.prisma.netWorthSnapshot.update({
       where: { id: snapshotId },
       data: {
-        monthStart: new Date(dto.monthStart!),
+        monthStart: new Date(dto.monthStart),
         updatedAt: new Date(),
       },
     });

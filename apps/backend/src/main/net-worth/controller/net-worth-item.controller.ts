@@ -9,6 +9,7 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { CreateNetWorthItemDto } from '../dto/create-net-worth.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
@@ -33,7 +34,7 @@ export class NetWorthItemController {
   @HttpCode(HttpStatus.CREATED)
   async create(
     @CurrentUserId() userId: string,
-    @Param('snapshotId') snapshotId: string,
+    @Param('snapshotId', ParseUUIDPipe) snapshotId: string,
     @Body() createNetWorthItemDto: CreateNetWorthItemDto,
   ) {
     return this.createNetWorthItem.execute(
@@ -46,7 +47,8 @@ export class NetWorthItemController {
   @Patch(':itemId')
   async update(
     @CurrentUserId() userId: string,
-    @Param('itemId') itemId: string,
+    @Param('snapshotId', ParseUUIDPipe) _snapshotId: string,
+    @Param('itemId', ParseUUIDPipe) itemId: string,
     @Body() updateNetWorthItemDto: UpdateNetWorthItemDto,
   ) {
     return this.updateNetWorthItem.execute(
@@ -59,7 +61,8 @@ export class NetWorthItemController {
   @Get(':itemId')
   async findOne(
     @CurrentUserId() userId: string,
-    @Param('itemId') itemId: string,
+    @Param('snapshotId', ParseUUIDPipe) _snapshotId: string,
+    @Param('itemId', ParseUUIDPipe) itemId: string,
   ) {
     return this.getNetWorthItem.execute(userId, itemId);
   }
@@ -67,7 +70,8 @@ export class NetWorthItemController {
   @Delete(':itemId')
   async remove(
     @CurrentUserId() userId: string,
-    @Param('itemId') itemId: string,
+    @Param('snapshotId', ParseUUIDPipe) _snapshotId: string,
+    @Param('itemId', ParseUUIDPipe) itemId: string,
   ) {
     return this.deleteNetWorthItem.execute(userId, itemId);
   }

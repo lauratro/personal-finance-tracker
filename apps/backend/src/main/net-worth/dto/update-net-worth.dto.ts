@@ -4,26 +4,26 @@ import {
   IsNumber,
   Min,
   IsString,
+  IsDefined,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { NetWorthCategory } from '@prisma/client';
 
-
-export class UpdateNetWorthDto {    
+export class UpdateNetWorthDto {
   @IsDateString()
-  monthStart?: string;
+  @IsDefined()
+  monthStart!: string;
 }
-
 
 export class UpdateNetWorthItemDto {
   @IsString()
-    name!: string;
-  
-    @IsEnum(NetWorthCategory)
-    category!: NetWorthCategory;
-  
-    @Type(() => Number)
-    @IsNumber({ maxDecimalPlaces: 2 })
-    @Min(0)
-    value!: number;
+  name!: string;
+
+  @IsEnum(NetWorthCategory)
+  category!: NetWorthCategory;
+
+  @Type(() => Number)
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0)
+  value!: number;
 }
