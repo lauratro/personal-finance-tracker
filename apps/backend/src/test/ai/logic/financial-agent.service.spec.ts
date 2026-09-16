@@ -8,7 +8,6 @@ import { AiService } from '../../../main/ai/logic/ai.service';
 import { GetNetWorthsService } from '../../../main/net-worth/logic/get-net-worths.service';
 import { ListInvestmentsService } from '../../../main/investment-history/logic/list-investments.service';
 import { InternalServerErrorException } from '@nestjs/common';
-import { AiEmptyResponseException } from '../../../main/ai/exceptions/AiEmptyResponseException';
 
 describe('FinancialAgentService', () => {
   let service: FinancialAgentService;

@@ -17,7 +17,7 @@ export async function createIntegrationApp(): Promise<INestApplication> {
       whitelist: true,
       transform: true,
       forbidNonWhitelisted: true,
-    }),
+    })
   );
 
   await app.init();
