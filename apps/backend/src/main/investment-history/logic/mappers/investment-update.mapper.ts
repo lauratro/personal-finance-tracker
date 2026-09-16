@@ -1,6 +1,7 @@
 import { UpdateInvestmentHistoryDto } from '../../dto/update-investment-history.dto';
 import { Investment, Prisma } from '@prisma/client';
 import { calculateInvestmentIncome } from '../../utils/calculate-investment-income';
+import { ForbiddenException, BadRequestException } from '@nestjs/common';
 
 export class InvestmentUpdateMapper {
   static mapInvestment(
@@ -53,7 +54,7 @@ export class InvestmentUpdateMapper {
     if (dto.salePrice !== undefined) updatedData.salePrice = salePrice;
     if (dto.taxes !== undefined) updatedData.taxes = taxes;
 
-    if (saleDate && salePrice) {
+    if (saleDate && salePrice && dto.boughtDate) {
       const quantity =
         dto.quantity !== undefined
           ? new Prisma.Decimal(dto.quantity)
@@ -68,6 +69,11 @@ export class InvestmentUpdateMapper {
         totalAmountInvested,
       );
 
+      const boughtDate = new Date(dto.boughtDate);
+
+      if (saleDate.getTime() < boughtDate.getTime()) {
+        throw new BadRequestException('Sale date cannot be before bought date');
+      }
       updatedData.income = income.income;
       updatedData.percentageIncome = income.percentageIncome;
     } else {
