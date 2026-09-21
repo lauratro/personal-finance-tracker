@@ -5,6 +5,9 @@ import {
   LoginPayload,
   RegisterPayload,
   SafeUser,
+  VerifyTwoFactorPayload,
+  TwoFactorSetupResponse,
+  RecoveryCodesResponse,
 } from './auth-types';
 import { getAuthSession } from './auth-storage';
 
@@ -21,6 +24,39 @@ export function loginUser(payload: LoginPayload) {
     method: 'POST',
     body: payload,
     skipAuthRefresh: true,
+  });
+}
+
+export function verifyTwoFactorCode(payload: VerifyTwoFactorPayload) {
+  return http<AuthResponse>('/auth/2fa/verify', {
+    method: 'POST',
+    body: payload,
+    skipAuthRefresh: true,
+  });
+}
+
+export function setupTwoFactor() {
+  return http<TwoFactorSetupResponse>('/auth/2fa/setup', {
+    method: 'POST',
+  });
+}
+
+export function enableTwoFactor(code: string) {
+  return http<{ success: boolean } & RecoveryCodesResponse>('/auth/2fa/enable', {
+    method: 'POST',
+    body: { code },
+  });
+}
+
+export function regenerateRecoveryCodes() {
+  return http<RecoveryCodesResponse>('/auth/2fa/recovery-codes/regenerate', {
+    method: 'POST',
+  });
+}
+
+export function disableTwoFactor() {
+  return http<{ success: boolean }>('/auth/2fa/disable', {
+    method: 'POST',
   });
 }
 
