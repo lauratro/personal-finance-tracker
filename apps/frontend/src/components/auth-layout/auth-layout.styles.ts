@@ -1,11 +1,11 @@
-import { styled } from "styled-components"
+import { styled } from 'styled-components';
 
 export const Wrapper = styled.div`
   min-height: 100vh;
   display: grid;
   place-items: center;
   padding: 2rem;
-`
+`;
 
 export const CardContainer = styled.div`
   padding: 1.5rem;
@@ -15,12 +15,12 @@ export const CardContainer = styled.div`
   border-radius: 24px;
   box-shadow: 0 22px 60px rgba(15, 23, 42, 0.08);
   padding: 2rem;
-`
+`;
 export const TitleText = styled.p`
-  margin: 0;
+  margin-bottom: 10px;
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #2563eb;
-`
+  color: var(--primary);
+`;

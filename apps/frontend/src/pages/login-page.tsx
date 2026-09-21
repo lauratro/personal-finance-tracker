@@ -70,10 +70,6 @@ export function LoginPage() {
           {submitting ? 'Signing in...' : 'Sign in'}
         </button>
       </form>
-
-      <p className="helper-text compact">
-        First time here? You can also go straight to the <Link to="/register">registration form</Link>.
-      </p>
     </AuthLayout>
   );
 }
