@@ -21,7 +21,9 @@ export function LoginPage() {
       const response = await login({ email, password });
 
       if (response.requiresTwoFactor) {
-        setError(response.message ?? 'Two-factor authentication is required.');
+        navigate('/2fa', {
+          state: { twoFactorToken: response.twoFactorToken },
+        });
         return;
       }
 

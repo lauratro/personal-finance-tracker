@@ -13,11 +13,18 @@ export type AuthTokens = {
   accessToken: string;
 };
 
-export type AuthResponse = AuthTokens & {
+export type AuthenticatedResponse = AuthTokens & {
   user: SafeUser;
-  requiresTwoFactor?: boolean;
-  message?: string;
+  requiresTwoFactor?: false;
 };
+
+export type TwoFactorChallengeResponse = {
+  requiresTwoFactor: true;
+  twoFactorToken: string;
+  message: string;
+};
+
+export type AuthResponse = AuthenticatedResponse | TwoFactorChallengeResponse;
 
 export type RegisterPayload = {
   email: string;
@@ -29,6 +36,21 @@ export type RegisterPayload = {
 export type LoginPayload = {
   email: string;
   password: string;
+};
+
+export type VerifyTwoFactorPayload = {
+  twoFactorToken: string;
+  code: string;
+};
+
+export type TwoFactorSetupResponse = {
+  secret: string;
+  otpauthUrl: string;
+  qrCodeDataUrl: string;
+};
+
+export type RecoveryCodesResponse = {
+  recoveryCodes: string[];
 };
 export interface PageContainerProps {
     children: any;
