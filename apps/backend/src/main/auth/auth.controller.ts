@@ -17,6 +17,7 @@ import { CurrentUserId } from './decorators/current-user-id.decorator';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { VerifyTwoFactorDto } from './dto/verify-2fa.dto';
+import { EnableTwoFactorDto } from './dto/enable-2fa.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RefreshJwtAuthGuard } from './guards/refresh-jwt-auth.guard';
 import { AuthenticatedRequestUser } from './types/authenticated-request-user.type';
@@ -120,8 +121,54 @@ async logout(
 
   @HttpCode(HttpStatus.OK)
   @Post('2fa/verify')
-  async verifyTwoFactor(@Body() dto: VerifyTwoFactorDto) {
-    return this.authService.verifyTwoFactor(dto.email, dto.code);
+  async verifyTwoFactor(
+    @Body() dto: VerifyTwoFactorDto,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const result = await this.authService.verifyTwoFactor(
+      dto.twoFactorToken,
+      dto.code,
+      req,
+    );
+
+    res.cookie(
+      REFRESH_COOKIE_NAME,
+      result.refreshToken,
+      REFRESH_COOKIE_OPTIONS,
+    );
+
+    return { user: result.user, accessToken: result.accessToken };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('2fa/setup')
+  async setupTwoFactor(@CurrentUserId() userId: string) {
+    return this.authService.setupTwoFactor(userId);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  @Post('2fa/enable')
+  async enableTwoFactor(
+    @CurrentUserId() userId: string,
+    @Body() dto: EnableTwoFactorDto,
+  ) {
+    return this.authService.enableTwoFactor(userId, dto.code);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  @Post('2fa/recovery-codes/regenerate')
+  async regenerateRecoveryCodes(@CurrentUserId() userId: string) {
+    return this.authService.regenerateRecoveryCodes(userId);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  @Post('2fa/disable')
+  async disableTwoFactor(@CurrentUserId() userId: string) {
+    return this.authService.disableTwoFactor(userId);
   }
 
   @UseGuards(JwtAuthGuard)

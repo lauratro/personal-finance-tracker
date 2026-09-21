@@ -1,10 +1,12 @@
-import { IsEmail, IsString, Length } from 'class-validator';
+import { IsString, Matches } from 'class-validator';
 
 export class VerifyTwoFactorDto {
-  @IsEmail()
-  email!: string;
+  @IsString()
+  twoFactorToken!: string;
 
   @IsString()
-  @Length(6, 8)
+  @Matches(/^(?:\d{6}|[A-Z2-9]{5}-?[A-Z2-9]{5})$/i, {
+    message: 'code must be a six-digit code or a valid recovery code',
+  })
   code!: string;
 }
