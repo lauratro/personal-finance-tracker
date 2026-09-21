@@ -6,6 +6,8 @@ import { LoginPage } from './pages/login-page';
 import { RegisterPage } from './pages/register-page';
 import { routePaths } from './navigation/main-navigation';
 import { NetWorthPage } from './pages/net-worth-page/net-worth-page';
+import { TwoFactorPage } from './pages/two-factor-page';
+import { SecurityPage } from './pages/security-page';
 
 export default function App() {
   return (
@@ -13,6 +15,7 @@ export default function App() {
       <Route path={routePaths.root} element={<Navigate to={routePaths.login} replace />} />
       <Route path={routePaths.login} element={<LoginPage />} />
       <Route path={routePaths.register} element={<RegisterPage />} />
+      <Route path={routePaths.twoFactor} element={<TwoFactorPage />} />
       <Route
         path={routePaths.dashboard}
         element={
@@ -34,6 +37,14 @@ export default function App() {
         element={
           <ProtectedRoute>
             <NetWorthPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={routePaths.security}
+        element={
+          <ProtectedRoute>
+            <SecurityPage />
           </ProtectedRoute>
         }
       />

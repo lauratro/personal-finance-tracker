@@ -23,8 +23,11 @@ export function AppMenubar() {
           < NavLink to={routePaths.investmentsHistory}>
             Investments History
           </ NavLink>
-             < NavLink to={routePaths.netWorth}>
+          < NavLink to={routePaths.netWorth}>
             Net Worth
+          </ NavLink>
+          < NavLink to={routePaths.security}>
+            Security
           </ NavLink>
         </nav>
     <AppMenuUser>
@@ -39,4 +42,3 @@ export function AppMenubar() {
     </AppMenuWrapper>
   );
 }
-
