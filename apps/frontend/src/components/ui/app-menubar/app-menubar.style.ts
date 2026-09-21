@@ -1,14 +1,14 @@
-import styled from "styled-components";
-import { Link } from "react-router-dom";
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 export const AppMenuWrapper = styled.header`
   width: 100%;
   background: white;
   border-bottom: 1px solid #e2e8f0;
   box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
-  position:fixed;
+  position: fixed;
   z-index: 100;
-`
+`;
 
 export const InnerContainer = styled.div`
   margin: 0 10px;
@@ -18,7 +18,7 @@ export const InnerContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-`
+`;
 
 export const NavLink = styled(Link)`
   font-weight: 700;
@@ -27,13 +27,13 @@ export const NavLink = styled(Link)`
   transition: background 0.2s ease;
   margin: 0 0.25rem;
   background: #eff6ff;
-  color: #5F9EA0;
+  color: #5f9ea0;
   border: 1px solid rgba(95, 158, 160, 0.4);
   cursor: pointer;
   &:hover {
     background: #f8fafc;
   }
-`
+`;
 
 export const LogoutButton = styled.button`
   border: 1px solid rgba(95, 158, 160, 0.4);
@@ -41,12 +41,28 @@ export const LogoutButton = styled.button`
   font-weight: 700;
   color: white;
   cursor: pointer;
-   padding: 0.75rem 1rem;
+  padding: 0.75rem 1rem;
   border-radius: 14px;
-`
+`;
 
 export const AppMenuUser = styled.div`
   display: flex;
   align-items: center;
   gap: 0.75rem;
-`
+`;
+
+export const UserProfileLink = styled(Link)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #334155;
+  font-weight: 700;
+  text-decoration: none;
+  border: var(--primary) 2px solid;
+  padding: 10px;
+  border-radius: 14px;
+  &:hover {
+    color: var(--primary);
+    text-decoration: none;
+´  }
+`;

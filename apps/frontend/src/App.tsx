@@ -7,7 +7,7 @@ import { RegisterPage } from './pages/register-page';
 import { routePaths } from './navigation/main-navigation';
 import { NetWorthPage } from './pages/net-worth-page/net-worth-page';
 import { TwoFactorPage } from './pages/two-factor-page';
-import { SecurityPage } from './pages/security-page';
+import { ProfilePage } from './pages/profile-page';
 
 export default function App() {
   return (
@@ -41,12 +41,16 @@ export default function App() {
         }
       />
       <Route
-        path={routePaths.security}
+        path={routePaths.profile}
         element={
           <ProtectedRoute>
-            <SecurityPage />
+            <ProfilePage />
           </ProtectedRoute>
         }
+      />
+      <Route
+        path={routePaths.security}
+        element={<Navigate to={routePaths.profile} replace />}
       />
     </Routes>
   );

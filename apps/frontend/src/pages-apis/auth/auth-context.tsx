@@ -12,6 +12,7 @@ import {
   logoutUser,
   registerUser,
   verifyTwoFactorCode,
+  updateCurrentUser,
 } from './auth-api';
 import {
   clearAuthSession,
@@ -26,6 +27,7 @@ import {
   RegisterPayload,
   SafeUser,
   VerifyTwoFactorPayload,
+  UpdateProfilePayload,
 } from './auth-types';
 
 type AuthContextValue = {
@@ -38,6 +40,7 @@ type AuthContextValue = {
     payload: VerifyTwoFactorPayload,
   ) => Promise<AuthenticatedResponse>;
   refreshCurrentUser: () => Promise<SafeUser>;
+  updateProfile: (payload: UpdateProfilePayload) => Promise<SafeUser>;
   logout: () => void;
 };
 
@@ -131,6 +134,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return currentUser;
   };
 
+  const updateProfile = async (payload: UpdateProfilePayload) => {
+    const updatedUser = await updateCurrentUser(payload);
+    setUser(updatedUser);
+    return updatedUser;
+  };
+
  const logout = async () => {
   try {
     await logoutUser();
@@ -150,6 +159,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       register,
       verifyTwoFactor,
       refreshCurrentUser,
+      updateProfile,
       logout,
     }),
     [user, accessToken, loading],

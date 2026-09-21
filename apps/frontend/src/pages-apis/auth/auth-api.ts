@@ -8,6 +8,7 @@ import {
   VerifyTwoFactorPayload,
   TwoFactorSetupResponse,
   RecoveryCodesResponse,
+  UpdateProfilePayload,
 } from './auth-types';
 import { getAuthSession } from './auth-storage';
 
@@ -64,6 +65,13 @@ export function getCurrentUser(token?: string) {
   return http<SafeUser>('/auth/me', {
     method: 'GET',
     token,
+  });
+}
+
+export function updateCurrentUser(payload: UpdateProfilePayload) {
+  return http<SafeUser>('/auth/me', {
+    method: 'PATCH',
+    body: payload,
   });
 }
 

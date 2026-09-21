@@ -5,6 +5,7 @@ import { loginRoute } from '../routes/login.routes';
 import { registerRoute } from '../routes/register.routes';
 import { twoFactorRoute } from '../routes/two-factor.routes';
 import { securityRoute } from '../routes/security.routes';
+import { profileRoute } from '../routes/profile.routes';
 
 export const routePaths = {
   root: '/',
@@ -12,6 +13,7 @@ export const routePaths = {
   register: registerRoute,
   twoFactor: twoFactorRoute,
   security: securityRoute,
+  profile: profileRoute,
   dashboard: dashboardRoute,
   investmentsHistory: investmentsHistoryRoute,
   netWorth: netWorthRoute,

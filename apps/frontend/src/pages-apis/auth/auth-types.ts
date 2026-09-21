@@ -52,6 +52,12 @@ export type TwoFactorSetupResponse = {
 export type RecoveryCodesResponse = {
   recoveryCodes: string[];
 };
+
+export type UpdateProfilePayload = {
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+};
 export interface PageContainerProps {
     children: any;
     title: string;

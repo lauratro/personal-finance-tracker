@@ -21,7 +21,7 @@ export const MobileMenu = ({isMenuOpen, setIsMenuOpen} : MobileMenuProps ) => {
           < NavLinkMobile path={routePaths.dashboard} title={"Dashboard"} icon={<IconChartHistogram/>}/>
           < NavLinkMobile path={routePaths.investmentsHistory} title={"Investments History"} icon={<IconDatabase/>}/>
           < NavLinkMobile path={routePaths.netWorth} title={"Net Worth"} icon= {<IconCreditCard/>}/>
-          < NavLinkMobile path={routePaths.security} title={"Security"} icon={<IconShieldLock/>}/>
+          < NavLinkMobile path={routePaths.profile} title={"Profile & Security"} icon={<IconShieldLock/>}/>
         </NavContainer>
    <Divider/>
         <div className="app-menubar-user">

@@ -1,5 +1,4 @@
 import { FormEvent, useState } from 'react';
-import { PageContainer } from '../containers/page-container';
 import { TextInput } from '../components/text-input';
 import {
   disableTwoFactor,
@@ -10,7 +9,7 @@ import {
 import { useAuth } from '../pages-apis/auth/auth-context';
 import type { TwoFactorSetupResponse } from '../pages-apis/auth/auth-types';
 
-export function SecurityPage() {
+export function TwoFactorSettings() {
   const { user, refreshCurrentUser } = useAuth();
   const [setup, setSetup] = useState<TwoFactorSetupResponse | null>(null);
   const [code, setCode] = useState('');
@@ -92,11 +91,7 @@ export function SecurityPage() {
   };
 
   return (
-    <PageContainer
-      title="Security"
-      description="Protect your account with an authenticator app."
-    >
-      <section className="mx-auto max-w-xl rounded-2xl border border-slate-200 bg-white p-6">
+      <section className="rounded-2xl border border-slate-200 bg-white p-6">
         <h2 className="text-xl font-semibold">Two-factor authentication</h2>
 
         {recoveryCodes ? (
@@ -205,6 +200,5 @@ export function SecurityPage() {
 
         {error ? <div className="form-error mt-4">{error}</div> : null}
       </section>
-    </PageContainer>
   );
 }
