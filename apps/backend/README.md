@@ -173,6 +173,10 @@ PostgreSQL must become healthy before the backend starts. The backend must then 
 - `POST /api/auth/refresh`
 - `POST /api/auth/logout`
 - `POST /api/auth/2fa/verify`
+- `POST /api/auth/2fa/setup` (authenticated)
+- `POST /api/auth/2fa/enable` (authenticated)
+- `POST /api/auth/2fa/recovery-codes/regenerate` (authenticated)
+- `POST /api/auth/2fa/disable` (authenticated)
 - `GET /api/auth/me`
 
 ## Notes
@@ -180,5 +184,8 @@ PostgreSQL must become healthy before the backend starts. The backend must then 
 - Refresh tokens are stored hashed in the database.
 - Access token TTL defaults to 15 minutes.
 - Refresh token TTL defaults to 7 days.
-- 2FA is scaffolded but not fully implemented yet.
+- Password verification for a 2FA-enabled account returns a short-lived
+  `twoFactorToken`; `/auth/2fa/verify` accepts that token instead of an email.
+- TOTP secrets are encrypted with `TWO_FACTOR_ENCRYPTION_KEY` before storage.
+- Recovery codes are returned once, stored only as hashes, and consumed on use.
 - Prisma manages the finance and portfolio domain schema.
