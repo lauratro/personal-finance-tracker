@@ -34,9 +34,21 @@ model User {
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
   refreshTokens     RefreshToken[]
+  recoveryCodes     TwoFactorRecoveryCode[]
   investments       Investment[]
   netWorthSnapshots NetWorthSnapshot[]
   dashboard         Dashboard?
+}
+
+model TwoFactorRecoveryCode {
+  id        String    @id @default(uuid())
+  userId    String
+  codeHash  String
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, usedAt])
 }
 
 model RefreshToken {
