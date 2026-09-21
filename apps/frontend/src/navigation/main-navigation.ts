@@ -3,11 +3,15 @@ import { dashboardRoute } from '../routes/dashboard.routes';
 import { investmentsHistoryRoute } from '../routes/investments-history.routes';
 import { loginRoute } from '../routes/login.routes';
 import { registerRoute } from '../routes/register.routes';
+import { twoFactorRoute } from '../routes/two-factor.routes';
+import { securityRoute } from '../routes/security.routes';
 
 export const routePaths = {
   root: '/',
   login: loginRoute,
   register: registerRoute,
+  twoFactor: twoFactorRoute,
+  security: securityRoute,
   dashboard: dashboardRoute,
   investmentsHistory: investmentsHistoryRoute,
   netWorth: netWorthRoute,

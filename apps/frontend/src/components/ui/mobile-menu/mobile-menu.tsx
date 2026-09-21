@@ -8,6 +8,7 @@ import { IconCreditCard } from '@tabler/icons-react';
 import { NavLinkMobile } from "./parts/nav-link-mobile/nav-link-mobile";
 import { IconDatabase } from '@tabler/icons-react';
 import { IconChartHistogram } from '@tabler/icons-react';
+import { IconShieldLock } from '@tabler/icons-react';
 
 export const MobileMenu = ({isMenuOpen, setIsMenuOpen} : MobileMenuProps ) => {
   const {  logout } = useAuth();
@@ -20,6 +21,7 @@ export const MobileMenu = ({isMenuOpen, setIsMenuOpen} : MobileMenuProps ) => {
           < NavLinkMobile path={routePaths.dashboard} title={"Dashboard"} icon={<IconChartHistogram/>}/>
           < NavLinkMobile path={routePaths.investmentsHistory} title={"Investments History"} icon={<IconDatabase/>}/>
           < NavLinkMobile path={routePaths.netWorth} title={"Net Worth"} icon= {<IconCreditCard/>}/>
+          < NavLinkMobile path={routePaths.security} title={"Security"} icon={<IconShieldLock/>}/>
         </NavContainer>
    <Divider/>
         <div className="app-menubar-user">
