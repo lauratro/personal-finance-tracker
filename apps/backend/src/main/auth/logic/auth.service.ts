@@ -206,7 +206,9 @@ export class AuthService {
     }
 
     if (user.twoFactorEnabled) {
-      throw new ConflictException('Two-factor authentication is already enabled');
+      throw new ConflictException(
+        'Two-factor authentication is already enabled',
+      );
     }
 
     const secret = generateSecret();
@@ -263,7 +265,9 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
 
     if (!user?.twoFactorEnabled) {
-      throw new UnauthorizedException('Two-factor authentication is not enabled');
+      throw new UnauthorizedException(
+        'Two-factor authentication is not enabled',
+      );
     }
 
     return { recoveryCodes: await this.replaceRecoveryCodes(userId) };
@@ -291,7 +295,9 @@ export class AuthService {
         secret: this.configService.getOrThrow<string>('JWT_2FA_SECRET'),
       });
     } catch {
-      throw new UnauthorizedException('Invalid or expired two-factor challenge');
+      throw new UnauthorizedException(
+        'Invalid or expired two-factor challenge',
+      );
     }
 
     if (payload.purpose !== 'two-factor-login') {
@@ -303,10 +309,16 @@ export class AuthService {
     });
 
     if (!user?.twoFactorEnabled || !user.twoFactorSecret) {
-      throw new UnauthorizedException('Two-factor authentication is not enabled');
+      throw new UnauthorizedException(
+        'Two-factor authentication is not enabled',
+      );
     }
 
-    const valid = await this.verifySecondFactor(user.id, user.twoFactorSecret, code);
+    const valid = await this.verifySecondFactor(
+      user.id,
+      user.twoFactorSecret,
+      code,
+    );
 
     if (!valid) {
       throw new UnauthorizedException('Invalid authentication code');
