@@ -6,21 +6,38 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { getCurrentUser, loginUser, logoutUser, registerUser } from './auth-api';
+import {
+  getCurrentUser,
+  loginUser,
+  logoutUser,
+  registerUser,
+  verifyTwoFactorCode,
+} from './auth-api';
 import {
   clearAuthSession,
   getAuthSession,
   saveAuthSession,
   subscribeToAuthSession,
 } from './auth-storage';
-import { AuthResponse, LoginPayload, RegisterPayload, SafeUser } from './auth-types';
+import {
+  AuthenticatedResponse,
+  AuthResponse,
+  LoginPayload,
+  RegisterPayload,
+  SafeUser,
+  VerifyTwoFactorPayload,
+} from './auth-types';
 
 type AuthContextValue = {
   user: SafeUser | null;
   accessToken: string | null;
   loading: boolean;
   login: (payload: LoginPayload) => Promise<AuthResponse>;
-  register: (payload: RegisterPayload) => Promise<AuthResponse>;
+  register: (payload: RegisterPayload) => Promise<AuthenticatedResponse>;
+  verifyTwoFactor: (
+    payload: VerifyTwoFactorPayload,
+  ) => Promise<AuthenticatedResponse>;
+  refreshCurrentUser: () => Promise<SafeUser>;
   logout: () => void;
 };
 
@@ -72,7 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const persistSession = (session: AuthResponse) => {
+  const persistSession = (session: AuthenticatedResponse) => {
     saveAuthSession(session);
     setUser(session.user);
   };
@@ -90,8 +107,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = async (payload: RegisterPayload) => {
     const session = await registerUser(payload);
+    if (session.requiresTwoFactor) {
+      throw new Error('Registration returned an unexpected 2FA challenge');
+    }
     persistSession(session);
     return session;
+  };
+
+  const verifyTwoFactor = async (payload: VerifyTwoFactorPayload) => {
+    const session = await verifyTwoFactorCode(payload);
+
+    if (session.requiresTwoFactor) {
+      throw new Error('Two-factor verification returned another challenge');
+    }
+
+    persistSession(session);
+    return session;
+  };
+
+  const refreshCurrentUser = async () => {
+    const currentUser = await getCurrentUser();
+    setUser(currentUser);
+    return currentUser;
   };
 
  const logout = async () => {
@@ -111,6 +148,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       login,
       register,
+      verifyTwoFactor,
+      refreshCurrentUser,
       logout,
     }),
     [user, accessToken, loading],
