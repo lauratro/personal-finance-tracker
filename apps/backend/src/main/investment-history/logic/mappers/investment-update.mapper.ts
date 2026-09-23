@@ -31,6 +31,11 @@ export class InvestmentUpdateMapper {
       );
     }
 
+    const boughtDate =
+      dto.boughtDate !== undefined
+        ? new Date(dto.boughtDate)
+        : investment.boughtDate;
+
     const saleDate =
       dto.saleDate !== undefined
         ? dto.saleDate
@@ -54,7 +59,7 @@ export class InvestmentUpdateMapper {
     if (dto.salePrice !== undefined) updatedData.salePrice = salePrice;
     if (dto.taxes !== undefined) updatedData.taxes = taxes;
 
-    if (saleDate && salePrice && dto.boughtDate) {
+    if (saleDate && salePrice && boughtDate) {
       const quantity =
         dto.quantity !== undefined
           ? new Prisma.Decimal(dto.quantity)
@@ -63,17 +68,16 @@ export class InvestmentUpdateMapper {
         dto.totalAmountInvested !== undefined
           ? new Prisma.Decimal(dto.totalAmountInvested)
           : investment.totalAmountInvested;
+
+      if (saleDate && saleDate.getTime() < boughtDate.getTime()) {
+        throw new BadRequestException('Sale date cannot be before bought date');
+      }
+
       const income = calculateInvestmentIncome(
         quantity,
         salePrice,
         totalAmountInvested,
       );
-
-      const boughtDate = new Date(dto.boughtDate);
-
-      if (saleDate.getTime() < boughtDate.getTime()) {
-        throw new BadRequestException('Sale date cannot be before bought date');
-      }
 
       updatedData.income = income.income;
       updatedData.percentageIncome = income.percentageIncome;

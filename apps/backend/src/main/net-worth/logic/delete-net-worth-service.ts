@@ -5,7 +5,7 @@ import { PrismaService } from '../../../prisma/prisma.service';
 export class DeleteNetWorthService {
   constructor(private readonly prisma: PrismaService) {}
   async execute(userId: string, snapshotId: string) {
-    const snapshot = this.prisma.netWorthSnapshot.findFirst({
+    const snapshot = await this.prisma.netWorthSnapshot.findFirst({
       where: {
         userId: userId,
         id: snapshotId,

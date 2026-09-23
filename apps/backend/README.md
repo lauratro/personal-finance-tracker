@@ -185,7 +185,7 @@ PostgreSQL must become healthy before the backend starts. The backend must then 
 - Access token TTL defaults to 15 minutes.
 - Refresh token TTL defaults to 7 days.
 - Password verification for a 2FA-enabled account returns a short-lived
-  `twoFactorToken`; `/auth/2fa/verify` accepts that token instead of an email.
+  `twoFactorToken`; `/auth/2fa/verify` accepts that token.
 - TOTP secrets are encrypted with `TWO_FACTOR_ENCRYPTION_KEY` before storage.
 - Recovery codes are returned once, stored only as hashes, and consumed on use.
 - Prisma manages the finance and portfolio domain schema.
