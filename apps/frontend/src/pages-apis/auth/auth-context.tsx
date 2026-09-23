@@ -16,7 +16,6 @@ import {
 } from './auth-api';
 import {
   clearAuthSession,
-  getAuthSession,
   saveAuthSession,
   subscribeToAuthSession,
 } from './auth-storage';
@@ -61,26 +60,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     const restoreSession = async () => {
-      const session = getAuthSession();
-
-      if (!session?.accessToken) {
-        setLoading(false);
-        return;
-      }
-
-      setAccessToken(session.accessToken);
-
       try {
-        // http() refreshes an expired access token and retries this request.
-        const currentUser = await getCurrentUser(session.accessToken);
-        if (!cancelled) setUser(currentUser);
+        /*
+         * There is no access token after a page reload.
+         *
+         * getCurrentUser() initially receives 401, then http() calls
+         * /auth/refresh using the HTTP-only cookie, saves the new access
+         * token in memory, and retries /auth/me.
+         */
+        const currentUser = await getCurrentUser();
+
+        if (!cancelled) {
+          setUser(currentUser);
+        }
       } catch {
-        if (!cancelled && !getAuthSession()) {
+        if (!cancelled) {
+          clearAuthSession();
           setUser(null);
           setAccessToken(null);
         }
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     };
 
@@ -140,15 +142,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return updatedUser;
   };
 
- const logout = async () => {
-  try {
-    await logoutUser();
-  } finally {
-    clearAuthSession();
-    setUser(null);
-    setAccessToken(null);
-  }
-};
+  const logout = async () => {
+    try {
+      await logoutUser();
+    } finally {
+      clearAuthSession();
+      setUser(null);
+      setAccessToken(null);
+    }
+  };
 
   const value = useMemo(
     () => ({

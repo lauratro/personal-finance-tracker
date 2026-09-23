@@ -6,56 +6,39 @@ export type StoredAuthSession = {
 
 type AuthSessionListener = (session: StoredAuthSession | null) => void;
 
+let currentSession: StoredAuthSession | null = null;
+
 const listeners = new Set<AuthSessionListener>();
 
-const notifyListeners = (session: StoredAuthSession | null) => {
-  listeners.forEach((listener) => listener(session));
+const notifyListeners = () => {
+  listeners.forEach((listener) => listener(currentSession));
 };
 
 export function saveAuthSession(session: StoredAuthSession) {
-  const storedSession: StoredAuthSession = {
+  currentSession = {
     accessToken: session.accessToken,
   };
 
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(storedSession));
-  notifyListeners(storedSession);
+  notifyListeners();
 }
 
-export function getAuthSession(): StoredAuthSession | null {
-  const raw = localStorage.getItem(STORAGE_KEY);
-
-  if (!raw) return null;
-
-  try {
-    return JSON.parse(raw) as StoredAuthSession;
-  } catch {
-    localStorage.removeItem(STORAGE_KEY);
-    return null;
-  }
+export function getAuthSession() {
+  return currentSession;
 }
 
-export function getAccessToken(): string | null {
-  return getAuthSession()?.accessToken ?? null;
+export function getAccessToken() {
+  return currentSession?.accessToken ?? null;
 }
 
 export function clearAuthSession() {
-  localStorage.removeItem(STORAGE_KEY);
-  notifyListeners(null);
+  currentSession = null;
+  notifyListeners();
 }
 
 export function subscribeToAuthSession(listener: AuthSessionListener) {
   listeners.add(listener);
 
-  const handleStorage = (event: StorageEvent) => {
-    if (event.key === STORAGE_KEY) {
-      listener(getAuthSession());
-    }
-  };
-
-  window.addEventListener('storage', handleStorage);
-
   return () => {
     listeners.delete(listener);
-    window.removeEventListener('storage', handleStorage);
   };
 }
