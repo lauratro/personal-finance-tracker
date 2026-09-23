@@ -3,6 +3,7 @@ import { AiService } from '../logic/ai.service';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { CurrentUserId } from '../../auth/decorators/current-user-id.decorator';
 import { FinancialAgentService } from '../logic/financial-agent.service';
+import { AiChatDto } from '../dto/ai-chat.dto';
 
 @Controller('ai')
 @UseGuards(JwtAuthGuard)
@@ -13,11 +14,8 @@ export class AiController {
   ) {}
 
   @Post('chat')
-  async chat(
-    @CurrentUserId() userId: string,
-    @Body('prompt') prompt: string,
-  ) {
-    const response = await this.financialAgentService.chat(prompt, userId);
+  async chat(@CurrentUserId() userId: string, @Body() dto: AiChatDto) {
+    const response = await this.financialAgentService.chat(dto.prompt, userId);
 
     return {
       response,
