@@ -24,6 +24,7 @@ import { SearchInvestmentByYearsService } from './../logic/search-investment-by-
 import { InvestmentIncomeAnalyticsService } from './../logic/analytics/investment-income-analytics.service';
 import { InvestmentIncomeAnalyticsQueryDto } from './../dto/investment-analytics.dto';
 import { CurrentUserId } from '../../auth/decorators/current-user-id.decorator';
+import { InvestmentHistoryPeriodQueryDto } from './../dto/investment-history-period-query.dto';
 
 @Controller('investment-history')
 @UseGuards(JwtAuthGuard)
@@ -55,32 +56,13 @@ export class InvestmentHistoryController {
   @Get('by-period')
   async findByPeriod(
     @CurrentUserId() userId: string,
-    @Query('fromDate') fromDate?: string,
-    @Query('untilDate') untilDate?: string,
+    @Query() query: InvestmentHistoryPeriodQueryDto,
   ) {
-    const parsedFromDate = fromDate
-      ? this.parseDate(fromDate, 'fromDate')
-      : undefined;
-
-    const parsedUntilDate = untilDate
-      ? this.parseDate(untilDate, 'untilDate')
-      : undefined;
-
     return this.searchInvestment.search(
       userId,
-      parsedFromDate,
-      parsedUntilDate,
+      query.fromDate ? new Date(query.fromDate) : undefined,
+      query.untilDate ? new Date(query.untilDate) : undefined,
     );
-  }
-
-  private parseDate(value: string, field: string): Date | undefined {
-    const date = new Date(value);
-
-    if (Number.isNaN(date.getTime())) {
-      return undefined;
-    }
-
-    return date;
   }
 
   @Get('analytics/income')
