@@ -23,9 +23,13 @@ export type DashboardWidgetItem = DashboardWidgetBase & {
     type: DashboardWidgetType;
 };
 
+export type DashboardLayoutItem = Pick<
+  DashboardWidgetItem,
+  'id' | 'x' | 'y' | 'width' | 'height'
+>;
+
 export type CreateDashboardWidgetItem =
   DashboardWidgetBase & {
  type: DashboardWidgetType;
   }
-
 

@@ -95,3 +95,14 @@ npm run dev
 
 Laura Tronchin
 Full Stack Developer
+
+## Dashboard concurrency
+
+Dashboard layout writes are debounced, coalesced, and serialized in each browser
+session. The backend applies each bulk layout update atomically. Concurrent edits
+from multiple tabs or devices currently use last-write-wins semantics.
+
+Optimistic versioning is a possible future evolution if multi-tab,
+multi-device, or collaborative editing needs conflict detection. A dashboard
+version could then be sent with each layout update and stale writes rejected
+with `409 Conflict`.

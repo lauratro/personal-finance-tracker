@@ -8,6 +8,7 @@ import { DeleteDashboardWidget } from '../logic/delete-dashboard-widget-service'
 import { EditDashboardWidgetService } from '../logic/edit-dashboard-widget-service';
 import { GetDashboardService } from '../logic/get-dashboard-service';
 import { GetDashboardWidgetsService } from '../logic/get-dashboard-widgets-service';
+import { UpdateDashboardLayoutService } from '../logic/update-dashboard-layout.service';
 
 @Module({
     imports:[PrismaModule],
@@ -17,8 +18,9 @@ import { GetDashboardWidgetsService } from '../logic/get-dashboard-widgets-servi
         CreateDashboardWidget, 
         DeleteDashboardWidget, 
         EditDashboardWidgetService, 
-        GetDashboardService, 
-        GetDashboardWidgetsService]
+        GetDashboardService,
+        GetDashboardWidgetsService,
+        UpdateDashboardLayoutService]
 }
 )
 

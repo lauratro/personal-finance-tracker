@@ -1,5 +1,5 @@
 import { http } from "@/api/http";  
-import { DashboardUser, DashboardWidgetItem, CreateDashboardWidgetItem, DashboardWidgetBase } from "./dashboard-types";
+import { DashboardUser, DashboardWidgetItem, CreateDashboardWidgetItem, DashboardLayoutItem } from "./dashboard-types";
 
 export function createDashboard(){
     return http<DashboardUser>("/dashboard",{
@@ -26,16 +26,15 @@ export function getDashboardWidgets(){
     })
 }
 
-export function editDashboardWidget(widgetId: string, payload: DashboardWidgetBase){
-    return http<DashboardWidgetItem>(`/widget/${widgetId}`, {
-        method: "PATCH",
-        body: payload
-    })
-}
-
 export function deleteDashboardWidget(widgetId: string) {
     return http<DashboardWidgetItem>(`/widget/${widgetId}`, {
         method: "DELETE"
     })
 }
 
+export function updateDashboardLayout(widgets: DashboardLayoutItem[]) {
+    return http<DashboardWidgetItem[]>("/dashboard/layout", {
+        method: "PUT",
+        body: { widgets },
+    })
+}

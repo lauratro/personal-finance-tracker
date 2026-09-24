@@ -9,7 +9,7 @@ const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
 export type RequestOptions = {
-  method?: 'GET' | 'POST' | 'PATCH' | 'DELETE';
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   body?: unknown;
   token?: string | null;
   skipAuthRefresh?: boolean;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   createDashboard,
   getDashboard,
@@ -10,8 +10,7 @@ export const DashboardComponent = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string>();
 
-  useEffect(() => {
-    const initializeDashboard = async () => {
+  const initializeDashboard = useCallback(async () => {
       try {
         setIsLoading(true);
         setError(undefined);
@@ -31,26 +30,30 @@ export const DashboardComponent = () => {
       } finally {
         setIsLoading(false);
       }
-    };
+    }, []);
 
+  useEffect(() => {
     void initializeDashboard();
-  }, []);
+  }, [initializeDashboard]);
 
   if (isLoading) {
     return <div>Loading dashboard...</div>;
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return (
+      <div className="form-error" role="alert">
+        <span>{error}</span>{' '}
+        <button type="button" onClick={() => void initializeDashboard()}>
+          Retry
+        </button>
+      </div>
+    );
   }
 
   if (!dashboardId) {
     return <div>Dashboard not available.</div>;
   }
 
-  return (
-    <div>
-    <DashboardWidgetsGrid/>
-    </div>
-  );
+  return <DashboardWidgetsGrid />;
 };
