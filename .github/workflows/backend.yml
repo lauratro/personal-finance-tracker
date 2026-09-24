@@ -34,6 +34,8 @@ jobs:
       NODE_ENV: test
       JWT_ACCESS_SECRET: integration-test-access-secret
       JWT_REFRESH_SECRET: integration-test-refresh-secret
+      JWT_2FA_SECRET: integration-test-two-factor-secret
+      TWO_FACTOR_ENCRYPTION_KEY: BxwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBw=
       JWT_ACCESS_TTL: 15m
       JWT_REFRESH_TTL: 7d
       BCRYPT_ROUNDS: 4
