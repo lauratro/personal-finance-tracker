@@ -5,7 +5,6 @@ import {
 } from '../mocks/auth-prisma.mock';
 import { AuthService } from '../../../main/auth/logic/auth.service';
 import { JwtService } from '@nestjs/jwt/dist/jwt.service';
-import { ConfigService } from '@nestjs/config/dist/config.service';
 import { Request } from 'express';
 import { generateSecret, generateURI, verify } from 'otplib';
 import * as QRCode from 'qrcode';
@@ -24,7 +23,7 @@ describe('AuthService', () => {
   let service: AuthService;
   let prisma: AuthPrismaMock;
   let jwtService: any;
-  let configService: any;
+  let config: any;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -36,13 +35,23 @@ describe('AuthService', () => {
       signAsync: jest.fn(),
     };
 
-    configService = {
-      getOrThrow: jest.fn(),
+    config = {
+      access: { secret: 'access-secret', ttlSeconds: 15 * 60 },
+      refresh: {
+        secret: 'refresh-secret',
+        ttlSeconds: 7 * 24 * 60 * 60,
+        ttlMs: 7 * 24 * 60 * 60 * 1000,
+      },
+      twoFactor: {
+        secret: 'two-factor-secret',
+        encryptionKey: Buffer.alloc(32, 7).toString('base64'),
+        ttlSeconds: 5 * 60,
+      },
     };
     service = new AuthService(
       prisma as unknown as PrismaService,
       jwtService as unknown as JwtService,
-      configService as unknown as ConfigService,
+      config,
     );
   });
 
@@ -73,21 +82,34 @@ describe('AuthService', () => {
       .mockResolvedValueOnce('access-token')
       .mockResolvedValueOnce('refresh-token');
 
-    configService.getOrThrow.mockImplementation((key: string) => {
-      const config: Record<string, string> = {
-        JWT_ACCESS_SECRET: 'access-secret',
-        JWT_REFRESH_SECRET: 'refresh-secret',
-        JWT_ACCESS_TTL: '15m',
-        JWT_REFRESH_TTL: '7d',
-      };
-
-      return config[key];
-    });
     const result = await service.register(registerDto);
 
     expect(result).toHaveProperty('user');
     expect(result).toHaveProperty('accessToken');
     expect(result).toHaveProperty('refreshToken');
+    expect(jwtService.signAsync).toHaveBeenNthCalledWith(
+      1,
+      expect.any(Object),
+      expect.objectContaining({ expiresIn: config.access.ttlSeconds }),
+    );
+    expect(jwtService.signAsync).toHaveBeenNthCalledWith(
+      2,
+      expect.any(Object),
+      expect.objectContaining({ expiresIn: config.refresh.ttlSeconds }),
+    );
+    expect(prisma.refreshToken.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        expiresAt: expect.any(Date),
+      }),
+    });
+    const expiresAt = prisma.refreshToken.create.mock.calls[0][0].data
+      .expiresAt as Date;
+    expect(expiresAt.getTime()).toBeGreaterThanOrEqual(
+      Date.now() + config.refresh.ttlMs - 100,
+    );
+    expect(expiresAt.getTime()).toBeLessThanOrEqual(
+      Date.now() + config.refresh.ttlMs,
+    );
   });
 
   it('should throw an error if the user already exists', async () => {
@@ -140,11 +162,6 @@ describe('AuthService', () => {
     });
     jest.spyOn(require('bcrypt'), 'compare').mockResolvedValueOnce(true);
     jwtService.signAsync.mockResolvedValueOnce('two-factor-token');
-    configService.getOrThrow.mockImplementation((key: string) => {
-      if (key === 'JWT_2FA_SECRET') return 'two-factor-secret';
-      throw new Error(`Unexpected config key: ${key}`);
-    });
-
     const result = await service.login(
       { email: 'test@example.com', password: 'password123' },
       { headers: {}, ip: '127.0.0.1' } as Request,
@@ -161,7 +178,7 @@ describe('AuthService', () => {
         email: 'test@example.com',
         purpose: 'two-factor-login',
       },
-      { secret: 'two-factor-secret', expiresIn: '5m' },
+      { secret: 'two-factor-secret', expiresIn: 300 },
     );
   });
 
@@ -182,10 +199,6 @@ describe('AuthService', () => {
     (generateSecret as jest.Mock).mockReturnValue('BASE32SECRET');
     (generateURI as jest.Mock).mockReturnValue('otpauth://totp/example');
     (QRCode.toDataURL as jest.Mock).mockResolvedValue('data:image/png;base64,qr');
-    configService.getOrThrow.mockReturnValue(
-      Buffer.alloc(32, 7).toString('base64'),
-    );
-
     const result = await service.setupTwoFactor(user.id);
 
     expect(result).toEqual({
@@ -201,7 +214,7 @@ describe('AuthService', () => {
 
   it('should enable 2FA only after a valid authenticator code', async () => {
     const encryptionKey = Buffer.alloc(32, 7).toString('base64');
-    configService.getOrThrow.mockReturnValue(encryptionKey);
+    config.twoFactor.encryptionKey = encryptionKey;
     (generateSecret as jest.Mock).mockReturnValue('BASE32SECRET');
     (generateURI as jest.Mock).mockReturnValue('otpauth://totp/example');
     (QRCode.toDataURL as jest.Mock).mockResolvedValue('data:image/png;base64,qr');
@@ -277,16 +290,6 @@ describe('AuthService', () => {
     jwtService.signAsync
       .mockResolvedValueOnce('access-token')
       .mockResolvedValueOnce('refresh-token');
-    configService.getOrThrow.mockImplementation((key: string) => {
-      const config: Record<string, string> = {
-        JWT_2FA_SECRET: 'two-factor-secret',
-        JWT_ACCESS_SECRET: 'access-secret',
-        JWT_REFRESH_SECRET: 'refresh-secret',
-        JWT_ACCESS_TTL: '15m',
-        JWT_REFRESH_TTL: '7d',
-      };
-      return config[key];
-    });
     prisma.user.findUnique.mockResolvedValue(user);
     prisma.twoFactorRecoveryCode.findMany.mockResolvedValue([
       { id: 'Recovery:1', codeHash: 'stored-hash' },

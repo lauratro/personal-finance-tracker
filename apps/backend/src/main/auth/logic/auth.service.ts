@@ -1,9 +1,10 @@
 import {
   ConflictException,
+  Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { Request } from 'express';
@@ -23,6 +24,7 @@ import {
   generateRecoveryCodes,
   normalizeRecoveryCode,
 } from '../utils/recovery-codes';
+import { authConfig } from '../config/auth.config';
 
 type TokenPair = {
   accessToken: string;
@@ -40,7 +42,8 @@ export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
+    @Inject(authConfig.KEY)
+    private readonly config: ConfigType<typeof authConfig>,
   ) {}
 
   async register(dto: RegisterDto) {
@@ -292,7 +295,7 @@ export class AuthService {
 
     try {
       payload = await this.jwtService.verifyAsync(twoFactorToken, {
-        secret: this.configService.getOrThrow<string>('JWT_2FA_SECRET'),
+        secret: this.config.twoFactor.secret,
       });
     } catch {
       throw new UnauthorizedException(
@@ -352,26 +355,14 @@ export class AuthService {
   private async issueTokens(userId: string, email: string): Promise<TokenPair> {
     const payload = { sub: userId, email };
 
-    const accessSecret =
-      this.configService.getOrThrow<string>('JWT_ACCESS_SECRET');
-    const refreshSecret =
-      this.configService.getOrThrow<string>('JWT_REFRESH_SECRET');
-
-    const accessTtl = this.configService.getOrThrow<string>(
-      'JWT_ACCESS_TTL',
-    ) as any;
-    const refreshTtl = this.configService.getOrThrow<string>(
-      'JWT_REFRESH_TTL',
-    ) as any;
-
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
-        secret: accessSecret,
-        expiresIn: accessTtl,
+        secret: this.config.access.secret,
+        expiresIn: this.config.access.ttlSeconds,
       }),
       this.jwtService.signAsync(payload, {
-        secret: refreshSecret,
-        expiresIn: refreshTtl,
+        secret: this.config.refresh.secret,
+        expiresIn: this.config.refresh.ttlSeconds,
       }),
     ]);
 
@@ -382,14 +373,14 @@ export class AuthService {
     return this.jwtService.signAsync(
       { sub: userId, email, purpose: 'two-factor-login' },
       {
-        secret: this.configService.getOrThrow<string>('JWT_2FA_SECRET'),
-        expiresIn: '5m',
+        secret: this.config.twoFactor.secret,
+        expiresIn: this.config.twoFactor.ttlSeconds,
       },
     );
   }
 
   private getTwoFactorEncryptionKey(): string {
-    return this.configService.getOrThrow<string>('TWO_FACTOR_ENCRYPTION_KEY');
+    return this.config.twoFactor.encryptionKey;
   }
 
   private async replaceRecoveryCodes(userId: string): Promise<string[]> {
@@ -483,7 +474,7 @@ export class AuthService {
   }
 
   private getRefreshExpiryDate() {
-    return new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    return new Date(Date.now() + this.config.refresh.ttlMs);
   }
 
   private extractHeader(req: Request | undefined, key: string): string | null {

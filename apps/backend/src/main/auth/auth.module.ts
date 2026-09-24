@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigType } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
@@ -9,6 +9,7 @@ import { AuthService } from './logic/auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { RefreshJwtStrategy } from './strategies/refresh-jwt.strategy';
 import { UpdateUserService } from './logic/update-user.service';
+import { authConfig } from './config/auth.config';
 
 @Module({
   imports: [
@@ -16,13 +17,11 @@ import { UpdateUserService } from './logic/update-user.service';
     PrismaModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        secret: configService.getOrThrow<string>('JWT_ACCESS_SECRET'),
+      inject: [authConfig.KEY],
+      useFactory: (config: ConfigType<typeof authConfig>) => ({
+        secret: config.access.secret,
         signOptions: {
-          expiresIn: configService.getOrThrow<string>(
-            'JWT_ACCESS_TTL',
-          ) as any,
+          expiresIn: config.access.ttlSeconds,
         },
       }),
     }),

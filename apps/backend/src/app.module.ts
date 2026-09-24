@@ -7,11 +7,13 @@ import { NetWorthModule } from './main/net-worth/modules/net-worth-module';
 import { DashboardModule } from './main/dashboard/modules/dashboard-module';
 import { HealthModule } from './health/health.module';
 import { AiModule } from './main/ai/modules/ai.module';
+import { authConfig } from './main/auth/config/auth.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      load: [authConfig],
     }),
     PrismaModule,
     AuthModule,

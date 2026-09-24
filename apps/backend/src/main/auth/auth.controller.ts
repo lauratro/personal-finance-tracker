@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Inject,
   Patch,
   Post,
   Req,
@@ -24,14 +25,26 @@ import { AuthenticatedRequestUser } from './types/authenticated-request-user.typ
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateUserService } from './logic/update-user.service';
 import { Request, Response } from 'express';
-import {REFRESH_COOKIE_OPTIONS, REFRESH_COOKIE_NAME} from "./utils/auth.constants";
+import { ConfigType } from '@nestjs/config';
+import { authConfig } from './config/auth.config';
+import {
+  getRefreshCookieOptions,
+  REFRESH_COOKIE_NAME,
+  REFRESH_COOKIE_PATH,
+} from './utils/auth.constants';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly updateUserService: UpdateUserService,
+    @Inject(authConfig.KEY)
+    private readonly config: ConfigType<typeof authConfig>,
   ) {}
+
+  private get refreshCookieOptions() {
+    return getRefreshCookieOptions(this.config.refresh.ttlMs);
+  }
 
 @Post('register')
 async register(
@@ -43,7 +56,7 @@ async register(
   res.cookie(
     REFRESH_COOKIE_NAME,
     result.refreshToken,
-    REFRESH_COOKIE_OPTIONS,
+    this.refreshCookieOptions,
   );
 
   return {
@@ -68,7 +81,7 @@ async login(
   res.cookie(
     REFRESH_COOKIE_NAME,
     result.refreshToken,
-    REFRESH_COOKIE_OPTIONS,
+    this.refreshCookieOptions,
   );
 
   return {
@@ -95,7 +108,7 @@ async login(
     res.cookie(
       REFRESH_COOKIE_NAME,
       tokens.refreshToken,
-      REFRESH_COOKIE_OPTIONS,
+      this.refreshCookieOptions,
     );
 
     return {
@@ -113,7 +126,7 @@ async logout(
   await this.authService.logout(userId);
 
   res.clearCookie(REFRESH_COOKIE_NAME, {
-    path: REFRESH_COOKIE_OPTIONS.path,
+    path: REFRESH_COOKIE_PATH,
   });
 
   return { success: true };
@@ -135,7 +148,7 @@ async logout(
     res.cookie(
       REFRESH_COOKIE_NAME,
       result.refreshToken,
-      REFRESH_COOKIE_OPTIONS,
+      this.refreshCookieOptions,
     );
 
     return { user: result.user, accessToken: result.accessToken };
