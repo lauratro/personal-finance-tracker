@@ -32,6 +32,7 @@ export const NavLink = styled(Link)`
   cursor: pointer;
   &:hover {
     background: #f8fafc;
+    text-decoration: none;
   }
 `;
 
