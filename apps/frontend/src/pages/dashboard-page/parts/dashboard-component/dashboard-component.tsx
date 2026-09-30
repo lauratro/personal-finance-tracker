@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
-import {
-  createDashboard,
-  getDashboard,
-} from '@/pages-apis/dashboard';
+import { createDashboard, getDashboard } from '@/pages-apis/dashboard';
 import { DashboardWidgetsGrid } from '../dashboard-widgets-grid';
+import { DashboardGridSkeleton } from '../dashboard-widgets/dashboard-loading-skeleton';
 
 export const DashboardComponent = () => {
   const [dashboardId, setDashboardId] = useState<string>();
@@ -11,33 +9,33 @@ export const DashboardComponent = () => {
   const [error, setError] = useState<string>();
 
   const initializeDashboard = useCallback(async () => {
-      try {
-        setIsLoading(true);
-        setError(undefined);
+    try {
+      setIsLoading(true);
+      setError(undefined);
 
-        const dashboard = await getDashboard();
+      const dashboard = await getDashboard();
 
-        if (dashboard) {
-          setDashboardId(dashboard.id);
-          return;
-        }
-
-        const createdDashboard = await createDashboard();
-        setDashboardId(createdDashboard.id);
-      } catch (error) {
-        console.error('Error initializing dashboard:', error);
-        setError('The dashboard could not be loaded.');
-      } finally {
-        setIsLoading(false);
+      if (dashboard) {
+        setDashboardId(dashboard.id);
+        return;
       }
-    }, []);
+
+      const createdDashboard = await createDashboard();
+      setDashboardId(createdDashboard.id);
+    } catch (error) {
+      console.error('Error initializing dashboard:', error);
+      setError('The dashboard could not be loaded.');
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     void initializeDashboard();
   }, [initializeDashboard]);
 
   if (isLoading) {
-    return <div>Loading dashboard...</div>;
+    return <DashboardGridSkeleton />;
   }
 
   if (error) {

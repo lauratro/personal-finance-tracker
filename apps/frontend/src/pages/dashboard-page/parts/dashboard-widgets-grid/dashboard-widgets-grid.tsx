@@ -3,6 +3,8 @@ import ReactGridLayout, {
   useContainerWidth,
   type Layout,
 } from 'react-grid-layout';
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
 import {
   createDashboardWidget,
   deleteDashboardWidget,
@@ -17,6 +19,7 @@ import { DashboardWidget } from '../dashboard-widgets/dashboard-widget';
 import { DashboardWidgetType } from '../dashboard-widgets/dashboard-widget.registry';
 import { AddWidgetSelector } from './parts/add-widget-selector';
 import { LayoutSaveQueue } from './layout-save-queue';
+import { DashboardGridSkeleton } from '../dashboard-widgets/dashboard-loading-skeleton';
 
 type DashboardError = {
   operation: 'load' | 'add' | 'delete' | 'save';
@@ -123,9 +126,7 @@ export const DashboardWidgetsGrid = () => {
       await saveQueueRef.current!.removeWidget(id, () =>
         deleteDashboardWidget(id),
       );
-      setUserWidgets((current) =>
-        current.filter((widget) => widget.id !== id),
-      );
+      setUserWidgets((current) => current.filter((widget) => widget.id !== id));
       setError((current) =>
         current?.operation === 'delete' ? undefined : current,
       );
@@ -154,7 +155,7 @@ export const DashboardWidgetsGrid = () => {
     maxH: widget.maxHeight,
   }));
 
-  if (isLoading) return <div>Loading dashboard widgets...</div>;
+  if (isLoading) return <DashboardGridSkeleton />;
 
   return (
     <div>

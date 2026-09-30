@@ -1,4 +1,4 @@
-import { DashboardWidget } from "@/pages/dashboard-page/parts/dashboard-widgets/dashboard-widget";
+
 import { DashboardWidgetType } from "@/pages/dashboard-page/parts/dashboard-widgets/dashboard-widget.registry";
 export type DashboardUser = {
   id: string,

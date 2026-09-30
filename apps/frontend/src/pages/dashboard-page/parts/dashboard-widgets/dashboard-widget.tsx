@@ -1,12 +1,11 @@
-import {
-  IconGripVertical,
-  IconTrash,
-} from '@tabler/icons-react';
+import { IconGripVertical, IconTrash } from '@tabler/icons-react';
 
 import {
   DashboardWidgetType,
   dashboardWidgetRegistry,
 } from './dashboard-widget.registry';
+import { Suspense } from 'react';
+import { DashboardWidgetSkeleton } from './dashboard-loading-skeleton';
 
 type DashboardWidgetProps = {
   widgetId: string;
@@ -19,8 +18,7 @@ export const DashboardWidget = ({
   type,
   onRemove,
 }: DashboardWidgetProps) => {
-  const configuration =
-    dashboardWidgetRegistry[type];
+  const configuration = dashboardWidgetRegistry[type];
 
   const WidgetComponent = configuration.component;
 
@@ -35,9 +33,7 @@ export const DashboardWidget = ({
           <IconGripVertical size={20} />
         </button>
 
-        <div className="flex-1 font-medium">
-          {configuration.label}
-        </div>
+        <div className="flex-1 font-medium">{configuration.label}</div>
 
         <button
           type="button"
@@ -49,7 +45,11 @@ export const DashboardWidget = ({
       </div>
 
       <div className="min-h-0 flex-1 overflow-hidden p-3">
-        <WidgetComponent />
+        <Suspense
+          fallback={<DashboardWidgetSkeleton label={configuration.label} />}
+        >
+          <WidgetComponent />
+        </Suspense>
       </div>
     </div>
   );
