@@ -33,10 +33,24 @@ export function updateInvestmentHistory(id: string, payload: UpdateInvestmentHis
 }
 
 export function searchInvestmentHistories(fromDate?: string, untilDate?: string) {
-return http<InvestmentHistory[]>(`/investment-history/by-period?fromDate=${fromDate}&untilDate=${untilDate}`, {
-  method: "GET",
-}
-)
+  const params = new URLSearchParams();
+
+  if (fromDate) {
+    params.set('fromDate', fromDate);
+  }
+
+  if (untilDate) {
+    params.set('untilDate', untilDate);
+  }
+
+  const query = params.toString();
+
+  return http<InvestmentHistory[]>(
+    `/investment-history/by-period${query ? `?${query}` : ''}`,
+    {
+      method: 'GET',
+    },
+  );
 }
 
 export function getInvestmentIncomeAnalytics(year?: number) {

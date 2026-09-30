@@ -15,12 +15,15 @@ import { MonthlyIncomeSpecificYearChart } from './parts/charts/monthly-income-sp
 export const InvestmentsHistoryPage = () => {
   const [investments, setInvestments] = useState<InvestmentHistory[]>([]);
   const [loading, setLoading] = useState(false);
-  const {filters} = useInvestmentHistoryFilter()
+  const { filters } = useInvestmentHistoryFilter();
 
   const fetchInvestments = async () => {
     try {
       setLoading(true);
-      const data = await searchInvestmentHistories(filters.fromDate, filters.untilDate);
+      const data = await searchInvestmentHistories(
+        filters.fromDate,
+        filters.untilDate,
+      );
       setInvestments(data);
     } finally {
       setLoading(false);
@@ -28,21 +31,24 @@ export const InvestmentsHistoryPage = () => {
   };
 
   useEffect(() => {
-    fetchInvestments()
-    ;
+    fetchInvestments();
   }, [filters]);
-
+  console.log('investments', investments);
   return (
     <PageContainer
       title="Investments History"
       description="Track your investment performance over time."
     >
-      <TotalIncomeDisplayer investments ={investments}/>
-      <RealizedIncomeByYearChart/>
-      <MonthlyIncomeSpecificYearChart/>
-      <InvestmentCreateButton onCreated={fetchInvestments}/>
-      <YearFilters/>
-      <InvestmentTable investments={investments} onRefetch={fetchInvestments} isLoading={loading}/>
+      <TotalIncomeDisplayer investments={investments} />
+      <RealizedIncomeByYearChart />
+      <MonthlyIncomeSpecificYearChart />
+      <InvestmentCreateButton onCreated={fetchInvestments} />
+      <YearFilters />
+      <InvestmentTable
+        investments={investments}
+        onRefetch={fetchInvestments}
+        isLoading={loading}
+      />
     </PageContainer>
   );
 };
