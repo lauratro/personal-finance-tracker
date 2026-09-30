@@ -6,7 +6,7 @@ export const YearFilters = () => {
   const { filters, setFilters } = useInvestmentHistoryFilter();
 
   return (
-    <div className="px-4 flex content-center">
+    <div className="flex content-center">
       <p className="self-center font-medium">Bought Date</p>
       <DateTimePicker
         className="mx-4"

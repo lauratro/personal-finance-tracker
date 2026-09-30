@@ -7,7 +7,6 @@ import {
 } from '../../pages-apis/investment-history';
 import { useState, useEffect } from 'react';
 import { useInvestmentHistoryFilter } from './investments-context/investment-history-filter-context';
-import { YearFilters } from './parts/filters/year-filters';
 import { TotalIncomeDisplayer } from './parts/total-income-displayer';
 import { RealizedIncomeByYearChart } from './parts/charts/realized-income-by-year';
 import { MonthlyIncomeSpecificYearChart } from './parts/charts/monthly-income-specific-year';
@@ -43,7 +42,6 @@ export const InvestmentsHistoryPage = () => {
       <RealizedIncomeByYearChart />
       <MonthlyIncomeSpecificYearChart />
       <InvestmentCreateButton onCreated={fetchInvestments} />
-      <YearFilters />
       <InvestmentTable
         investments={investments}
         onRefetch={fetchInvestments}
