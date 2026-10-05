@@ -14,7 +14,7 @@ it('Should open the modal when the icon is clicked', async () => {
   );
 
   await userClick.click(
-    screen.getByRole('button', { name: 'Open Ai Assistant' }),
+    screen.getByRole('button', { name: 'Open AI Assistant' }),
   );
   expect(setIsVisible).toHaveBeenCalledWith(true);
 });
