@@ -1,6 +1,5 @@
 import { lazy, Suspense, useState } from 'react';
 import { AiChatIcon } from './parts/ai-chat-icon';
-import { AiChatContainerStyle } from './ai-chat-container.style';
 
 const AiChatBox = lazy(() =>
   import('./parts/ai-chat-box').then((module) => ({
@@ -12,7 +11,7 @@ export const AiChatBoxContainer = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   return (
-    <AiChatContainerStyle>
+    <div className="fixed bottom-5 right-5 z-[100]">
       <AiChatIcon isVisible={isVisible} setIsVisible={setIsVisible} />
       {isVisible && (
         <Suspense
@@ -28,6 +27,6 @@ export const AiChatBoxContainer = () => {
           <AiChatBox opened={isVisible} setOpened={setIsVisible} />
         </Suspense>
       )}
-    </AiChatContainerStyle>
+    </div>
   );
 };
