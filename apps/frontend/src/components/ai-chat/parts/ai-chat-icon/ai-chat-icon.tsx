@@ -6,7 +6,7 @@ export const AiChatIcon = ({ isVisible, setIsVisible }: AiChatIconProps) => {
     <button
       type="button"
       className="flex cursor-pointer items-center justify-center rounded-full border-none bg-[var(--primary)] p-2.5"
-      aria-label="Open Ai Assistant"
+      aria-label="Open AI Assistant"
       onClick={() => setIsVisible(!isVisible)}
     >
       <IconSubtitlesAi stroke={2} color="white" />
