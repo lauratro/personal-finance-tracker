@@ -95,9 +95,7 @@ API functions and related types belong in the existing `pages-apis/` or `compone
 
 Routes and path constants should follow the existing routing structure.
 
-Prefer relative imports.
-
-Do not introduce or convert imports to the `@/` alias unless explicitly requested.
+Prefer relative imports in application code. In tests under `src/test/`, `@/` imports are acceptable for the module under test and for `vi.mock` paths, matching existing specs. Do not convert existing imports in either direction unless explicitly requested.
 
 ---
 
@@ -223,9 +221,7 @@ API calls should use the existing HTTP infrastructure rather than direct, ad-hoc
 
 Preserve the existing authentication refresh/retry behavior.
 
-Prefer relative imports.
-
-Do not introduce or convert imports to the `@/` alias unless explicitly requested.
+Prefer relative imports in application code. In tests under `src/test/`, `@/` imports are acceptable for the module under test and for `vi.mock` paths, matching existing specs. Do not convert existing imports in either direction unless explicitly requested.
 
 ### Styling
 
