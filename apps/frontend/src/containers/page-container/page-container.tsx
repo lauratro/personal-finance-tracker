@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 import { AppMenubar } from '../../components/ui/app-menubar/app-menubar';
-import { Wrapper, PageContent } from './page-container.style';
 import { AiChatBoxContainer } from '@/components/ai-chat';
 
 interface PageContainerProps {
@@ -15,7 +14,7 @@ export const PageContainer = ({
   children,
 }: PageContainerProps) => {
   return (
-    <Wrapper>
+    <div className="min-h-screen bg-slate-50">
       <AppMenubar />
 
       <main className="mx-auto w-full px-2 pt-6 pb-4 md:px-6 md:py-8">
@@ -25,11 +24,11 @@ export const PageContainer = ({
           {description ? <p>{description}</p> : null}
         </div>
 
-        <PageContent>
+        <div className="grid gap-6">
           <AiChatBoxContainer />
           {children}
-        </PageContent>
+        </div>
       </main>
-    </Wrapper>
+    </div>
   );
 };
