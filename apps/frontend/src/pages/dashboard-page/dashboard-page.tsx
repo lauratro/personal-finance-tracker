@@ -13,16 +13,17 @@ export const DashboardPage = () => {
       <div className="px-4">
         <div className="mb-6">
           <div>
-            <h1 className="text-2xl font-semibold">
+            <h2 className="text-2xl font-semibold">
               Welcome back, {user?.firstName ?? 'Investor'}
-            </h1>
+            </h2>
 
             <p className="mt-1 text-gray-500">
               Here is an overview of your investments.
             </p>
           </div>
-     <DashboardComponent/>
-      </div></div>
+          <DashboardComponent />
+        </div>
+      </div>
     </PageContainer>
   );
 };
