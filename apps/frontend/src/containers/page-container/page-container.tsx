@@ -1,12 +1,6 @@
-import { ReactNode } from 'react';
 import { AppMenubar } from '../../components/ui/app-menubar/app-menubar';
 import { AiChatBoxContainer } from '@/components/ai-chat';
-
-interface PageContainerProps {
-  title: string;
-  description?: string;
-  children: ReactNode;
-}
+import { PageContainerProps } from './page-container.types';
 
 export const PageContainer = ({
   title,

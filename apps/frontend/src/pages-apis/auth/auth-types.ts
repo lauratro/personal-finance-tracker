@@ -58,7 +58,3 @@ export type UpdateProfilePayload = {
   firstName?: string;
   lastName?: string;
 };
-export interface PageContainerProps {
-    children: any;
-    title: string;
-}
